@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\npbeh\.Rider2018.1\system\resharper-host\Local\Transient\ReSharperHost\v12\SolutionCaches\_2D Adventure Game.-88405572.00" t="ExcludeRecursive" />
-    <e p="C:\Users\npbeh\Documents\2D Adventure Game\2D Adventure Game" t="IncludeRecursive">
+    <e p="C:\Users\npbeh\.Rider2018.1\system\resharper-host\Local\Transient\ReSharperHost\v12\SolutionCaches\_2D Adventure Game.-2028649040.00" t="ExcludeRecursive" />
+    <e p="C:\Users\npbeh\Documents\2D Adventure Game\2DAdventureGame\2D Adventure Game" t="IncludeRecursive">
       <e p="2D Adventure Game.sln" t="IncludeFlat" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
-        <e p="PlayerMovement.cs" t="Include" />
         <e p="Scripts" t="Include">
           <e p="CameraFollowPlayer.cs" t="Include" />
-          <e p="CharacterMover.cs" t="Include" />
+          <e p="PlayerMovement.cs" t="Include" />
         </e>
       </e>
       <e p="Library" t="ExcludeRecursive" />

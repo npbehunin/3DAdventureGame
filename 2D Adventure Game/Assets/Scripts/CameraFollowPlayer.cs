@@ -6,12 +6,14 @@ public class CameraFollowPlayer : MonoBehaviour
 {
 
 	public Transform target;
+	private Vector3 newPos;
 
 	//private Vector2 position;
 
-	void Update()
+	void LateUpdate()
 	{
-		transform.position = target.transform.position.x + target.transform.position.y;
+		newPos.Set(target.transform.position.x, target.transform.position.y, -10);
+		transform.position = newPos;
 	}
 }
 	
