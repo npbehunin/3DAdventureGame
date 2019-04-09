@@ -10,7 +10,7 @@ public class CameraFollowPlayer : MonoBehaviour
 
 	//private Vector2 position;
 
-	void LateUpdate()
+	void FixedUpdate()
 	{
 		newPos.Set(target.transform.position.x, target.transform.position.y, -10);
 		transform.position = newPos;

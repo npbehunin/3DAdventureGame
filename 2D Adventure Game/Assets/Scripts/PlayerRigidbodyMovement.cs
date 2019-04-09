@@ -31,7 +31,7 @@ public class PlayerRigidbodyMovement : MonoBehaviour
 	{
 		position.Set((MoveSpeed * Input.GetAxisRaw("Horizontal")), (MoveSpeed * Input.GetAxisRaw("Vertical")), 0);
 
-		Debug.Log(position);
+		//Debug.Log(position);
 		horizontalspeed = position.x;
 		verticalspeed = position.y;
 
