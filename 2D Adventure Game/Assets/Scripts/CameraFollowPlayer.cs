@@ -6,14 +6,15 @@ public class CameraFollowPlayer : MonoBehaviour
 {
 
 	public Transform target;
-	private Vector3 newPos;
 
-	//private Vector2 position;
+	public float smoothSpeed;
+	public Vector3 offset;
 
 	void FixedUpdate()
 	{
-		newPos.Set(target.transform.position.x, target.transform.position.y, -10);
-		transform.position = newPos;
+		Vector3 desiredPosition = target.position + offset;
+		Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+		transform.position = smoothedPosition;
 	}
 }
 	
