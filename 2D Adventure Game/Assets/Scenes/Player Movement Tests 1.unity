@@ -1987,9 +1987,10 @@ GameObject:
   - component: {fileID: 1282365206}
   - component: {fileID: 1282365208}
   - component: {fileID: 1282365205}
+  - component: {fileID: 1282365209}
   m_Layer: 0
   m_Name: Enemy1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2062,7 +2063,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1282365204}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.157, y: 2.377, z: 0}
+  m_LocalPosition: {x: -2.59, y: 4.03, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2079,15 +2080,35 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 20
-  m_LinearDrag: 50
+  m_Mass: 1
+  m_LinearDrag: 10
   m_AngularDrag: 0.05
   m_GravityScale: 0
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: af1b0e17db1211244b74ce73ad91ab54, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &1282365209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1282365204}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe7c6f5abfad70f4d8ac2c3caa098d5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 25
+  enemyName: Jelly
+  attack: 0
+  MoveSpeed: 1.75
+  position: {x: 0, y: 0, z: 0}
+  target: {fileID: 1659612928}
+  home: {fileID: 0}
+  chaseRadius: 3.5
+  attackRadius: 1
 --- !u!1 &1306116920
 GameObject:
   m_ObjectHideFlags: 0
@@ -2175,6 +2196,7 @@ GameObject:
   - component: {fileID: 1659612926}
   - component: {fileID: 1659612930}
   - component: {fileID: 1659612925}
+  - component: {fileID: 1659612932}
   - component: {fileID: 1659612929}
   - component: {fileID: 1659612931}
   m_Layer: 0
@@ -2290,7 +2312,7 @@ Rigidbody2D:
   m_LinearDrag: 50
   m_AngularDrag: 0.05
   m_GravityScale: 0
-  m_Material: {fileID: 6200000, guid: 029927b3455b4b447be6d3f27c89f370, type: 2}
+  m_Material: {fileID: 6200000, guid: af1b0e17db1211244b74ce73ad91ab54, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
@@ -2309,7 +2331,7 @@ MonoBehaviour:
   currentState: 0
   rb: {fileID: 1659612929}
   animator: {fileID: 1659612926}
-  MoveSpeed: 0
+  MoveSpeed: 4
   position: {x: 0, y: 0, z: 0}
 --- !u!58 &1659612931
 CircleCollider2D:
@@ -2326,3 +2348,16 @@ CircleCollider2D:
   m_Offset: {x: -0.000009775162, y: -0.28357702}
   serializedVersion: 2
   m_Radius: 0.2521093
+--- !u!114 &1659612932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1659612924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7df2ce40baf34cd41a2e077221fc7dd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thrust: 100
+  knockbackTime: 3

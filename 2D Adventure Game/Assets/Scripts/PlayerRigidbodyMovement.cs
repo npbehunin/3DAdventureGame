@@ -5,7 +5,6 @@ using UnityEngine;
 public enum PlayerState
 {
 	Walk, Run, Attack, Interact
-	
 }
 public class PlayerRigidbodyMovement : MonoBehaviour
 {
@@ -25,14 +24,13 @@ public class PlayerRigidbodyMovement : MonoBehaviour
 		currentState = PlayerState.Run;
 		rb = GetComponent<Rigidbody2D>();
 		animator = gameObject.GetComponent<Animator>();
-		MoveSpeed = .06f;
 	}
 
 	void FixedUpdate()
 	{
 		if (currentState == PlayerState.Run)
 		{
-			rb.MovePosition(transform.position + position);
+			rb.MovePosition(transform.position + position * Time.deltaTime);
 		}
 	}
 
