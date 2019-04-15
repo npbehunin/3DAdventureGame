@@ -4,15 +4,16 @@ using UnityEngine;
 public enum EnemyState
 {
 	Idle, Walk, Target, Attack, Knocked
-	
 }
 public class Enemy : MonoBehaviour
 {
+	public EnemyState currentState;
 
 	public int health;
 	public string enemyName;
 	public int attack;
 
+	public float thrust;
 	public float MoveSpeed;
 	private float horizontalspeed;
 	private float verticalspeed;

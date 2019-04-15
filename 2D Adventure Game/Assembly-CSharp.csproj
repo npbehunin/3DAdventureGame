@@ -55,12 +55,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Backup Scripts\KnockbackOriginal.cs" />
     <Compile Include="Assets\Scripts\CameraFollowPlayer.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Enemy.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Jelly.cs" />
     <Compile Include="Assets\Scripts\Knockback.cs" />
-    <Compile Include="Assets\Scripts\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\PlayerRigidbodyMovement.cs" />
+    <Compile Include="Assets\Scripts\PlayerRigidbodyMovementExperiment.cs" />
+    <Compile Include="Assets\Scripts\Sword.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>B:/2D Adventure Game/2DAdventureGame/2D Adventure Game/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>

@@ -6,14 +6,18 @@
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
         <e p="Scripts" t="Include">
+          <e p="Backup Scripts" t="Include">
+            <e p="KnockbackOriginal.cs" t="Include" />
+          </e>
           <e p="CameraFollowPlayer.cs" t="Include" />
           <e p="Enemy Scripts" t="Include">
             <e p="Enemy.cs" t="Include" />
             <e p="Jelly.cs" t="Include" />
           </e>
           <e p="Knockback.cs" t="Include" />
-          <e p="PlayerMovement.cs" t="Include" />
           <e p="PlayerRigidbodyMovement.cs" t="Include" />
+          <e p="PlayerRigidbodyMovementExperiment.cs" t="Include" />
+          <e p="Sword.cs" t="Include" />
         </e>
       </e>
       <e p="Library" t="ExcludeRecursive" />

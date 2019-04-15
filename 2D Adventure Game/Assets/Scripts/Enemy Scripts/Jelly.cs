@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Jelly : Enemy
 {
+	private Rigidbody2D rb;
 
 	public Transform target;
 	public Transform home;
@@ -13,6 +14,8 @@ public class Jelly : Enemy
 
 	void Start ()
 	{
+		currentState = EnemyState.Idle;
+		rb = GetComponent<Rigidbody2D>();
 		target = GameObject.FindWithTag("Player").transform;
 	}
 	
@@ -26,7 +29,21 @@ public class Jelly : Enemy
 		if (Vector3.Distance(target.position, transform.position) <= chaseRadius 
 		    && Vector3.Distance(target.position, transform.position) > attackRadius)
 		{
-			transform.position = Vector3.MoveTowards(transform.position, target.position, MoveSpeed * Time.deltaTime);
+			if (currentState == EnemyState.Idle || currentState == EnemyState.Walk || currentState == EnemyState.Target
+			    || currentState != EnemyState.Knocked)
+			{
+				Vector3 temp = Vector3.MoveTowards(transform.position, target.position, MoveSpeed * Time.deltaTime);
+				rb.MovePosition(temp);
+				ChangeState(EnemyState.Target);
+			}
+		}
+	}
+
+	private void ChangeState(EnemyState newState)
+	{
+		if (currentState != newState)
+		{
+			currentState = newState;
 		}
 	}
 }
