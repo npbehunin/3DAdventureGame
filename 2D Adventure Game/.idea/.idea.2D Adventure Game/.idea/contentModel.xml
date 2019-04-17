@@ -10,6 +10,7 @@
             <e p="KnockbackOriginal.cs" t="Include" />
           </e>
           <e p="CameraFollowPlayer.cs" t="Include" />
+          <e p="Clothes.cs" t="Include" />
           <e p="Enemy Scripts" t="Include">
             <e p="Enemy.cs" t="Include" />
             <e p="Jelly.cs" t="Include" />
@@ -17,6 +18,8 @@
           <e p="Knockback.cs" t="Include" />
           <e p="PlayerRigidbodyMovement.cs" t="Include" />
           <e p="PlayerRigidbodyMovementExperiment.cs" t="Include" />
+          <e p="Projectile.cs" t="Include" />
+          <e p="ShootingMechanic.cs" t="Include" />
           <e p="Sword.cs" t="Include" />
         </e>
       </e>

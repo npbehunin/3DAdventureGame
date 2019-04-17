@@ -55,7 +55,6 @@ public class Sword : MonoBehaviour
 				}
 			}
 		}
-		Debug.Log(player.currentState);
 	}
 	
 	private void ResetSwordAttack()
