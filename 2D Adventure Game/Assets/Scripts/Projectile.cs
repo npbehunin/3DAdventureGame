@@ -13,7 +13,7 @@ public class Projectile : MonoBehaviour
 	private Ray ray;
 	private RaycastHit2D hit;
 
-	public float moveSpeed = 2f;
+	public float projectileSpeed;
 
 	private Vector3 movementVector;
 	private Vector3 targetpos;
@@ -30,10 +30,9 @@ public class Projectile : MonoBehaviour
 
 		if (hit)
 		{
-			Debug.Log("eehhh");
 			//targetpos and movement vector set
 			targetpos.Set(hit.point.x, hit.point.y, 0);
-			movementVector = (targetpos - transform.position).normalized * moveSpeed;
+			movementVector = (targetpos - transform.position).normalized * projectileSpeed;
 
 			//rotation
 			Vector3 vectorToTarget = targetpos - transform.position;
@@ -48,6 +47,7 @@ public class Projectile : MonoBehaviour
 	void Update()
 	{
 		transform.position += movementVector * Time.deltaTime;
+		//Debug.Log(projectileSpeed);
 	}
 
 	IEnumerator Destroy()

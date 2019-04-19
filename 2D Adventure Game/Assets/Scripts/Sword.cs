@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum WeaponPhase
+{
+	Inactive, Phase1, Phase2, Phase3
+}
+
 public class Sword : MonoBehaviour
 {
 	//Sword Checks
