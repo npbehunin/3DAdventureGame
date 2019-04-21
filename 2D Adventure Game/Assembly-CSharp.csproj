@@ -61,6 +61,7 @@
     <Compile Include="Assets\Scripts\Enemy Scripts\Enemy.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Jelly.cs" />
     <Compile Include="Assets\Scripts\Knockback.cs" />
+    <Compile Include="Assets\Scripts\LookTowardsTarget.cs" />
     <Compile Include="Assets\Scripts\PlayerRigidbodyMovement.cs" />
     <Compile Include="Assets\Scripts\PlayerRigidbodyMovementExperiment.cs" />
     <Compile Include="Assets\Scripts\Projectile.cs" />

@@ -71,7 +71,6 @@ public class ShootingMechanic : MonoBehaviour
 		{
 			moveSpeed = 20f;
 		}
-		Debug.Log(phase);
 	}
 
 	private IEnumerator BowHoldCheck()

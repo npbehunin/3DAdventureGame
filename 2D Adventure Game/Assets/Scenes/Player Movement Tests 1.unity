@@ -2380,6 +2380,7 @@ GameObject:
   - component: {fileID: 1659612932}
   - component: {fileID: 1659612930}
   - component: {fileID: 1659612933}
+  - component: {fileID: 1659612934}
   - component: {fileID: 1659612929}
   - component: {fileID: 1659612931}
   m_Layer: 0
@@ -2516,6 +2517,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BowEquipped: 1
+  canStartBowHold: 0
   canShoot: 0
   moveSpeed: 0
   projectileType: {fileID: 1719595767031652, guid: 31da7a3906d466c4288870dd9ac32c30,
@@ -2568,6 +2570,19 @@ MonoBehaviour:
   SwordPhase: 0
   animator: {fileID: 1659612926}
   player: {fileID: 1659612925}
+--- !u!114 &1659612934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1659612924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 143ecd38ea244cd4dbe83c82a7ef3b12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 1282365207}
+  UseMouse: 0
 --- !u!1 &1669175739
 GameObject:
   m_ObjectHideFlags: 0

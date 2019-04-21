@@ -44,15 +44,27 @@ public class PlayerRigidbodyMovementExperiment : MonoBehaviour
 		horizontalspeed = position.x;
 		verticalspeed = position.y;
 
-		//Run Animator
 		if (position != Vector3.zero)
 		{
+			//Run
 			if (currentState == PlayerState.Idle || currentState == PlayerState.Run)
 			{
 				currentState = PlayerState.Run;
+				MoveSpeed = 4;
 				animator.SetBool("Running", true);
 				animator.SetFloat("SpeedX", horizontalspeed);
 				animator.SetFloat("SpeedY", verticalspeed);
+			}
+			
+			//Walk
+			if (currentState == PlayerState.Walk)
+			{
+				MoveSpeed = 2;
+				//animator.SetBool("Walking", true);
+			}
+			//else
+			{
+				//animator.SetBool("Walking", false);
 			}
 		}
 
@@ -64,6 +76,6 @@ public class PlayerRigidbodyMovementExperiment : MonoBehaviour
 				currentState = PlayerState.Idle;
 				animator.SetBool("Running", false);
 			}
-		}
+		}	
 	}
 }
