@@ -7,7 +7,7 @@ public class ShootingMechanic : MonoBehaviour
 	private Ray ray;
 	private RaycastHit hit;
 
-	public bool BowEquipped;
+	public bool WeaponEquipped;
 	public bool canStartBowHold;
 	public bool canShoot;
 	
@@ -20,7 +20,10 @@ public class ShootingMechanic : MonoBehaviour
 	
 	public GameObject projectileType;
 	public Projectile projectile;
-	public PlayerRigidbodyMovementExperiment player;
+
+	public GameObject gameObject;
+	//
+	//public PlayerRigidbodyMovementExperiment player;
 
 	void Start ()
 	{
@@ -31,7 +34,7 @@ public class ShootingMechanic : MonoBehaviour
 	
 	void Update ()
 	{
-		if (BowEquipped)
+		if (WeaponEquipped)
 		{
 			if (Input.GetMouseButton(0))
 			{
@@ -47,7 +50,7 @@ public class ShootingMechanic : MonoBehaviour
 			{
 				if (canShoot)
 				{
-					GameObject arrow = Instantiate(projectileType, player.transform.position, Quaternion.identity);
+					GameObject arrow = Instantiate(projectileType, gameObject.transform.position, Quaternion.identity);
 					arrow.GetComponent<Projectile>().projectileSpeed = moveSpeed;
 					phase = WeaponPhase.Phase1;
 					StopCoroutine(bowholdcheckcoroutine);

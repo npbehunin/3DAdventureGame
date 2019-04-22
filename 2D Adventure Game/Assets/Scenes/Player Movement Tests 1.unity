@@ -2404,6 +2404,8 @@ MonoBehaviour:
   currentState: 0
   rb: {fileID: 1659612929}
   animator: {fileID: 1659612926}
+  targetMode: {fileID: 1659612934}
+  shootMechanic: {fileID: 1659612930}
   MoveSpeed: 4
   position: {x: 0, y: 0, z: 0}
 --- !u!95 &1659612926
@@ -2516,14 +2518,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdbe1f4e42f3ed0419aa70067fb146c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BowEquipped: 1
+  WeaponEquipped: 1
   canStartBowHold: 0
   canShoot: 0
   moveSpeed: 0
   projectileType: {fileID: 1719595767031652, guid: 31da7a3906d466c4288870dd9ac32c30,
     type: 2}
   projectile: {fileID: 1221012007}
-  player: {fileID: 1659612925}
+  gameObject: {fileID: 1659612924}
 --- !u!58 &1659612931
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2583,6 +2585,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 1282365207}
   UseMouse: 0
+  CanTarget: 0
+  direction: 0
 --- !u!1 &1669175739
 GameObject:
   m_ObjectHideFlags: 0

@@ -107,3 +107,9 @@ public class Sword : MonoBehaviour
 		ResetSwordAttack();
 	}
 }
+
+//READ HERE: To make the script cleaner and more generic we could take the animator checks and playerstate settings and
+//put them inside their own functions attached somewhere else on the player. Then, in here, we could add a UnityEvent
+//that could be used to call anything, in this case, the functions on the player with the animator and playerstate
+//settings. THEN we could also use this script and attach it to an enemy and tell it to do different things for the
+//enemy.
