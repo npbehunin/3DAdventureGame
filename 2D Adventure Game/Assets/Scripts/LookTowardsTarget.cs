@@ -13,6 +13,8 @@ public class LookTowardsTarget : MonoBehaviour {
 	public bool UseMouse;
 	public bool CanTarget;
 
+	private Vector3 targetDir;
+
 	public AnimatorDirection direction;
     
 	void Start () 
@@ -25,9 +27,19 @@ public class LookTowardsTarget : MonoBehaviour {
 	{
 		if (CanTarget)
 		{
-			Vector3 targetDir = target.position - transform.position;
+			if (UseMouse)
+			{
+				targetDir = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)) - transform.position;
+				Debug.Log(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)));
+				Debug.Log(targetDir);
+			}
+			else
+			{
+				targetDir = target.position - transform.position;
+			}
+			
 			float angle = Vector3.SignedAngle(targetDir, transform.right, Vector3.back);
-
+			
 			if (angle > 45f && angle < 135f)
 			{
 				direction = AnimatorDirection.Up;

@@ -2584,7 +2584,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1282365207}
-  UseMouse: 0
+  UseMouse: 1
   CanTarget: 0
   direction: 0
 --- !u!1 &1669175739
