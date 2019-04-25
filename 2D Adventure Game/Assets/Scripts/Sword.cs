@@ -7,7 +7,7 @@ public enum WeaponPhase
 	Inactive, Phase1, Phase2, Phase3
 }
 
-public class Sword : MonoBehaviour
+public class Sword : Weapon
 {
 	//Sword Checks
 	public bool SwordEquipped;

@@ -17,6 +17,7 @@ public class Jelly : Enemy
 		currentState = EnemyState.Idle;
 		rb = GetComponent<Rigidbody2D>();
 		target = GameObject.FindWithTag("Player").transform;
+		Health = 3;
 	}
 	
 	void FixedUpdate () 

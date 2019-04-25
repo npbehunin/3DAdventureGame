@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Animations;
 using UnityEngine;
 public enum EnemyState
 {
@@ -9,22 +10,42 @@ public class Enemy : MonoBehaviour
 {
 	public EnemyState currentState;
 
-	public int health;
-	public string enemyName;
-	public int attack;
+	public int Health;
+	public int Damage;
+	public string EnemyName;
+	public int Attack;
 
-	public float thrust;
+	public float Thrust;
 	public float MoveSpeed;
 	private float horizontalspeed;
 	private float verticalspeed;
 	
-	public Vector3 position;
-	void Start () {
+	public Vector3 Position;
+	void Start () 
+	{
 		
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		
+	void Update () 
+	{
+		if (Health <= 0)
+		{
+			gameObject.SetActive(false);
+		}
+	}
+	
+	void OnTriggerEnter(Collider col)
+	{
+		Damage = col.GetComponent<Weapon>().Damage;
+		if (col.gameObject.CompareTag("WeaponHitbox"))
+		{
+			TakeDamage();
+		}
+	}
+
+	void TakeDamage()
+	{
+		Health -= Damage;
 	}
 }
