@@ -37,9 +37,10 @@ public class Enemy : MonoBehaviour
 	
 	void OnTriggerEnter(Collider col)
 	{
-		Damage = col.GetComponent<Weapon>().Damage;
+		Damage = col.GetComponentInChildren<Weapon>().Damage;
 		if (col.gameObject.CompareTag("WeaponHitbox"))
 		{
+			Debug.Log(Damage);
 			TakeDamage();
 		}
 	}

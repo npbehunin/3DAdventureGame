@@ -15,6 +15,9 @@
             <e p="Enemy.cs" t="Include" />
             <e p="Jelly.cs" t="Include" />
           </e>
+          <e p="EquipWeapon.cs" t="Include" />
+          <e p="FireSword.cs" t="Include" />
+          <e p="GraySword.cs" t="Include" />
           <e p="Knockback.cs" t="Include" />
           <e p="LookTowardsTarget.cs" t="Include" />
           <e p="PlayerRigidbodyMovement.cs" t="Include" />
@@ -22,6 +25,7 @@
           <e p="Projectile.cs" t="Include" />
           <e p="ShootingMechanic.cs" t="Include" />
           <e p="Sword.cs" t="Include" />
+          <e p="Weapon.cs" t="Include" />
         </e>
       </e>
       <e p="Library" t="ExcludeRecursive" />

@@ -129,7 +129,7 @@ public class PlayerRigidbodyMovementExperiment : MonoBehaviour
 			}
 		}
 		//Debug.Log(currentState);
-		Debug.Log(targetMode.direction);
-		Debug.Log(MoveSpeed);
+		//Debug.Log(targetMode.direction);
+		//Debug.Log(MoveSpeed);
 	}
 }

@@ -276,6 +276,50 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &473830028
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 473830029}
+  - component: {fileID: 473830030}
+  m_Layer: 0
+  m_Name: Weapon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &473830029
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 473830028}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1652390067}
+  m_Father: {fileID: 1659612928}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &473830030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 473830028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 201edb313a03d9f4589bd0b7577160ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SwordTypes:
+  - {fileID: 1708960406}
+  - {fileID: 1022886208}
 --- !u!1 &799494596
 GameObject:
   m_ObjectHideFlags: 0
@@ -2150,6 +2194,54 @@ PolygonCollider2D:
       - {x: 4.4877305, y: 5.8217435}
       - {x: 3.1805806, y: 4.4979005}
       - {x: 0.6439824, y: 3.2003586}
+--- !u!1 &1022886206
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1022886207}
+  - component: {fileID: 1022886208}
+  m_Layer: 0
+  m_Name: FireSword
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1022886207
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1022886206}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1669175740}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1022886208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1022886206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b130f55e642652478621ef7601cf6b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Damage: 5
+  SwordEquipped: 0
+  CanSwing1: 0
+  CanSwing2: 0
+  CanSwing3: 0
+  SwordPhase: 1
+  animator: {fileID: 1659612926}
+  player: {fileID: 1659612925}
 --- !u!114 &1221012007 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 114689882513983256, guid: 31da7a3906d466c4288870dd9ac32c30,
@@ -2281,12 +2373,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: 0
-  health: 25
-  enemyName: Jelly
-  attack: 0
-  thrust: 0
+  Health: 0
+  Damage: 0
+  EnemyName: 
+  Attack: 0
+  Thrust: 0
   MoveSpeed: 1.75
-  position: {x: 0, y: 0, z: 0}
+  Position: {x: 0, y: 0, z: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
   chaseRadius: 3.5
@@ -2366,6 +2459,35 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1652390066
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1652390067}
+  m_Layer: 0
+  m_Name: Sword
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1652390067
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1652390066}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1669175740}
+  m_Father: {fileID: 473830029}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1659612924
 GameObject:
   m_ObjectHideFlags: 0
@@ -2379,7 +2501,6 @@ GameObject:
   - component: {fileID: 1659612925}
   - component: {fileID: 1659612932}
   - component: {fileID: 1659612930}
-  - component: {fileID: 1659612933}
   - component: {fileID: 1659612934}
   - component: {fileID: 1659612929}
   - component: {fileID: 1659612931}
@@ -2483,7 +2604,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 147235735}
-  - {fileID: 1669175740}
+  - {fileID: 473830029}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2518,7 +2639,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdbe1f4e42f3ed0419aa70067fb146c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WeaponEquipped: 1
+  WeaponEquipped: 0
   canStartBowHold: 0
   canShoot: 0
   moveSpeed: 0
@@ -2554,24 +2675,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thrust: 10
   knockbackTime: 0.5
---- !u!114 &1659612933
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1659612924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a21c4cab1d89afa49a647be035224c61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SwordEquipped: 0
-  CanSwing1: 0
-  CanSwing2: 0
-  CanSwing3: 0
-  SwordPhase: 0
-  animator: {fileID: 1659612926}
-  player: {fileID: 1659612925}
 --- !u!114 &1659612934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2598,23 +2701,25 @@ GameObject:
   - component: {fileID: 1669175741}
   m_Layer: 0
   m_Name: Sword Hitbox
-  m_TagString: Untagged
+  m_TagString: WeaponHitbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1669175740
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1669175739}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1659612928}
-  m_RootOrder: 1
+  m_Children:
+  - {fileID: 1708960405}
+  - {fileID: 1022886207}
+  m_Father: {fileID: 1652390067}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &1669175741
 BoxCollider2D:
@@ -2641,6 +2746,54 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.62465715, y: 0.967361}
   m_EdgeRadius: 0
+--- !u!1 &1708960404
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1708960405}
+  - component: {fileID: 1708960406}
+  m_Layer: 0
+  m_Name: GraySword
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1708960405
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1708960404}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1669175740}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1708960406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1708960404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 520a96b75dcd82c4099a4a23b1fa4327, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Damage: 1
+  SwordEquipped: 0
+  CanSwing1: 0
+  CanSwing2: 0
+  CanSwing3: 0
+  SwordPhase: 1
+  animator: {fileID: 1659612926}
+  player: {fileID: 1659612925}
 --- !u!1001 &1834325738
 Prefab:
   m_ObjectHideFlags: 0

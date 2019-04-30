@@ -14,21 +14,24 @@ public class Sword : Weapon
 	public bool CanSwing1;
 	public bool CanSwing2;
 	public bool CanSwing3;
-	
+
 	public int SwordPhase;
 	public Animator animator;
 
 	public PlayerRigidbodyMovementExperiment player;
 
-	void Start()
+	protected virtual void Start()
 	{
+		SwordEquipped = true;
+		//Debug.Log("eehh");
 		CanSwing1 = true;
 		CanSwing2 = false;
 		CanSwing3 = false;
 	}
 
-	void Update()
+	protected virtual void Update()
 	{
+		//Debug.Log(animator.GetInteger("SwordattackState"));
 		//Sword
 		if (SwordEquipped)
 		{
