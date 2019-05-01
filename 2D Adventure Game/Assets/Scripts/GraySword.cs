@@ -2,23 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GraySword : Sword
+public class GraySword : Swordv2
 {
-    // Start is called before the first frame update
-    protected override void Start()
-    {
-        base.Start();
-        Damage = 1;
-    }
-    
     void OnEnable()
     {
         Debug.Log("Gray Sword Active");
-    }
-
-    // Update is called once per frame
-    protected override void Update()
-    {
-        base.Update();
     }
 }

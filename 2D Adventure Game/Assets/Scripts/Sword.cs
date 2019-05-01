@@ -18,7 +18,7 @@ public class Sword : Weapon
 	public int SwordPhase;
 	public Animator animator;
 
-	public PlayerRigidbodyMovementExperiment player;
+	public PlayerMovement player;
 
 	protected virtual void Start()
 	{

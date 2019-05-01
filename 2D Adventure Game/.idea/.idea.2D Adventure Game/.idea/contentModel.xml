@@ -8,6 +8,7 @@
         <e p="Scripts" t="Include">
           <e p="Backup Scripts" t="Include">
             <e p="KnockbackOriginal.cs" t="Include" />
+            <e p="PlayerRigidbodyMovement.cs" t="Include" />
           </e>
           <e p="CameraFollowPlayer.cs" t="Include" />
           <e p="Clothes.cs" t="Include" />
@@ -18,13 +19,14 @@
           <e p="EquipWeapon.cs" t="Include" />
           <e p="FireSword.cs" t="Include" />
           <e p="GraySword.cs" t="Include" />
+          <e p="IceSword.cs" t="Include" />
           <e p="Knockback.cs" t="Include" />
           <e p="LookTowardsTarget.cs" t="Include" />
-          <e p="PlayerRigidbodyMovement.cs" t="Include" />
-          <e p="PlayerRigidbodyMovementExperiment.cs" t="Include" />
+          <e p="PlayerMovement.cs" t="Include" />
           <e p="Projectile.cs" t="Include" />
           <e p="ShootingMechanic.cs" t="Include" />
           <e p="Sword.cs" t="Include" />
+          <e p="Swordv2.cs" t="Include" />
           <e p="Weapon.cs" t="Include" />
         </e>
       </e>

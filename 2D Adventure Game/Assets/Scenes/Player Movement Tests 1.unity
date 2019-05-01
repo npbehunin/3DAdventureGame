@@ -312,7 +312,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 473830028}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 201edb313a03d9f4589bd0b7577160ed, type: 3}
   m_Name: 
@@ -464,6 +464,54 @@ MonoBehaviour:
   Shirt:
   - {fileID: 21300000, guid: 3b449b63cb5371d4bb16fa157edd2f41, type: 3}
   - {fileID: 21300002, guid: 3b449b63cb5371d4bb16fa157edd2f41, type: 3}
+--- !u!1 &979453117
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 979453118}
+  - component: {fileID: 979453119}
+  m_Layer: 0
+  m_Name: IceSword
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &979453118
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 979453117}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1669175740}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &979453119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 979453117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd0c1424197339a47a5062bc1c56f2f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Damage: 0
+  SwordEquipped: 0
+  CanSwing: 0
+  SwingNumber: 0
+  MaxSwingNumber: 0
+  animator: {fileID: 1659612926}
+  player: {fileID: 1659612925}
+  playerdirection: {x: 0, y: 0, z: 0}
 --- !u!1 &990717298
 GameObject:
   m_ObjectHideFlags: 0
@@ -2209,7 +2257,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1022886207
 Transform:
   m_ObjectHideFlags: 0
@@ -2229,19 +2277,19 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1022886206}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b130f55e642652478621ef7601cf6b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Damage: 5
   SwordEquipped: 0
-  CanSwing1: 0
-  CanSwing2: 0
-  CanSwing3: 0
-  SwordPhase: 1
+  CanSwing: 0
+  SwingNumber: 0
+  MaxSwingNumber: 0
   animator: {fileID: 1659612926}
   player: {fileID: 1659612925}
+  playerdirection: {x: 0, y: 0, z: 0}
 --- !u!114 &1221012007 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 114689882513983256, guid: 31da7a3906d466c4288870dd9ac32c30,
@@ -2504,6 +2552,7 @@ GameObject:
   - component: {fileID: 1659612934}
   - component: {fileID: 1659612929}
   - component: {fileID: 1659612931}
+  - component: {fileID: 1659612933}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2527,6 +2576,9 @@ MonoBehaviour:
   animator: {fileID: 1659612926}
   targetMode: {fileID: 1659612934}
   shootMechanic: {fileID: 1659612930}
+  swordv2: {fileID: 1659612933}
+  SwordMomentumScale: 0
+  SwordMomentum: 0
   MoveSpeed: 4
   position: {x: 0, y: 0, z: 0}
 --- !u!95 &1659612926
@@ -2675,6 +2727,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thrust: 10
   knockbackTime: 0.5
+--- !u!114 &1659612933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1659612924}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61a3685504e5d9640b9514ec3aa12b8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Damage: 0
+  SwordEquipped: 0
+  CanSwing: 0
+  SwingNumber: 0
+  MaxSwingNumber: 0
+  animator: {fileID: 1659612926}
+  player: {fileID: 1659612925}
+  playerdirection: {x: 0, y: 0, z: 0}
 --- !u!114 &1659612934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2718,6 +2789,7 @@ Transform:
   m_Children:
   - {fileID: 1708960405}
   - {fileID: 1022886207}
+  - {fileID: 979453118}
   m_Father: {fileID: 1652390067}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2761,7 +2833,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1708960405
 Transform:
   m_ObjectHideFlags: 0
@@ -2781,19 +2853,19 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1708960404}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 520a96b75dcd82c4099a4a23b1fa4327, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Damage: 1
   SwordEquipped: 0
-  CanSwing1: 0
-  CanSwing2: 0
-  CanSwing3: 0
-  SwordPhase: 1
+  CanSwing: 0
+  SwingNumber: 0
+  MaxSwingNumber: 0
   animator: {fileID: 1659612926}
   player: {fileID: 1659612925}
+  playerdirection: {x: 0, y: 0, z: 0}
 --- !u!1001 &1834325738
 Prefab:
   m_ObjectHideFlags: 0

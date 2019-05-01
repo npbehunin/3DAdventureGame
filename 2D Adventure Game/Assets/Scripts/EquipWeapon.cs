@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EquipWeapon : MonoBehaviour {
 
-	public Sword[] SwordTypes;
+	public Swordv2[] SwordTypes;
 
 	private bool WeaponEquipped;
 	private bool SwordEquipped;
