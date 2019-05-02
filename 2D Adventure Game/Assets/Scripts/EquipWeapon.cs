@@ -9,7 +9,7 @@ public class EquipWeapon : MonoBehaviour {
 	private bool WeaponEquipped;
 	private bool SwordEquipped;
 
-	private int SwordIndex;
+	public int SwordIndex;
 
 	void Start ()
 	{
@@ -43,6 +43,11 @@ public class EquipWeapon : MonoBehaviour {
 				if (Input.GetKey(KeyCode.Alpha2))
 				{
 					SwordIndex = 1;
+				}
+				
+				if (Input.GetKey(KeyCode.Alpha3))
+				{
+					SwordIndex = 2;
 				}
 			}
 		}

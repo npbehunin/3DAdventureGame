@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
 	public LookTowardsTarget targetMode;
 	public ShootingMechanic shootMechanic;
 	public Swordv2 swordv2;
-
+	
 	private float horizontalspeed;
 	private float verticalspeed;
 	public float SwordMomentumScale;

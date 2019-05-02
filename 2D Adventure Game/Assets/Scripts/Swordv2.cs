@@ -64,3 +64,9 @@ public class Swordv2 : Weapon
 		ResetSwordAttack();
 	}
 }
+
+//READ HERE. The reason the children don't affect the player's movement is because the attached script to the player that
+//references the swordv2 script is inactive. If it were active it SHOULD suddenly affect its children because its active.
+//If we attach the child objects directly to the player we can see that they work, despite the fact the swordv2 script is
+//not used. //This means the child scripts ARE working correctly. It's just the player movement script that references a
+//swordv2 script that needs to change.
