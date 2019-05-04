@@ -4,7 +4,7 @@ using UnityEditor.Animations;
 using UnityEngine;
 public enum EnemyState
 {
-	Idle, Walk, Target, Attack, Knocked
+	Idle, Walk, Target, Attack, Knocked, Dead
 }
 public class Enemy : MonoBehaviour
 {
@@ -12,13 +12,12 @@ public class Enemy : MonoBehaviour
 
 	public int Health;
 	public int Damage;
-	public string EnemyName;
-	public int Attack;
 
-	public float Thrust;
 	public float MoveSpeed;
 	private float horizontalspeed;
 	private float verticalspeed;
+
+	public EquipWeapon WeaponEquipped;
 	
 	public Vector3 Position;
 	void Start () 
@@ -35,12 +34,12 @@ public class Enemy : MonoBehaviour
 		}
 	}
 	
-	void OnTriggerEnter(Collider col)
+	void OnTriggerEnter2D(Collider2D col)
 	{
-		Damage = col.GetComponentInChildren<Weapon>().Damage;
 		if (col.gameObject.CompareTag("WeaponHitbox"))
 		{
-			Debug.Log(Damage);
+			Damage = WeaponEquipped.WeaponDamage;
+			Debug.Log("Hello");
 			TakeDamage();
 		}
 	}
@@ -50,3 +49,5 @@ public class Enemy : MonoBehaviour
 		Health -= Damage;
 	}
 }
+
+//To get the damage

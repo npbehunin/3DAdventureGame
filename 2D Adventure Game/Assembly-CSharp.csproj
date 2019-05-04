@@ -57,22 +57,26 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Backup Scripts\KnockbackOriginal.cs" />
     <Compile Include="Assets\Scripts\Backup Scripts\PlayerRigidbodyMovement.cs" />
-    <Compile Include="Assets\Scripts\CameraFollowPlayer.cs" />
-    <Compile Include="Assets\Scripts\Clothes.cs" />
+    <Compile Include="Assets\Scripts\Backup Scripts\Sword(Old).cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Enemy.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Jelly.cs" />
-    <Compile Include="Assets\Scripts\EquipWeapon.cs" />
-    <Compile Include="Assets\Scripts\FireSword.cs" />
-    <Compile Include="Assets\Scripts\GraySword.cs" />
-    <Compile Include="Assets\Scripts\IceSword.cs" />
-    <Compile Include="Assets\Scripts\Knockback.cs" />
-    <Compile Include="Assets\Scripts\LookTowardsTarget.cs" />
-    <Compile Include="Assets\Scripts\PlayerMovement.cs" />
-    <Compile Include="Assets\Scripts\Projectile.cs" />
-    <Compile Include="Assets\Scripts\ShootingMechanic.cs" />
-    <Compile Include="Assets\Scripts\Sword.cs" />
-    <Compile Include="Assets\Scripts\Swordv2.cs" />
-    <Compile Include="Assets\Scripts\Weapon.cs" />
+    <Compile Include="Assets\Scripts\Movement Scripts\Knockback.cs" />
+    <Compile Include="Assets\Scripts\Movement Scripts\LookTowardsTarget.cs" />
+    <Compile Include="Assets\Scripts\Player Scripts\CameraFollowPlayer.cs" />
+    <Compile Include="Assets\Scripts\Player Scripts\Clothes.cs" />
+    <Compile Include="Assets\Scripts\Player Scripts\PlayerHealth.cs" />
+    <Compile Include="Assets\Scripts\Player Scripts\PlayerMovement.cs" />
+    <Compile Include="Assets\Scripts\Scene Scripts\SceneManage.cs" />
+    <Compile Include="Assets\Scripts\Weapon Scripts\EquipWeapon.cs" />
+    <Compile Include="Assets\Scripts\Weapon Scripts\Projectile Scripts\FastBow.cs" />
+    <Compile Include="Assets\Scripts\Weapon Scripts\Projectile Scripts\Projectile.cs" />
+    <Compile Include="Assets\Scripts\Weapon Scripts\Projectile Scripts\ShootingMechanic.cs" />
+    <Compile Include="Assets\Scripts\Weapon Scripts\Projectile Scripts\WoodenBow.cs" />
+    <Compile Include="Assets\Scripts\Weapon Scripts\Sword Scripts\FireSword.cs" />
+    <Compile Include="Assets\Scripts\Weapon Scripts\Sword Scripts\GraySword.cs" />
+    <Compile Include="Assets\Scripts\Weapon Scripts\Sword Scripts\IceSword.cs" />
+    <Compile Include="Assets\Scripts\Weapon Scripts\Sword Scripts\SwordMechanic.cs" />
+    <Compile Include="Assets\Scripts\Weapon Scripts\Weapon.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>B:/2D Adventure Game/2DAdventureGame/2D Adventure Game/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>

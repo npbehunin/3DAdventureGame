@@ -18,6 +18,7 @@ public class Jelly : Enemy
 		rb = GetComponent<Rigidbody2D>();
 		target = GameObject.FindWithTag("Player").transform;
 		Health = 3;
+		Damage = 1;
 	}
 	
 	void FixedUpdate () 

@@ -5,33 +5,37 @@ using UnityEngine;
 
 public enum PlayerState
 {
-	Idle, Walk, Run, Attack, Interact
+	Idle, Walk, Run, Attack, Interact, Dead
 }
 
-public class PlayerMovement : MonoBehaviour 
+public class PlayerMovement : MonoBehaviour
 {
 
 	public PlayerState currentState;
 	public Rigidbody2D rb;
 	public Animator animator;
 	public LookTowardsTarget targetMode;
-	public ShootingMechanic shootMechanic;
-	public Swordv2 swordv2;
-	
+	//public ShootingMechanic shootMechanic;
+
 	private float horizontalspeed;
 	private float verticalspeed;
 	public float SwordMomentumScale;
 	public float SwordMomentum;
+	public float SwordMomentumSmooth;
+	public float SwordMomentumPower;
 	public float MoveSpeed;
-	
+
+	public Vector3 test;
+
 	public Vector3 position;
 
-	void Start ()
+	void Start()
 	{
 		currentState = PlayerState.Idle;
 		rb = GetComponent<Rigidbody2D>();
-		animator = gameObject.GetComponent<Animator>();
-		
+		//animator = gameObject.GetComponent<Animator>();
+		SwordMomentumSmooth = 4f;
+		SwordMomentumPower = 1f;
 	}
 
 	void FixedUpdate()
@@ -53,7 +57,7 @@ public class PlayerMovement : MonoBehaviour
 		{
 			horizontalspeed = position.x;
 			verticalspeed = position.y;
-			
+
 			//Run
 			if (currentState == PlayerState.Idle || currentState == PlayerState.Run)
 			{
@@ -68,7 +72,7 @@ public class PlayerMovement : MonoBehaviour
 			{
 				animator.SetBool("Running", false);
 			}
-			
+
 			//Walk
 			if (currentState == PlayerState.Walk)
 			{
@@ -97,58 +101,15 @@ public class PlayerMovement : MonoBehaviour
 		{
 			animator.SetFloat("SpeedX", horizontalspeed);
 			animator.SetFloat("SpeedY", verticalspeed);
-			SwordMomentumScale += 4f * Time.deltaTime;
-			SwordMomentum = Mathf.Lerp(1, 0, SwordMomentumScale);
-			position = (MoveSpeed * SwordMomentum * swordv2.playerdirection);
+			SwordMomentumScale += SwordMomentumSmooth * Time.deltaTime;
+			SwordMomentum = Mathf.Lerp(SwordMomentumPower, 0, SwordMomentumScale);
+			position = (MoveSpeed * SwordMomentum * test);
+			//Debug.Log(SwordMomentumPower);
 		}
+	}
 
-		//Charging Bow
-		if (shootMechanic.WeaponEquipped)
-		{
-			if (Input.GetMouseButton(0))
-			{
-				animator.SetBool("IsChargingBow", true);
-				currentState = PlayerState.Walk;
-				targetMode.CanTarget = true;
-
-				switch (targetMode.direction)
-				{
-					case AnimatorDirection.Up:
-						animator.SetFloat("DirectionY", 1);
-						animator.SetFloat("DirectionX", 0);
-						animator.SetFloat("SpeedX", 0);
-						animator.SetFloat("SpeedY", 1);
-						break;
-					case AnimatorDirection.Down:
-						animator.SetFloat("DirectionY", -1);
-						animator.SetFloat("DirectionX", 0);
-						animator.SetFloat("SpeedX", 0);
-						animator.SetFloat("SpeedY", -1);
-						break;
-					case AnimatorDirection.Left:
-						animator.SetFloat("DirectionY", 0);
-						animator.SetFloat("DirectionX", -1);
-						animator.SetFloat("SpeedX", -1);
-						animator.SetFloat("SpeedY", 0);
-						break;
-					case AnimatorDirection.Right:
-						animator.SetFloat("DirectionY", 0);
-						animator.SetFloat("DirectionX", 1);
-						animator.SetFloat("SpeedX", 1);
-						animator.SetFloat("SpeedY", 0);
-						break;
-					default:
-						Debug.Log("No angle detected");
-						break;
-				}
-			}
-
-			if (Input.GetMouseButtonUp(0))
-			{
-				targetMode.CanTarget = false;
-				animator.SetBool("IsChargingBow", false);
-				currentState = PlayerState.Idle;
-			}
-		}
+	public void GetSwordSwingDirection()
+	{
+		test = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0);
 	}
 }

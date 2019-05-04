@@ -8,6 +8,8 @@ public class Knockback : MonoBehaviour
 	public float thrust;
 	public float knockbackTime;
 
+	private Coroutine KnockCoroutine;
+
 	void Start () 
 	{
 		
@@ -25,14 +27,24 @@ public class Knockback : MonoBehaviour
 			Rigidbody2D enemy = other.GetComponent<Rigidbody2D>();
 				if(enemy != null)
 				{
+					ResetKnock(enemy);
+					if (KnockCoroutine != null)
+					{
+						StopCoroutine(KnockCoroutine);
+					}
 					enemy.GetComponent<Enemy>().currentState = EnemyState.Knocked;
-					//Debug.Log("Collision");
 					Vector2 difference = enemy.transform.position - transform.position;
 					difference = difference.normalized * thrust;
 					enemy.AddForce(difference, ForceMode2D.Impulse);
-					StartCoroutine(Knock(enemy));
+					KnockCoroutine = StartCoroutine(Knock(enemy));
 				}
 		}
+	}
+
+	private void ResetKnock(Rigidbody2D enemy)
+	{
+		enemy.velocity = Vector2.zero;
+		enemy.GetComponent<Enemy>().currentState = EnemyState.Idle;
 	}
 
 	private IEnumerator Knock(Rigidbody2D enemy)
@@ -40,8 +52,7 @@ public class Knockback : MonoBehaviour
 		if (enemy != null)
 		{
 			yield return new WaitForSeconds(knockbackTime);
-			enemy.velocity = Vector2.zero;
-			enemy.GetComponent<Enemy>().currentState = EnemyState.Idle;
+			ResetKnock(enemy);
 		}
 	}
 }
