@@ -18,10 +18,10 @@ public class FireSword : SwordMechanic
     void GetWeaponStats()
     {
         Damage = 10;
-        MaxSwingNumber = 5;
-        SwingTimeDelay = .3f;
-        SwingTime = .8f;
+        MaxSwingNumber = 3;
+        //SwingTimeDelay = .3f;
+        SwingTime = .5f;
         player.SwordMomentumSmooth = 3f;
-        player.SwordMomentumPower = 5f;
+        player.SwordMomentumPower = 3f;
     }
 }

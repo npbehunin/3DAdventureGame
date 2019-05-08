@@ -15,7 +15,6 @@ public class PlayerMovement : MonoBehaviour
 	public Rigidbody2D rb;
 	public Animator animator;
 	public LookTowardsTarget targetMode;
-	//public ShootingMechanic shootMechanic;
 
 	private float horizontalspeed;
 	private float verticalspeed;
@@ -33,7 +32,6 @@ public class PlayerMovement : MonoBehaviour
 	{
 		currentState = PlayerState.Idle;
 		rb = GetComponent<Rigidbody2D>();
-		//animator = gameObject.GetComponent<Animator>();
 		SwordMomentumSmooth = 4f;
 		SwordMomentumPower = 1f;
 	}
@@ -42,7 +40,7 @@ public class PlayerMovement : MonoBehaviour
 	{
 		if (currentState == PlayerState.Run || currentState == PlayerState.Walk || currentState == PlayerState.Attack)
 		{
-			rb.MovePosition(transform.position + position * Time.deltaTime);
+			rb.MovePosition(transform.position + position * MoveSpeed * Time.deltaTime);
 		}
 	}
 
@@ -50,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
 	{
 		if (currentState != PlayerState.Attack)
 		{
-			position.Set((MoveSpeed * Input.GetAxisRaw("Horizontal")), (MoveSpeed * Input.GetAxisRaw("Vertical")), 0);
+			position = new Vector3(Input.GetAxisRaw("Horizontal"), (Input.GetAxisRaw("Vertical")), 0).normalized;
 		}
 
 		if (position != Vector3.zero)
@@ -103,13 +101,12 @@ public class PlayerMovement : MonoBehaviour
 			animator.SetFloat("SpeedY", verticalspeed);
 			SwordMomentumScale += SwordMomentumSmooth * Time.deltaTime;
 			SwordMomentum = Mathf.Lerp(SwordMomentumPower, 0, SwordMomentumScale);
-			position = (MoveSpeed * SwordMomentum * test);
-			//Debug.Log(SwordMomentumPower);
+			position = (SwordMomentum * test);
 		}
 	}
 
 	public void GetSwordSwingDirection()
 	{
-		test = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0);
+		test = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0).normalized;
 	}
 }

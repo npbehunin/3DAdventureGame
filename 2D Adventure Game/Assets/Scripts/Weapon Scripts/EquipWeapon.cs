@@ -143,6 +143,6 @@ public class EquipWeapon : MonoBehaviour
 		{
 			WeaponDamage = BowTypes[BowIndex].gameObject.GetComponent<Weapon>().Damage;
 		}
-		Debug.Log(WeaponDamage);
+		//Debug.Log(WeaponDamage);
 	}
 }

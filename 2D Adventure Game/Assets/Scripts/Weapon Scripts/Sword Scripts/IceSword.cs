@@ -20,7 +20,7 @@ public class IceSword : SwordMechanic
     {
         Damage = 5;
         MaxSwingNumber = 2;
-        SwingTimeDelay = .2f;
+       // SwingTimeDelay = .2f;
         SwingTime = .1f;
         player.SwordMomentumSmooth = 2f;
         player.SwordMomentumPower = 2f;

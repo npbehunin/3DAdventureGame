@@ -18,6 +18,11 @@
           <e p="Movement Scripts" t="Include">
             <e p="Knockback.cs" t="Include" />
             <e p="LookTowardsTarget.cs" t="Include" />
+            <e p="MoveTowardsTarget.cs" t="Include" />
+          </e>
+          <e p="Pet Scripts" t="Include">
+            <e p="Fox.cs" t="Include" />
+            <e p="Pet.cs" t="Include" />
           </e>
           <e p="Player Scripts" t="Include">
             <e p="CameraFollowPlayer.cs" t="Include" />
@@ -41,6 +46,7 @@
               <e p="GraySword.cs" t="Include" />
               <e p="IceSword.cs" t="Include" />
               <e p="SwordMechanic.cs" t="Include" />
+              <e p="SwordTest.cs" t="Include" />
             </e>
             <e p="Weapon.cs" t="Include" />
           </e>

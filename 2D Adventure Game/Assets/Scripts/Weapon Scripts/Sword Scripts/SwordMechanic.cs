@@ -4,69 +4,100 @@ using UnityEngine;
 
 public class SwordMechanic : Weapon
 {
-
 	public bool SwordEquipped;
 	public bool CanSwing;
+	public bool CanClick;
+	public bool Clicked;
+	public bool CanClickForCombo;
+	public bool ClickedForCombo;
+	public bool ResetAttack;
 
 	public int SwingNumber;
 	public int AnimatorSwingNumber;
 	public int MaxSwingNumber;
 
 	public float SwingTime;
-	public float SwingTimeDelay;
 	
 	public Animator animator;
 	public PlayerMovement player;
 
 	private Coroutine SwingCoroutine;
 	private Coroutine ClickCoroutine;
-	public Vector3 playerdirection;
+	private Coroutine DelayForClickCombo;
 
 	public EquipWeapon equipweapon;
 
 	protected virtual void Start()
 	{
+		ResetAttack = false;
+		CanClickForCombo = false;
 		CanSwing = true;
-		SwingNumber = 0;
-		MaxSwingNumber = 3;
-		SwingTime = .1f;
-		SwingTimeDelay = .3f;
+		CanClick = false;
 		AnimatorSwingNumber = 0;
+		MaxSwingNumber = 3;
+		SwingTime = .15f;
 	}
 
 	protected virtual void Update()
 	{
 		SwordEquipped = equipweapon.SwordEquipped;
-		animator.SetInteger("SwordAttackState", SwingNumber);
-		
+		animator.SetInteger("SwordAttackState", AnimatorSwingNumber);
+		//Debug.Log(CanClickForCombo);
 		if (Input.GetMouseButtonDown(0))
 		{
-			if (SwordEquipped && CanSwing)
+			if (SwordEquipped)
 			{
-				if (SwingNumber < MaxSwingNumber)
+				if (CanSwing)
 				{
 					SwordSwing();
-					CanSwing = false;
+				}
+
+				if (CanClick)
+				{
+					CanClick = false;
+					Clicked = true;
+				}
+
+				if (CanClickForCombo)
+				{
+					CanClickForCombo = false;
+					ClickedForCombo = true;
 				}
 			}
 		}
-		//if (AnimatorSwingNumber > 3) //Delete this if we ever add more than 3 sword swing animations.
-		//{
-		//	AnimatorSwingNumber = 0;
-		//}
+
+		if (ResetAttack && SwingNumber == 0)
+		{
+			ResetAttack = false;
+			SwordSwing();
+		}
 	}
 
 	void SwordSwing()
 	{
-		if (SwingCoroutine != null)
+		//Debug.Log("Ran the sword swing function");
+		if (SwingNumber < MaxSwingNumber)
 		{
-			StopCoroutine(SwingCoroutine);
+			if (DelayForClickCombo!= null)
+			{
+				StopCoroutine(DelayForClickCombo);
+			}
+			if (SwingCoroutine != null)
+			{
+				StopCoroutine(SwingCoroutine);
+			}
+
+			if (ClickCoroutine != null)
+			{
+				StopCoroutine(ClickCoroutine);
+			}
+			CanSwing = false;
+			player.SwordMomentumScale = 0;
+			SwingCoroutine = StartCoroutine(SwordSwingTiming());
+			SwingNumber += 1;
+			AnimatorSwingNumber = SwingNumber;
+			player.GetSwordSwingDirection();
 		}
-		player.SwordMomentumScale = 0;
-		SwingCoroutine = StartCoroutine(SwordSwingTiming());
-		SwingNumber += 1;
-		player.GetSwordSwingDirection();
-		//AnimatorSwingNumber += 1;
 	}
 
 	protected void OnDisable()
@@ -76,17 +107,93 @@ public class SwordMechanic : Weapon
 
 	private void ResetSwordAttack()
 	{
+		if (DelayForClickCombo != null)
+		{
+			StopCoroutine(DelayForClickCombo);
+		}
+		if (SwingCoroutine != null)
+		{
+			StopCoroutine(SwingCoroutine);
+		}
+
+		if (ClickCoroutine != null)
+		{
+			StopCoroutine(ClickCoroutine);
+		}
+		animator.SetInteger("SwordAttackState", 0);
+		Debug.Log("Resetting");
 		SwingNumber = 0;
+		CanClickForCombo = false;
+		ResetAttack = false;
 		CanSwing = true;
+		CanClick = false;
+		Clicked = false;
+		AnimatorSwingNumber = 0;
 		player.currentState = PlayerState.Idle;
 	}
 
 	private IEnumerator SwordSwingTiming()
 	{
 		player.currentState = PlayerState.Attack;
+		ClickCoroutine = StartCoroutine(MouseClickDelay());
 		yield return new WaitForSeconds(SwingTime);
-		CanSwing = true;
-		yield return new WaitForSeconds(SwingTimeDelay);
-		ResetSwordAttack();
+		if (Clicked)
+		{
+			Clicked = false;
+			SwordSwing();
+		}
+		else
+		{
+			CanClick = false;
+			CanSwing = true;
+		}
+
+		if (SwingNumber >= MaxSwingNumber)
+		{
+			DelayForClickCombo = StartCoroutine(DelayForNextCombo());
+		}
+
+		yield return new WaitForSeconds(.3f);
+		if (SwingNumber < MaxSwingNumber)
+		{
+			AnimatorSwingNumber = 0;
+			player.currentState = PlayerState.Idle;
+			yield return new WaitForSeconds(.2f);
+			ResetSwordAttack();
+		}
+		else
+		{
+			if (ClickedForCombo)
+			{
+				ClickedForCombo = false;
+				ResetAttack = true;
+				SwingNumber = 0;
+			}
+			else
+			{
+				ResetSwordAttack();
+			}
+		}
+	}
+
+	private IEnumerator DelayForNextCombo()
+	{
+		yield return new WaitForSeconds(.1f);
+		CanClickForCombo = true;
+	}
+
+	private IEnumerator MouseClickDelay()
+	{
+		yield return new WaitForSeconds(SwingTime*.75f);
+		CanClick = true;
 	}
 }
+
+//TO DO #1: Create a slight delay before the player can reset their combo.
+
+//TO DO #2: Create a coroutine to allow the player to continue the combo, even after being out of the attack state for
+//around .2f seconds.
+
+//CanClick checks after the delay before letting the player click for the next attack.
+//Clicked is true if the player clicks, then it is checked during the coroutine.
+//CanSwing is for allowing the player to swing by themselves.

@@ -62,6 +62,9 @@
     <Compile Include="Assets\Scripts\Enemy Scripts\Jelly.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\Knockback.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\LookTowardsTarget.cs" />
+    <Compile Include="Assets\Scripts\Movement Scripts\MoveTowardsTarget.cs" />
+    <Compile Include="Assets\Scripts\Pet Scripts\Fox.cs" />
+    <Compile Include="Assets\Scripts\Pet Scripts\Pet.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\CameraFollowPlayer.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\Clothes.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\PlayerHealth.cs" />
@@ -76,6 +79,7 @@
     <Compile Include="Assets\Scripts\Weapon Scripts\Sword Scripts\GraySword.cs" />
     <Compile Include="Assets\Scripts\Weapon Scripts\Sword Scripts\IceSword.cs" />
     <Compile Include="Assets\Scripts\Weapon Scripts\Sword Scripts\SwordMechanic.cs" />
+    <Compile Include="Assets\Scripts\Weapon Scripts\Sword Scripts\SwordTest.cs" />
     <Compile Include="Assets\Scripts\Weapon Scripts\Weapon.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>B:/2D Adventure Game/2DAdventureGame/2D Adventure Game/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>

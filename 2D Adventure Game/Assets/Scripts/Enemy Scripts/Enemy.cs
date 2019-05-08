@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 public enum EnemyState
@@ -19,7 +20,14 @@ public class Enemy : MonoBehaviour
 
 	public EquipWeapon WeaponEquipped;
 	
-	public Vector3 Position;
+	public Rigidbody2D rb;
+
+	public Transform target;
+	public Transform home;
+
+	public float chaseRadius;
+	public float attackRadius;
+	
 	void Start () 
 	{
 		
@@ -33,13 +41,12 @@ public class Enemy : MonoBehaviour
 			gameObject.SetActive(false);
 		}
 	}
-	
+
 	void OnTriggerEnter2D(Collider2D col)
 	{
 		if (col.gameObject.CompareTag("WeaponHitbox"))
 		{
 			Damage = WeaponEquipped.WeaponDamage;
-			Debug.Log("Hello");
 			TakeDamage();
 		}
 	}
@@ -47,6 +54,28 @@ public class Enemy : MonoBehaviour
 	void TakeDamage()
 	{
 		Health -= Damage;
+	}
+	
+	protected void CheckDistance()
+	{
+		if (Vector3.Distance(target.position, transform.position) <= chaseRadius 
+		    && Vector3.Distance(target.position, transform.position) > attackRadius)
+		{
+			if (currentState != EnemyState.Knocked)
+			{
+				Vector3 temp = Vector3.MoveTowards(transform.position, target.position, MoveSpeed * Time.deltaTime);
+				rb.MovePosition(temp);
+				ChangeState(EnemyState.Target);
+			}
+		}
+	}
+
+	private void ChangeState(EnemyState newState)
+	{
+		if (currentState != newState)
+		{
+			currentState = newState;
+		}
 	}
 }
 
