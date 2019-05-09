@@ -20,7 +20,7 @@ public class GraySword : SwordMechanic
         Damage = 1;
         MaxSwingNumber = 3;
        // SwingTimeDelay = .3f;
-        SwingTime = .15f;
+        SwingTime = .25f;
         player.SwordMomentumSmooth = 4f;
         player.SwordMomentumPower = 1f;
     }

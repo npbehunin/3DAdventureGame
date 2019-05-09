@@ -60,6 +60,7 @@ public class SwordMechanic : Weapon
 
 				if (CanClickForCombo)
 				{
+					Debug.Log("Clicked for combo is true.");
 					CanClickForCombo = false;
 					ClickedForCombo = true;
 				}
@@ -153,12 +154,12 @@ public class SwordMechanic : Weapon
 			DelayForClickCombo = StartCoroutine(DelayForNextCombo());
 		}
 
-		yield return new WaitForSeconds(.3f);
+		yield return new WaitForSeconds(.12f);
 		if (SwingNumber < MaxSwingNumber)
 		{
 			AnimatorSwingNumber = 0;
 			player.currentState = PlayerState.Idle;
-			yield return new WaitForSeconds(.2f);
+			yield return new WaitForSeconds(.15f);
 			ResetSwordAttack();
 		}
 		else
@@ -180,20 +181,22 @@ public class SwordMechanic : Weapon
 	{
 		yield return new WaitForSeconds(.1f);
 		CanClickForCombo = true;
+		Debug.Log("Player can now click for combo.");
 	}
 
 	private IEnumerator MouseClickDelay()
 	{
-		yield return new WaitForSeconds(SwingTime*.75f);
+		yield return new WaitForSeconds(SwingTime*.25f);
 		CanClick = true;
 	}
 }
 
-//TO DO #1: Create a slight delay before the player can reset their combo.
+//TO DO: 5/9/19
 
-//TO DO #2: Create a coroutine to allow the player to continue the combo, even after being out of the attack state for
-//around .2f seconds.
+//#1 Can click for combo feels inconsistent. Sometimes clicking early will do the next combo, other times it wont. Debug.log
+//also says player can click for the combo again right after clicked for combo is true.
 
-//CanClick checks after the delay before letting the player click for the next attack.
-//Clicked is true if the player clicks, then it is checked during the coroutine.
-//CanSwing is for allowing the player to swing by themselves.
+//#2 Make minor adjustments to the timing.
+
+//#3 Figure out a smoother transition between end of sword swing and going back to run. Feels very abrubt and fast right now.
+
