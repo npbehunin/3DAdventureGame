@@ -6,11 +6,9 @@ public class SwordMechanic : Weapon
 {
 	public bool SwordEquipped;
 	public bool CanSwing;
-	public bool CanClick;
-	public bool Clicked;
-	public bool CanClickForCombo;
-	public bool ClickedForCombo;
-	public bool ResetAttack;
+	public bool CanDelayForCombo;
+
+	public int ComboPhase;
 
 	public int SwingNumber;
 	public int AnimatorSwingNumber;
@@ -29,10 +27,9 @@ public class SwordMechanic : Weapon
 
 	protected virtual void Start()
 	{
-		ResetAttack = false;
-		CanClickForCombo = false;
+		ComboPhase = 0;
 		CanSwing = true;
-		CanClick = false;
+		CanDelayForCombo = false;
 		AnimatorSwingNumber = 0;
 		MaxSwingNumber = 3;
 		SwingTime = .15f;
@@ -43,7 +40,7 @@ public class SwordMechanic : Weapon
 		SwordEquipped = equipweapon.SwordEquipped;
 		animator.SetInteger("SwordAttackState", AnimatorSwingNumber);
 		//Debug.Log(CanClickForCombo);
-		if (Input.GetMouseButtonDown(0))
+		if (Input.GetButtonDown("Fire1"))
 		{
 			if (SwordEquipped)
 			{
@@ -52,25 +49,16 @@ public class SwordMechanic : Weapon
 					SwordSwing();
 				}
 
-				if (CanClick)
+				if (ComboPhase == 1)
 				{
-					CanClick = false;
-					Clicked = true;
+					ComboPhase = 2;
 				}
-
-				if (CanClickForCombo)
+				
+				if (ComboPhase == 3)
 				{
-					Debug.Log("Clicked for combo is true.");
-					CanClickForCombo = false;
-					ClickedForCombo = true;
+					ComboPhase = 4;
 				}
 			}
-		}
-
-		if (ResetAttack && SwingNumber == 0)
-		{
-			ResetAttack = false;
-			SwordSwing();
 		}
 	}
 
@@ -92,6 +80,8 @@ public class SwordMechanic : Weapon
 			{
 				StopCoroutine(ClickCoroutine);
 			}
+
+			ComboPhase = 0;
 			CanSwing = false;
 			player.SwordMomentumScale = 0;
 			SwingCoroutine = StartCoroutine(SwordSwingTiming());
@@ -122,41 +112,40 @@ public class SwordMechanic : Weapon
 			StopCoroutine(ClickCoroutine);
 		}
 		animator.SetInteger("SwordAttackState", 0);
-		Debug.Log("Resetting");
+		//Debug.Log("Resetting");
+		ComboPhase = 0;
 		SwingNumber = 0;
-		CanClickForCombo = false;
-		ResetAttack = false;
+		CanDelayForCombo = false;
 		CanSwing = true;
-		CanClick = false;
-		Clicked = false;
 		AnimatorSwingNumber = 0;
 		player.currentState = PlayerState.Idle;
 	}
 
 	private IEnumerator SwordSwingTiming()
 	{
+		//Debug.Log("Ran");
+		CanDelayForCombo = true;
 		player.currentState = PlayerState.Attack;
 		ClickCoroutine = StartCoroutine(MouseClickDelay());
 		yield return new WaitForSeconds(SwingTime);
-		if (Clicked)
+		if (ComboPhase == 2)
 		{
-			Clicked = false;
 			SwordSwing();
 		}
 		else
 		{
-			CanClick = false;
 			CanSwing = true;
 		}
 
-		if (SwingNumber >= MaxSwingNumber)
+		if (SwingNumber >= MaxSwingNumber && CanDelayForCombo)
 		{
+			CanDelayForCombo = false;
 			DelayForClickCombo = StartCoroutine(DelayForNextCombo());
 		}
-
-		yield return new WaitForSeconds(.12f);
+		
 		if (SwingNumber < MaxSwingNumber)
 		{
+			yield return new WaitForSeconds(.12f);
 			AnimatorSwingNumber = 0;
 			player.currentState = PlayerState.Idle;
 			yield return new WaitForSeconds(.15f);
@@ -164,11 +153,15 @@ public class SwordMechanic : Weapon
 		}
 		else
 		{
-			if (ClickedForCombo)
+			yield return new WaitForSeconds(.2f);
+			AnimatorSwingNumber = 0;
+			player.currentState = PlayerState.Idle;
+			yield return new WaitForSeconds(.2f);
+			if (ComboPhase == 4)
 			{
-				ClickedForCombo = false;
-				ResetAttack = true;
+				ComboPhase = 0;
 				SwingNumber = 0;
+				SwordSwing();
 			}
 			else
 			{
@@ -179,24 +172,20 @@ public class SwordMechanic : Weapon
 
 	private IEnumerator DelayForNextCombo()
 	{
-		yield return new WaitForSeconds(.1f);
-		CanClickForCombo = true;
-		Debug.Log("Player can now click for combo.");
+		//Handles the delay before the player can click to enable the next combo.
+		yield return new WaitForSeconds(.35f);
+		ComboPhase = 3;
 	}
 
 	private IEnumerator MouseClickDelay()
 	{
 		yield return new WaitForSeconds(SwingTime*.25f);
-		CanClick = true;
+		ComboPhase = 1;
 	}
 }
 
 //TO DO: 5/9/19
 
-//#1 Can click for combo feels inconsistent. Sometimes clicking early will do the next combo, other times it wont. Debug.log
-//also says player can click for the combo again right after clicked for combo is true.
-
-//#2 Make minor adjustments to the timing.
-
-//#3 Figure out a smoother transition between end of sword swing and going back to run. Feels very abrubt and fast right now.
+//#1 Figure out a smoother transition between end of sword swing and going back to run. Feels very abrubt and fast right now.
+//(The player slows down for each sword swing, but then snaps back immediately to running speed after it's over.)
 

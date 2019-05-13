@@ -9,9 +9,10 @@ public enum PetState
 
 public class Pet : MonoBehaviour {
 
-	public bool CanFollowPlayer;
 	public int Damage;
 	public int Health;
+	
+	
 	
 	void Start () 
 	{
@@ -21,6 +22,6 @@ public class Pet : MonoBehaviour {
 	
 	void Update () 
 	{
-		
+
 	}
 }

@@ -8,8 +8,10 @@
         <e p="Scripts" t="Include">
           <e p="Backup Scripts" t="Include">
             <e p="KnockbackOriginal.cs" t="Include" />
+            <e p="PlayerMovementAccelTest.cs" t="Include" />
             <e p="PlayerRigidbodyMovement.cs" t="Include" />
             <e p="Sword(Old).cs" t="Include" />
+            <e p="SwordTest.cs" t="Include" />
           </e>
           <e p="Enemy Scripts" t="Include">
             <e p="Enemy.cs" t="Include" />
@@ -19,6 +21,18 @@
             <e p="Knockback.cs" t="Include" />
             <e p="LookTowardsTarget.cs" t="Include" />
             <e p="MoveTowardsTarget.cs" t="Include" />
+            <e p="Pathfinding" t="Include">
+              <e p="Grid.cs" t="Include" />
+              <e p="Grid2D.cs" t="Include" />
+              <e p="Heap.cs" t="Include" />
+              <e p="Line.cs" t="Include" />
+              <e p="Node.cs" t="Include" />
+              <e p="Path.cs" t="Include" />
+              <e p="Pathfinding.cs" t="Include" />
+              <e p="PathRequestManager.cs" t="Include" />
+              <e p="UnitFollow.cs" t="Include" />
+            </e>
+            <e p="PetMovement.cs" t="Include" />
           </e>
           <e p="Pet Scripts" t="Include">
             <e p="Fox.cs" t="Include" />
@@ -46,11 +60,11 @@
               <e p="GraySword.cs" t="Include" />
               <e p="IceSword.cs" t="Include" />
               <e p="SwordMechanic.cs" t="Include" />
-              <e p="SwordTest.cs" t="Include" />
             </e>
             <e p="Weapon.cs" t="Include" />
           </e>
         </e>
+        <e p="SurfaceShaderTest.shader" t="Include" />
       </e>
       <e p="Library" t="ExcludeRecursive" />
       <e p="obj" t="ExcludeRecursive" />

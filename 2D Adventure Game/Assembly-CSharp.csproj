@@ -56,13 +56,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Backup Scripts\KnockbackOriginal.cs" />
+    <Compile Include="Assets\Scripts\Backup Scripts\PlayerMovementAccelTest.cs" />
     <Compile Include="Assets\Scripts\Backup Scripts\PlayerRigidbodyMovement.cs" />
     <Compile Include="Assets\Scripts\Backup Scripts\Sword(Old).cs" />
+    <Compile Include="Assets\Scripts\Backup Scripts\SwordTest.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Enemy.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Jelly.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\Knockback.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\LookTowardsTarget.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\MoveTowardsTarget.cs" />
+    <Compile Include="Assets\Scripts\Movement Scripts\Pathfinding\Grid.cs" />
+    <Compile Include="Assets\Scripts\Movement Scripts\Pathfinding\Grid2D.cs" />
+    <Compile Include="Assets\Scripts\Movement Scripts\Pathfinding\Heap.cs" />
+    <Compile Include="Assets\Scripts\Movement Scripts\Pathfinding\Line.cs" />
+    <Compile Include="Assets\Scripts\Movement Scripts\Pathfinding\Node.cs" />
+    <Compile Include="Assets\Scripts\Movement Scripts\Pathfinding\Path.cs" />
+    <Compile Include="Assets\Scripts\Movement Scripts\Pathfinding\Pathfinding.cs" />
+    <Compile Include="Assets\Scripts\Movement Scripts\Pathfinding\PathRequestManager.cs" />
+    <Compile Include="Assets\Scripts\Movement Scripts\Pathfinding\UnitFollow.cs" />
+    <Compile Include="Assets\Scripts\Movement Scripts\PetMovement.cs" />
     <Compile Include="Assets\Scripts\Pet Scripts\Fox.cs" />
     <Compile Include="Assets\Scripts\Pet Scripts\Pet.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\CameraFollowPlayer.cs" />
@@ -79,8 +91,8 @@
     <Compile Include="Assets\Scripts\Weapon Scripts\Sword Scripts\GraySword.cs" />
     <Compile Include="Assets\Scripts\Weapon Scripts\Sword Scripts\IceSword.cs" />
     <Compile Include="Assets\Scripts\Weapon Scripts\Sword Scripts\SwordMechanic.cs" />
-    <Compile Include="Assets\Scripts\Weapon Scripts\Sword Scripts\SwordTest.cs" />
     <Compile Include="Assets\Scripts\Weapon Scripts\Weapon.cs" />
+    <None Include="Assets\SurfaceShaderTest.shader" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>B:/2D Adventure Game/2DAdventureGame/2D Adventure Game/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>

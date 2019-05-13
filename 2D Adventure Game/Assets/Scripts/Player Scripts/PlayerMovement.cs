@@ -10,7 +10,6 @@ public enum PlayerState
 
 public class PlayerMovement : MonoBehaviour
 {
-
 	public PlayerState currentState;
 	public Rigidbody2D rb;
 	public Animator animator;
@@ -27,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
 	public Vector3 test;
 
 	public Vector3 position;
+	public Vector3 tempposition;
 
 	void Start()
 	{
@@ -101,6 +101,7 @@ public class PlayerMovement : MonoBehaviour
 			animator.SetFloat("SpeedY", verticalspeed);
 			SwordMomentumScale += SwordMomentumSmooth * Time.deltaTime;
 			SwordMomentum = Mathf.Lerp(SwordMomentumPower, 0, SwordMomentumScale);
+			//position = (SwordMomentum * tempposition);
 			position = (SwordMomentum * test);
 		}
 	}

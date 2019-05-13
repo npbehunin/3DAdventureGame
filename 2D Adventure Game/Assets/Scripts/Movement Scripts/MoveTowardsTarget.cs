@@ -8,11 +8,9 @@ public class MoveTowardsTarget : MonoBehaviour {
 	public Transform target;
 
 	public bool CanTarget;
-	public bool IsPet;
 	
 	public float chaseRadius;
 	public float stopRadius;
-	public float warpRadius;
 	public float MoveSpeed;
 	public Rigidbody2D rb;
 	
@@ -46,14 +44,6 @@ public class MoveTowardsTarget : MonoBehaviour {
 			CanTarget = false;
 		}
 		
-		if (Vector3.Distance(target.position, transform.position) > warpRadius)
-		{
-			if (IsPet)
-			{
-				OutOfRange();
-			}
-		}
-		
 		if (CanTarget)
 		{
 			Vector3 temp = Vector3.MoveTowards(transform.position, target.position, MoveSpeed * Time.deltaTime);
@@ -61,9 +51,5 @@ public class MoveTowardsTarget : MonoBehaviour {
 		}
 	}
 
-	void OutOfRange()
-	{
-		Debug.Log("OutOfRange");
-		transform.position = target.position;
-	}
+	
 }
