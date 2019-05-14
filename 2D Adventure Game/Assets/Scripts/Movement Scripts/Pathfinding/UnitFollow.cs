@@ -9,17 +9,18 @@ public class UnitFollow : MonoBehaviour {
 	Vector3[] path;
 	int targetIndex;
 	public Coroutine FollowPathCoroutine;
-	public bool CanFollowPath;
+	public Coroutine UpdateThePath;
+	public bool CanFollowPath, CannotReachPlayer;
 
 	void Start() {
-		PathRequestManager.RequestPath(transform.position,target.position, OnPathFound);
+		//PathRequestManager.RequestPath(transform.position,target.position, OnPathFound);
 		CanFollowPath = true;
+		CannotReachPlayer = false;
 		//This method needs to stop once the pet's linecast with the player is true. We need to tell everything to reset.
 	}
 
 	void Update()
 	{
-		Debug.Log(targetIndex);
 		//Debug.Log(path);
 	}
 
@@ -38,7 +39,7 @@ public class UnitFollow : MonoBehaviour {
 		if (CanFollowPath)
 		{
 			CanFollowPath = false;
-			Debug.Log("Doing the thing");
+			//Debug.Log("Doing the thing");
 			PathRequestManager.RequestPath(transform.position,target.position, OnPathFound);
 		}
 	}
@@ -54,6 +55,10 @@ public class UnitFollow : MonoBehaviour {
 
 			FollowPathCoroutine = StartCoroutine(FollowPath());
 		}
+		else
+		{
+			CannotReachPlayer = true;
+		}
 	}
 
 	IEnumerator FollowPath()
@@ -62,6 +67,7 @@ public class UnitFollow : MonoBehaviour {
 		if (path != null)
 		{
 			Vector3 currentWaypoint = path[0];
+			UpdateThePath = StartCoroutine(UpdatePath());
 			while (true)
 			{
 				if (transform.position == currentWaypoint)
@@ -80,9 +86,14 @@ public class UnitFollow : MonoBehaviour {
 					Vector3.MoveTowards(transform.position, currentWaypoint,
 						speed * Time.deltaTime); //Adjust this to work with our movement script
 				yield return null;
-
 			}
 		}
+	}
+
+	IEnumerator UpdatePath()
+	{
+		yield return new WaitForSeconds(2f);
+		StopFollowPath();
 	}
 
 	public void OnDrawGizmos() {

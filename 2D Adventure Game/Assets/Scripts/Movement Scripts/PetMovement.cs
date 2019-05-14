@@ -28,8 +28,6 @@ public class PetMovement : MonoBehaviour {
 	{
 		if (!FollowPath)
 		{
-			
-			path.StopFollowPath();
 			CheckDistance();
 		}
 	}
@@ -40,6 +38,18 @@ public class PetMovement : MonoBehaviour {
 		{
 			//CanFollowPath = true;
 			path.CheckIfCanFollowPath();
+			CanFollowPlayer = false;
+		}
+		
+		if (!FollowPath)
+		{
+			path.StopFollowPath();
+		}
+
+		if (path.CannotReachPlayer)
+		{
+			OutOfRange();
+			path.CannotReachPlayer = false;
 		}
 		
 		if (Vector3.Distance(target.position, transform.position) > WarpRadius)
@@ -69,6 +79,7 @@ public class PetMovement : MonoBehaviour {
 		{
 			//Debug.Log("Hello");
 			FollowPath = true;
+			Debug.DrawLine(transform.position, target.position, Color.yellow);
 			//Debug.DrawRay(transform.position, hit.point, Color.yellow, 30f, false);
 		}
 		else
