@@ -61,8 +61,11 @@
     <Compile Include="Assets\Scripts\Backup Scripts\Sword(Old).cs" />
     <Compile Include="Assets\Scripts\Backup Scripts\SwordTest.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Enemy.cs" />
+    <Compile Include="Assets\Scripts\Enemy Scripts\Enemy2.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Jelly.cs" />
+    <Compile Include="Assets\Scripts\Movement Scripts\HitPause.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\Knockback.cs" />
+    <Compile Include="Assets\Scripts\Movement Scripts\Knockback2.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\LookTowardsTarget.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\MoveTowardsTarget.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\Pathfinding\Grid.cs" />

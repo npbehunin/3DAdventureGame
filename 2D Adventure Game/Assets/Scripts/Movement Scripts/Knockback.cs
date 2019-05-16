@@ -7,37 +7,90 @@ public class Knockback : MonoBehaviour
 {
 	public float thrust;
 	public float knockbackTime;
+	public GameObject Player;
+	public Vector3 PlayerDirection;
+
+	public bool IsPlayer, IsArrow;
+	public Rigidbody2D enemy;
 
 	private Coroutine KnockCoroutine;
 
-	void Start () 
+	public HitPause hitpause;
+
+	void Start ()
 	{
-		
+		if (Player != null)
+		{
+			
+		}
 	}
 	
 	void Update () 
 	{
-		
+		if (Player != null)
+		{
+			Player.GetComponent<PlayerMovement>().GetSwordSwingDirection();
+			PlayerDirection = Player.GetComponent<PlayerMovement>().test;
+		}
+
+		if (IsPlayer)
+		{
+			if (PlayerDirection != Vector3.zero)
+			{
+				thrust = 4;
+			}
+			else
+			{
+				thrust = 0;
+			}
+		}
+
+		if (IsArrow)
+		{
+			thrust = 4;
+		}
+		//Debug.Log(PlayerDirection);
+
+		if (enemy != null && enemy.GetComponent<Enemy>().currentState == EnemyState.Paused && !hitpause.HitPaused)
+		{
+			Debug.Log("Knocked");
+			Knocked();
+		}
 	}
 
-	private void OnTriggerEnter2D(Collider2D other)
+	void Knocked()
+	{
+		enemy.GetComponent<Enemy>().currentState = EnemyState.Knocked;
+		if (enemy != null)
+		{
+			ResetKnock(enemy);
+			if (KnockCoroutine != null)
+			{
+				StopCoroutine(KnockCoroutine);
+			}
+			Vector2 difference = enemy.transform.position - transform.position;
+			difference = difference.normalized * thrust;
+			enemy.AddForce(difference, ForceMode2D.Impulse);
+			KnockCoroutine = StartCoroutine(Knock(enemy));
+		}
+	}
+
+	private void OnTriggerEnter2D(Collider2D other) 
 	{
 		if (other.gameObject.CompareTag("Enemy"))
 		{
-			Rigidbody2D enemy = other.GetComponent<Rigidbody2D>();
-				if(enemy != null)
+			enemy = other.GetComponent<Rigidbody2D>();
+			if (enemy.GetComponent<Enemy>().currentState != EnemyState.Paused &&
+			    enemy.GetComponent<Enemy>().currentState != EnemyState.Knocked)
+			{
+				hitpause = enemy.GetComponent<HitPause>();
+				if (hitpause != null)
 				{
-					ResetKnock(enemy);
-					if (KnockCoroutine != null)
-					{
-						StopCoroutine(KnockCoroutine);
-					}
-					enemy.GetComponent<Enemy>().currentState = EnemyState.Knocked;
-					Vector2 difference = enemy.transform.position - transform.position;
-					difference = difference.normalized * thrust;
-					enemy.AddForce(difference, ForceMode2D.Impulse);
-					KnockCoroutine = StartCoroutine(Knock(enemy));
+					//hitpause.StartFreeze(.3f);
 				}
+
+				enemy.GetComponent<Enemy>().currentState = EnemyState.Paused;
+			}
 		}
 	}
 
@@ -56,7 +109,3 @@ public class Knockback : MonoBehaviour
 		}
 	}
 }
-
-//Decide if we want to put it on player or enemy. There will be 2 states, "STUNNED" and "KNOCKED" for each type of hit.
-//This script could getcomponent the enemy's float called thrust and use that as the knockback BUT it might be better
-//to have it on the enemy itself in case the player hits multiple types of enemies at once.

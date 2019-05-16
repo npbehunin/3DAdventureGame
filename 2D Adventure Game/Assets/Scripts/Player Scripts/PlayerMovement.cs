@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum PlayerState
 {
-	Idle, Walk, Run, Attack, Interact, Dead
+	Idle, Walk, Run, Attack, Paused, Interact, Dead
 }
 
 public class PlayerMovement : MonoBehaviour
@@ -46,7 +46,7 @@ public class PlayerMovement : MonoBehaviour
 
 	void Update()
 	{
-		if (currentState != PlayerState.Attack)
+		if (currentState != PlayerState.Attack && currentState != PlayerState.Paused)
 		{
 			position = new Vector3(Input.GetAxisRaw("Horizontal"), (Input.GetAxisRaw("Vertical")), 0).normalized;
 		}
@@ -85,12 +85,13 @@ public class PlayerMovement : MonoBehaviour
 		}
 
 		//Idle
-		if (currentState != PlayerState.Attack)
+		if (currentState != PlayerState.Attack && currentState != PlayerState.Paused)
 		{
 			if (position == Vector3.zero)
 			{
 				currentState = PlayerState.Idle;
 				animator.SetBool("Running", false);
+				test = Vector3.zero;
 			}
 		}
 
@@ -101,7 +102,7 @@ public class PlayerMovement : MonoBehaviour
 			animator.SetFloat("SpeedY", verticalspeed);
 			SwordMomentumScale += SwordMomentumSmooth * Time.deltaTime;
 			SwordMomentum = Mathf.Lerp(SwordMomentumPower, 0, SwordMomentumScale);
-			//position = (SwordMomentum * tempposition);
+			//Debug.Log(SwordMomentumScale);
 			position = (SwordMomentum * test);
 		}
 	}

@@ -722,7 +722,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 954679476}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 4.12, y: 1.92, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1468615829}
@@ -2642,13 +2642,20 @@ MonoBehaviour:
   currentState: 0
   Health: 0
   Damage: 0
+  Attacking: 0
   MoveSpeed: 1.75
+  chaseRadius: 3.5
+  attackRadius: 1
+  JumpMomentum: 0
+  JumpMomentumPower: 0
+  JumpMomentumScale: 0
+  JumpMomentumSmooth: 0
   WeaponEquipped: {fileID: 473830030}
+  position: {x: 0, y: 0, z: 0}
+  JumpPosition: {x: 0, y: 0, z: 0}
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
-  chaseRadius: 3.5
-  attackRadius: 1
 --- !u!58 &1050092501
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2737,7 +2744,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1050092499}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.01, y: 5.43, z: 0}
+  m_LocalPosition: {x: 0.57, y: 5.49, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3030,13 +3037,20 @@ MonoBehaviour:
   currentState: 0
   Health: 0
   Damage: 0
+  Attacking: 0
   MoveSpeed: 1.75
+  chaseRadius: 3.5
+  attackRadius: 1
+  JumpMomentum: 0
+  JumpMomentumPower: 0
+  JumpMomentumScale: 0
+  JumpMomentumSmooth: 0
   WeaponEquipped: {fileID: 473830030}
+  position: {x: 0, y: 0, z: 0}
+  JumpPosition: {x: 0, y: 0, z: 0}
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
-  chaseRadius: 3.5
-  attackRadius: 1
 --- !u!1 &1306116920
 GameObject:
   m_ObjectHideFlags: 0
@@ -3112,6 +3126,36 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1390802331 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1719595767031652, guid: 31da7a3906d466c4288870dd9ac32c30,
+    type: 2}
+  m_PrefabInternal: {fileID: 1834325738}
+--- !u!114 &1390802337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1390802331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7d89aaab145477459b585adef73c089, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thrust: 0
+  knockbackTime: 0
+  Player: {fileID: 1659612924}
+  enemy: {fileID: 0}
+  PlayerDirection: {x: 0, y: 0, z: 0}
+  enemystate: 0
+  IsPlayer: 0
+  IsArrow: 1
+  EnemyRB: {fileID: 0}
+  EnemyAnimator: {fileID: 0}
+  PlayerAnimator: {fileID: 0}
+  HitPaused: 0
+  CanFreeze: 0
+  camera: {fileID: 0}
 --- !u!1 &1453429845
 GameObject:
   m_ObjectHideFlags: 0
@@ -3145,13 +3189,20 @@ MonoBehaviour:
   currentState: 0
   Health: 0
   Damage: 0
+  Attacking: 0
   MoveSpeed: 1.75
+  chaseRadius: 3.5
+  attackRadius: 1
+  JumpMomentum: 0
+  JumpMomentumPower: 0
+  JumpMomentumScale: 0
+  JumpMomentumSmooth: 0
   WeaponEquipped: {fileID: 473830030}
+  position: {x: 0, y: 0, z: 0}
+  JumpPosition: {x: 0, y: 0, z: 0}
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
-  chaseRadius: 3.5
-  attackRadius: 1
 --- !u!58 &1453429847
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -3240,7 +3291,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1453429845}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.63, y: 5.06, z: 0}
+  m_LocalPosition: {x: 3.86, y: 7.53, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3437,6 +3488,7 @@ GameObject:
   - component: {fileID: 1659612928}
   - component: {fileID: 1659612925}
   - component: {fileID: 1659612932}
+  - component: {fileID: 1659612926}
   - component: {fileID: 1659612934}
   - component: {fileID: 1659612929}
   - component: {fileID: 1659612931}
@@ -3471,6 +3523,31 @@ MonoBehaviour:
   test: {x: 0, y: 0, z: 0}
   position: {x: 0, y: 0, z: 0}
   tempposition: {x: 0, y: 0, z: 0}
+--- !u!114 &1659612926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1659612924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7d89aaab145477459b585adef73c089, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thrust: 0
+  knockbackTime: 1
+  Player: {fileID: 1659612924}
+  enemy: {fileID: 0}
+  PlayerDirection: {x: 0, y: 0, z: 0}
+  enemystate: 0
+  IsPlayer: 1
+  IsArrow: 0
+  EnemyRB: {fileID: 0}
+  EnemyAnimator: {fileID: 0}
+  PlayerAnimator: {fileID: 342910429}
+  HitPaused: 0
+  CanFreeze: 0
+  camera: {fileID: 5481639}
 --- !u!4 &1659612928
 Transform:
   m_ObjectHideFlags: 0
@@ -3526,13 +3603,19 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1659612924}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7df2ce40baf34cd41a2e077221fc7dd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thrust: 5.4
+  thrust: 4
   knockbackTime: 0.5
+  Player: {fileID: 1659612924}
+  PlayerDirection: {x: 0, y: 0, z: 0}
+  IsPlayer: 1
+  IsArrow: 0
+  enemy: {fileID: 0}
+  hitpause: {fileID: 0}
 --- !u!114 &1659612933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3826,6 +3909,21 @@ Prefab:
       propertyPath: equipweapon
       value: 
       objectReference: {fileID: 473830030}
+    - target: {fileID: 114128200193242362, guid: 31da7a3906d466c4288870dd9ac32c30,
+        type: 2}
+      propertyPath: Player
+      value: 
+      objectReference: {fileID: 1659612924}
+    - target: {fileID: 114128200193242362, guid: 31da7a3906d466c4288870dd9ac32c30,
+        type: 2}
+      propertyPath: IsArrow
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114128200193242362, guid: 31da7a3906d466c4288870dd9ac32c30,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 31da7a3906d466c4288870dd9ac32c30, type: 2}
   m_IsPrefabAsset: 0
@@ -3893,7 +3991,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1802601cc3117344b98849afb4b44f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayGridGizmos: 1
+  displayGridGizmos: 0
   unwalkableMask:
     serializedVersion: 2
     m_Bits: 512

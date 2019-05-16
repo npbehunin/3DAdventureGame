@@ -4,17 +4,19 @@ using UnityEngine;
 
 public class Jelly : Enemy
 {
-	void Start ()
+	protected override void Start ()
 	{
 		currentState = EnemyState.Idle;
 		rb = GetComponent<Rigidbody2D>();
 		target = GameObject.FindWithTag("Player").transform;
-		Health = 3;
+		Health = 10;
 		Damage = 1;
+		JumpMomentumSmooth = 4f;
+		JumpMomentumPower = 4f;
 	}
 	
-	void FixedUpdate () 
-	{
-		CheckDistance();
-	}
+	//void FixedUpdate () 
+	//{
+		//CheckDistance();
+	//}
 }
