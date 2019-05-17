@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+using UnityEngine.Events;
+
 public enum EnemyState
 {
 	Idle, Walk, Target, Attack, Knocked, Paused, Dead
@@ -13,7 +15,7 @@ public class Enemy : MonoBehaviour
 
 	public int Health, Damage;
 	
-	public bool Attacking;
+	public bool Attacking, CanAttack;
 
 	public float MoveSpeed, chaseRadius, attackRadius;
 	private float horizontalspeed,verticalspeed;
@@ -28,49 +30,25 @@ public class Enemy : MonoBehaviour
 	public Transform target, home;
 
 	public Coroutine JumpCoroutine;
+
+	public UnityEvent EventInRadius, EventAttack;
 	
 	protected virtual void Start ()
 	{
 		
 	}
 
-	void FixedUpdate()
+	protected virtual void FixedUpdate()
 	{
-		if (Attacking && currentState == EnemyState.Attack)
-		{
-			//Debug.Log(JumpPosition);
-			rb.MovePosition(transform.position + position * MoveSpeed * Time.deltaTime);
-		}
-		else
-		{
-			CheckDistance();
-		}
+		CheckDistance();
 	}
 	
 	// Update is called once per frame
-	void Update () 
+	protected virtual void Update () 
 	{
 		if (Health <= 0)
 		{
 			gameObject.SetActive(false);
-		}
-
-		if (Attacking)
-		{
-			JumpMomentumScale += JumpMomentumSmooth * Time.deltaTime;
-			JumpMomentum = Mathf.Lerp(JumpMomentumPower, 0, JumpMomentumScale);
-			position = (JumpMomentum * JumpPosition);
-		}
-
-		if (currentState == EnemyState.Paused)
-		{
-			if (JumpCoroutine != null)
-			{
-				StopCoroutine(JumpCoroutine);
-				JumpMomentum = 0;
-				JumpMomentumScale = 0;
-				Attacking = false;
-			}
 		}
 	}
 
@@ -96,8 +74,8 @@ public class Enemy : MonoBehaviour
 			if (Vector3.Distance(target.position, transform.position) <= chaseRadius
 			    && Vector3.Distance(target.position, transform.position) > attackRadius)
 			{
-				position = Vector3.MoveTowards(transform.position, target.position, MoveSpeed * Time.deltaTime);
-				rb.MovePosition(position);
+				//Follow player
+				EventInRadius.Invoke();
 				ChangeState(EnemyState.Target);
 			}
 
@@ -105,8 +83,9 @@ public class Enemy : MonoBehaviour
 			{
 				if (!Attacking)
 				{
+					//Attack player
+					EventAttack.Invoke();
 					ChangeState(EnemyState.Attack);
-					JumpCoroutine = StartCoroutine(JumpAtTarget());
 				}
 			}
 		}
@@ -118,21 +97,5 @@ public class Enemy : MonoBehaviour
 		{
 			currentState = newState;
 		}
-	}
-	
-	private IEnumerator JumpAtTarget()
-	{
-		//Debug.Log("Starting jump at target");
-		//Animation for winding up attack
-		JumpPosition = (transform.position - target.position) * -1;
-		yield return new WaitForSeconds(.5f);
-		Attacking = true;
-		//Debug.Log("YEET");
-		yield return new WaitForSeconds(.5f);
-		currentState = EnemyState.Idle;
-		yield return new WaitForSeconds(1.5f);
-		JumpMomentum = 0;
-		JumpMomentumScale = 0;
-		Attacking = false;
 	}
 }
