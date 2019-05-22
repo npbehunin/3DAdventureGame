@@ -5,107 +5,49 @@ using UnityEngine;
 
 public class Knockback : MonoBehaviour
 {
-	public float thrust;
+	public float KnockbackPower;
 	public float knockbackTime;
-	public GameObject Player;
-	public Vector3 PlayerDirection;
-
-	public bool IsPlayer, IsArrow;
-	public Rigidbody2D enemy;
 
 	private Coroutine KnockCoroutine;
+	public CameraFollowPlayer camera;
 
-	public HitPause hitpause;
-
-	void Start ()
+	void Start()
 	{
-		if (Player != null)
-		{
-			
-		}
-	}
-	
-	void Update () 
-	{
-		if (Player != null)
-		{
-			Player.GetComponent<PlayerMovement>().GetSwordSwingDirection();
-			PlayerDirection = Player.GetComponent<PlayerMovement>().test;
-		}
-
-		if (IsPlayer)
-		{
-			if (PlayerDirection != Vector3.zero)
-			{
-				thrust = 4;
-			}
-			else
-			{
-				thrust = 0;
-			}
-		}
-
-		if (IsArrow)
-		{
-			thrust = 4;
-		}
-		//Debug.Log(PlayerDirection);
-
-		if (enemy != null && enemy.GetComponent<Enemy>().currentState == EnemyState.Paused && !hitpause.HitPaused)
-		{
-			Debug.Log("Knocked");
-			Knocked();
-		}
+		knockbackTime = 1f;
 	}
 
-	void Knocked()
+	void Update()
 	{
-		enemy.GetComponent<Enemy>().currentState = EnemyState.Knocked;
-		if (enemy != null)
+		KnockbackPower = Weapon.KnockbackPower;
+	}
+
+	public void Knocked(Rigidbody2D rb, Vector3 col)
+	{
+		if (rb != null)
 		{
-			ResetKnock(enemy);
 			if (KnockCoroutine != null)
 			{
 				StopCoroutine(KnockCoroutine);
 			}
-			Vector2 difference = enemy.transform.position - transform.position;
-			difference = difference.normalized * thrust;
-			enemy.AddForce(difference, ForceMode2D.Impulse);
-			KnockCoroutine = StartCoroutine(Knock(enemy));
+
+			Debug.Log("Knocked");
+			//camera.Knocked = true;
+			Vector3 difference = rb.transform.position - col;
+			camera.StartSwordShake(.3f, difference.normalized);
+			difference = difference.normalized * KnockbackPower;
+			rb.AddForce(difference, ForceMode2D.Impulse);
+			KnockCoroutine = StartCoroutine(ResetKnock(rb));
 		}
 	}
 
-	private void OnTriggerEnter2D(Collider2D other) 
+	private IEnumerator ResetKnock(Rigidbody2D rb)
 	{
-		if (other.gameObject.CompareTag("Enemy"))
+		if (rb != null)
 		{
-			enemy = other.GetComponent<Rigidbody2D>();
-			if (enemy.GetComponent<Enemy>().currentState != EnemyState.Paused &&
-			    enemy.GetComponent<Enemy>().currentState != EnemyState.Knocked)
-			{
-				hitpause = enemy.GetComponent<HitPause>();
-				if (hitpause != null)
-				{
-					//hitpause.StartFreeze(.3f);
-				}
-
-				enemy.GetComponent<Enemy>().currentState = EnemyState.Paused;
-			}
-		}
-	}
-
-	private void ResetKnock(Rigidbody2D enemy)
-	{
-		enemy.velocity = Vector2.zero;
-		enemy.GetComponent<Enemy>().currentState = EnemyState.Idle;
-	}
-
-	private IEnumerator Knock(Rigidbody2D enemy)
-	{
-		if (enemy != null)
-		{
+			rb.gameObject.GetComponent<Enemy>().currentState = EnemyState.Knocked;
 			yield return new WaitForSeconds(knockbackTime);
-			ResetKnock(enemy);
+			rb.velocity = Vector2.zero;
+			rb.gameObject.GetComponent<Enemy>().currentState = EnemyState.Idle;
 		}
 	}
 }

@@ -7,19 +7,19 @@ using UnityEngine.Events;
 
 public enum EnemyState
 {
-	Idle, Walk, Target, Attack, Knocked, Paused, Dead
+	Idle, Walk, Target, Attack, Knocked, Random, Delay, Dead
 }
+
 public class Enemy : MonoBehaviour
 {
 	public EnemyState currentState;
 
 	public int Health, Damage;
 	
-	public bool Attacking, CanAttack;
+	public bool Attacking;
 
 	public float MoveSpeed, chaseRadius, attackRadius;
 	private float horizontalspeed,verticalspeed;
-	public float JumpMomentum, JumpMomentumPower, JumpMomentumScale, JumpMomentumSmooth;
 
 	public EquipWeapon WeaponEquipped;
 
@@ -31,11 +31,13 @@ public class Enemy : MonoBehaviour
 
 	public Coroutine JumpCoroutine;
 
-	public UnityEvent EventInRadius, EventAttack;
+	public Knockback knockback;
+
+	public UnityEvent EventInRadius, EventAttack, EventPlayerCollision;
 	
 	protected virtual void Start ()
 	{
-		
+		knockback = gameObject.GetComponent<Knockback>();
 	}
 
 	protected virtual void FixedUpdate()
@@ -43,7 +45,6 @@ public class Enemy : MonoBehaviour
 		CheckDistance();
 	}
 	
-	// Update is called once per frame
 	protected virtual void Update () 
 	{
 		if (Health <= 0)
@@ -52,12 +53,25 @@ public class Enemy : MonoBehaviour
 		}
 	}
 
-	void OnTriggerEnter2D(Collider2D col)
+	//Check triggers
+	protected void OnTriggerEnter2D(Collider2D col)
 	{
 		if (col.gameObject.CompareTag("WeaponHitbox"))
 		{
 			Damage = WeaponEquipped.WeaponDamage;
 			TakeDamage();
+			if (knockback != null)
+			{
+				knockback.Knocked(rb, col.transform.position);
+			}
+		}
+
+		if (col.gameObject.CompareTag("Player"))
+		{
+			if (EventPlayerCollision != null)
+			{
+				EventPlayerCollision.Invoke();
+			}
 		}
 	}
 
@@ -69,29 +83,31 @@ public class Enemy : MonoBehaviour
 	protected void CheckDistance()
 	{
 		if (currentState != EnemyState.Knocked && currentState != EnemyState.Attack &&
-		    currentState != EnemyState.Paused)
+		     currentState != EnemyState.Delay)
 		{
 			if (Vector3.Distance(target.position, transform.position) <= chaseRadius
 			    && Vector3.Distance(target.position, transform.position) > attackRadius)
 			{
 				//Follow player
-				EventInRadius.Invoke();
-				ChangeState(EnemyState.Target);
+				if (EventInRadius != null)
+				{
+					
+					EventInRadius.Invoke(); //Will run constantly
+				}
 			}
 
 			if (Vector3.Distance(target.position, transform.position) <= attackRadius)
 			{
-				if (!Attacking)
+				if (!Attacking && EventAttack!=null)
 				{
 					//Attack player
-					EventAttack.Invoke();
-					ChangeState(EnemyState.Attack);
+					EventAttack.Invoke(); //Runs once
 				}
 			}
 		}
 	}
 
-	private void ChangeState(EnemyState newState)
+	public void ChangeState(EnemyState newState)
 	{
 		if (currentState != newState)
 		{

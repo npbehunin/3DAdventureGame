@@ -14,6 +14,7 @@ public class ShootingMechanic : Weapon
 	private WeaponPhase phase;
 
 	public float moveSpeed;
+	public float BowThrust;
 
 	private IEnumerator bowholdcheckcoroutine;
 	private IEnumerator shootdelaycoroutine;
@@ -27,13 +28,18 @@ public class ShootingMechanic : Weapon
 
 	protected virtual void Start ()
 	{
+		//Bowthrust
+		BowThrust = 3f;
+		KnockbackPower = BowThrust;
+		//
 		canShoot = true;
 		canStartBowHold = true;
 		phase = WeaponPhase.Inactive;
 	}
 	
-	protected virtual void Update ()
+	protected override void Update ()
 	{
+		base.Update();
 		BowEquipped = equipweapon.BowEquipped;
 		if (BowEquipped)
 		{

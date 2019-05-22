@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class Jelly : Enemy
 {
+	public float JumpMomentum, JumpMomentumPower, JumpMomentumScale, JumpMomentumSmooth;
+	
 	protected override void Start ()
 	{
+		base.Start();
 		currentState = EnemyState.Idle;
 		rb = GetComponent<Rigidbody2D>();
 		target = GameObject.FindWithTag("Player").transform;
@@ -13,6 +16,9 @@ public class Jelly : Enemy
 		Damage = 1;
 		JumpMomentumSmooth = 4f;
 		JumpMomentumPower = 4f;
+		MoveSpeed = 1.75f;
+		chaseRadius = 3.5f;
+		attackRadius = 1;
 	}
 
 	protected override void Update()
@@ -25,16 +31,16 @@ public class Jelly : Enemy
 			position = (JumpMomentum * JumpPosition);
 		}
 
-		if (currentState == EnemyState.Paused)
-		{
-			if (JumpCoroutine != null)
-			{
-				StopCoroutine(JumpCoroutine);
-				JumpMomentum = 0;
-				JumpMomentumScale = 0;
-				Attacking = false;
-			}
-		}
+		//if (currentState == EnemyState.Paused)
+		//{
+			//if (JumpCoroutine != null)
+			//{
+				//StopCoroutine(JumpCoroutine);
+				//JumpMomentum = 0;
+				//JumpMomentumScale = 0;
+				//Attacking = false;
+			//}
+		//}
 	}
 
 	protected override void FixedUpdate()
@@ -49,12 +55,14 @@ public class Jelly : Enemy
 	
 	public void FollowPlayer()
 	{
+		ChangeState(EnemyState.Target);
 		position = Vector3.MoveTowards(transform.position, target.position, MoveSpeed * Time.deltaTime);
 		rb.MovePosition(position);
 	}
 
 	public void JumpAttackCoroutine()
 	{
+		ChangeState(EnemyState.Attack);
 		if (!Attacking)
 		{
 			JumpCoroutine = StartCoroutine(JumpAtTarget());

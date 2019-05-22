@@ -7,6 +7,8 @@
       <e p="Assets" t="Include">
         <e p="Scripts" t="Include">
           <e p="Backup Scripts" t="Include">
+            <e p="Enemy2.cs" t="Include" />
+            <e p="Knockback(Old).cs" t="Include" />
             <e p="KnockbackOriginal.cs" t="Include" />
             <e p="PlayerMovementAccelTest.cs" t="Include" />
             <e p="PlayerRigidbodyMovement.cs" t="Include" />
@@ -15,13 +17,19 @@
           </e>
           <e p="Enemy Scripts" t="Include">
             <e p="Enemy.cs" t="Include" />
-            <e p="Enemy2.cs" t="Include" />
-            <e p="Jelly.cs" t="Include" />
+            <e p="Forest Temple" t="Include">
+              <e p="Bat.cs" t="Include" />
+              <e p="ForestBoss.cs" t="Include" />
+              <e p="ForestGuardian.cs" t="Include" />
+              <e p="Jelly.cs" t="Include" />
+              <e p="Sentry.cs" t="Include" />
+              <e p="Trap.cs" t="Include" />
+              <e p="Turtle.cs" t="Include" />
+            </e>
           </e>
           <e p="Movement Scripts" t="Include">
             <e p="HitPause.cs" t="Include" />
             <e p="Knockback.cs" t="Include" />
-            <e p="Knockback2.cs" t="Include" />
             <e p="LookTowardsTarget.cs" t="Include" />
             <e p="MoveTowardsTarget.cs" t="Include" />
             <e p="Pathfinding" t="Include">

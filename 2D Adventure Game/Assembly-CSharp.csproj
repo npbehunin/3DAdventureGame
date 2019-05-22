@@ -55,17 +55,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Backup Scripts\Enemy2.cs" />
+    <Compile Include="Assets\Scripts\Backup Scripts\Knockback(Old).cs" />
     <Compile Include="Assets\Scripts\Backup Scripts\KnockbackOriginal.cs" />
     <Compile Include="Assets\Scripts\Backup Scripts\PlayerMovementAccelTest.cs" />
     <Compile Include="Assets\Scripts\Backup Scripts\PlayerRigidbodyMovement.cs" />
     <Compile Include="Assets\Scripts\Backup Scripts\Sword(Old).cs" />
     <Compile Include="Assets\Scripts\Backup Scripts\SwordTest.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Enemy.cs" />
-    <Compile Include="Assets\Scripts\Enemy Scripts\Enemy2.cs" />
-    <Compile Include="Assets\Scripts\Enemy Scripts\Jelly.cs" />
+    <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Bat.cs" />
+    <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\ForestBoss.cs" />
+    <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\ForestGuardian.cs" />
+    <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Jelly.cs" />
+    <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Sentry.cs" />
+    <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Trap.cs" />
+    <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Turtle.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\HitPause.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\Knockback.cs" />
-    <Compile Include="Assets\Scripts\Movement Scripts\Knockback2.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\LookTowardsTarget.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\MoveTowardsTarget.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\Pathfinding\Grid.cs" />

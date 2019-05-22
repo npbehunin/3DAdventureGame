@@ -73,7 +73,7 @@ public class PetMovement : MonoBehaviour {
 		}
 
 		//Check any collision between pet and player
-		RaycastHit hit;
+		//RaycastHit hit;
 		int wallLayerMask = 1 << 9;
 		if (Physics2D.Linecast(transform.position, target.position, wallLayerMask))//, 15, wallLayerMask))
 		{

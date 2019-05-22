@@ -59,7 +59,7 @@ public class PlayerHealth : MonoBehaviour
 		IsInvincible = true;
 		if (gameObject.activeSelf)
 		{
-			gameObject.SetActive(false);
+			Debug.Log("Player has died!");
 			yield return new WaitForSeconds(1.5f);
 			manager.RestartScene(manager.loadedlevel);
 		}

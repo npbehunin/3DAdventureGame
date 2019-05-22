@@ -11,22 +11,35 @@ public class CameraFollowPlayer : MonoBehaviour
 	public Vector3 offset, desiredPosition;
 	private Vector3 velocity = Vector3.zero;
 
+	public bool Knocked;
+
+	void Start()
+	{
+		Knocked = false;
+	}
+
 	void Update()
 	{
 		desiredPosition = target.position + offset;
 		//Vector3 smoothedPosition = Vector3.SmoothDamp(transform.position, desiredPosition, smoothSpeed);
 		Vector3 smoothedPosition = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, smoothSpeed);
 		transform.position = smoothedPosition;
-		//Debug.Log(offset.x);
 	}
 
-	public IEnumerator SwordShake(float amount)
+	public void StartSwordShake(float amount, Vector3 direction)
 	{
-		//Adjust these settings for a snappier camera. Right now it's kinda barfy.
-		offset.x = .5f;
-		smoothSpeed = .5f;
+		StartCoroutine(SwordShake(amount, direction));
+	}
+
+	public IEnumerator SwordShake(float amount, Vector3 direction)
+	{
+		offset.x = direction.x * amount;
+		offset.y = direction.y * amount;
+		smoothSpeed = .2f;
 		yield return new WaitForSeconds(.15f);
+		Debug.Log("Reset the offset");
 		offset.x = 0;
+		offset.y = 0;
 		smoothSpeed = .15f;
 	}
 

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemy
   - WeaponHitbox
+  - EnemyWeaponHitbox
   layers:
   - Default
   - TransparentFX

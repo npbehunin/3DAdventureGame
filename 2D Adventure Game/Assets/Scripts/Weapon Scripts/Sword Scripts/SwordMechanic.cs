@@ -15,6 +15,7 @@ public class SwordMechanic : Weapon
 	public int MaxSwingNumber;
 
 	public float SwingTime;
+	public float SwordThrust;
 	
 	public Animator animator;
 	public PlayerMovement player;
@@ -25,8 +26,9 @@ public class SwordMechanic : Weapon
 
 	public EquipWeapon equipweapon;
 
-	protected virtual void Start()
+	protected override void Start()
 	{
+		base.Start();
 		ComboPhase = 0;
 		CanSwing = true;
 		CanDelayForCombo = false;
@@ -35,11 +37,11 @@ public class SwordMechanic : Weapon
 		SwingTime = .15f;
 	}
 
-	protected virtual void Update()
+	protected override void Update()
 	{
+		base.Update();
 		SwordEquipped = equipweapon.SwordEquipped;
 		animator.SetInteger("SwordAttackState", AnimatorSwingNumber);
-		//Debug.Log(CanClickForCombo);
 		if (Input.GetButtonDown("Fire1"))
 		{
 			if (SwordEquipped)
@@ -60,11 +62,31 @@ public class SwordMechanic : Weapon
 				}
 			}
 		}
+		
+		//Knockback
+		KnockbackPower = SwordThrust;
+		if (PlayerObject != null)
+		{
+			PlayerObject.GetComponent<PlayerMovement>().GetSwordSwingDirection();
+			PlayerDirection = PlayerObject.GetComponent<PlayerMovement>().test;
+			if (PlayerDirection != Vector3.zero && PlayerDirection != null)
+			{
+				SwordThrust = 5;
+			}
+			else
+			{
+				SwordThrust = 0;
+			}
+		}
+		else
+		{
+			SwordThrust = 0;
+		}
 	}
 
+	//Enables the next sword swing
 	void SwordSwing()
 	{
-		//Debug.Log("Ran the sword swing function");
 		if (SwingNumber < MaxSwingNumber)
 		{
 			if (DelayForClickCombo!= null)
@@ -91,11 +113,13 @@ public class SwordMechanic : Weapon
 		}
 	}
 
+	//If disabled, reset
 	protected void OnDisable()
 	{
 		ResetSwordAttack();
 	}
 
+	//Reset everything
 	private void ResetSwordAttack()
 	{
 		if (DelayForClickCombo != null)
@@ -112,18 +136,18 @@ public class SwordMechanic : Weapon
 			StopCoroutine(ClickCoroutine);
 		}
 		animator.SetInteger("SwordAttackState", 0);
-		//Debug.Log("Resetting");
 		ComboPhase = 0;
 		SwingNumber = 0;
 		CanDelayForCombo = false;
 		CanSwing = true;
 		AnimatorSwingNumber = 0;
 		player.currentState = PlayerState.Idle;
+		SwordThrust = 0;
 	}
 
+	//Sword swing timing
 	private IEnumerator SwordSwingTiming()
 	{
-		//Debug.Log("Ran");
 		CanDelayForCombo = true;
 		player.currentState = PlayerState.Attack;
 		ClickCoroutine = StartCoroutine(MouseClickDelay());
@@ -170,9 +194,9 @@ public class SwordMechanic : Weapon
 		}
 	}
 
+	//Handles the delay before the player can click to enable the next combo.
 	private IEnumerator DelayForNextCombo()
 	{
-		//Handles the delay before the player can click to enable the next combo.
 		yield return new WaitForSeconds(.35f);
 		ComboPhase = 3;
 	}
@@ -183,9 +207,3 @@ public class SwordMechanic : Weapon
 		ComboPhase = 1;
 	}
 }
-
-//TO DO: 5/9/19
-
-//#1 Figure out a smoother transition between end of sword swing and going back to run. Feels very abrubt and fast right now.
-//(The player slows down for each sword swing, but then snaps back immediately to running speed after it's over.)
-
