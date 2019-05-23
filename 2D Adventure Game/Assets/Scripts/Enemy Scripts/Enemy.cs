@@ -83,7 +83,7 @@ public class Enemy : MonoBehaviour
 	protected void CheckDistance()
 	{
 		if (currentState != EnemyState.Knocked && currentState != EnemyState.Attack &&
-		     currentState != EnemyState.Delay)
+		     currentState != EnemyState.Delay && currentState != EnemyState.Random)
 		{
 			if (Vector3.Distance(target.position, transform.position) <= chaseRadius
 			    && Vector3.Distance(target.position, transform.position) > attackRadius)
