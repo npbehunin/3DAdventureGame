@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions.Comparers;
 using Random = UnityEngine.Random;
 
 public class Bat : Enemy {
@@ -12,32 +13,32 @@ public class Bat : Enemy {
 	public bool CanSetRandomPos;
 	public Vector2 RandomPos;
 	public int FlyPhase;
-	
-	protected override void Start () 
+	public float lerpchange;
+	public Vector2 dir;
+	public Vector2 lastdir;
+
+	private float journeyLength;
+
+	protected override void StartValues()
 	{
-		base.Start();
+		base.StartValues();
 		currentState = EnemyState.Idle;
 		rb = GetComponent<Rigidbody2D>();
 		target = GameObject.FindWithTag("Player").transform;
-		Health = 2;
+		Health = 50000;
 		Damage = 1;
 		MoveSpeed = 3;
 		chaseRadius = 6;
 		attackRadius = 0;
-		CanSetRandomPos = false;
-		FlyPhase = 0;
+		CanSetRandomPos = true;
+		FlyPhase = 1;
+		lerpchange = 0;
 	}
-	
-	// Update is called once per frame
-	//protected override void Update () 
-	//{
-		
-	//}
 
 	protected override void Update()
 	{
 		base.Update();
-		//Debug.Log(position);
+		//Debug.Log(RandomPos);
 	}
 
 	protected override void FixedUpdate()
@@ -54,27 +55,20 @@ public class Bat : Enemy {
 			MoveTowardsRandomPos();
 		}
 	}
-	//Ideas for movement pattern:
-	//#1: Fly away from the player. After time passes create a position and check for random points inside its circle for x amount of times.
-	//#2: Fly away from the player in the flipped x and y direction to keep going the same way it interacted. Fly back after reaching a certain distance.
-	//#3: Fly away from the player. Generate a random point along a large first circle. Then generate another random point along the edge of a smaller circle, and
-	//finally, fly towards the player again. <--- Try this first. Also try getting bat to continue flying in the same direction after the collision.
 	
-	//Remember to fix the first random position from being at 0,0!
-
-	//Move towards RandomPos.
 	void MoveTowardsRandomPos()
 	{
 		if (CanSetRandomPos)
 		{
 			CanSetRandomPos = false;
+			lerpchange = 0;
 			switch (FlyPhase)
 			{
 				case 1:
-					SetRandomPosition(RandomPosition(5f));
+					SetRandomPosition(RandomPosition(4.5f));
 					break;
 				case 2:
-					SetRandomPosition(RandomPosition(3f));
+					SetRandomPosition(RandomPosition(3.5f));
 					break;
 				default:
 					FlyPhase = 0;
@@ -82,17 +76,28 @@ public class Bat : Enemy {
 					break;
 			}
 		}
-
-		if (new Vector2(transform.position.x, transform.position.y) != RandomPos)
+		if (transform.position.x > RandomPos.x + .1 || transform.position.x < RandomPos.x - .1 || 
+		    transform.position.y > RandomPos.y + .1 || transform.position.y < RandomPos.y - .1)
 		{
-			position = Vector3.MoveTowards(transform.position, RandomPos, MoveSpeed * Time.deltaTime);
-			rb.MovePosition(position);
+			dir = (RandomPos - (Vector2) transform.position).normalized;
+			ChangeDirection(dir);
 		}
 		else
 		{
+			lastdir = dir;
+			lerpchange = 0;
 			CanSetRandomPos = true;
 			FlyPhase += 1;
 		}
+	}
+
+	//Lerp between last direction and new direction
+	void ChangeDirection(Vector2 dir)
+	{
+		lerpchange += .05f;
+		Vector2 dirchange = Vector2.Lerp(lastdir, dir, lerpchange);
+		position = ((Vector2)transform.position + dirchange * MoveSpeed * Time.deltaTime);
+		rb.MovePosition(position);
 	}
 
 	//Generates the random point
@@ -148,8 +153,8 @@ public class Bat : Enemy {
 	{
 		if (currentState!=EnemyState.Delay)
 		{
-			position = Vector3.MoveTowards(transform.position, target.position, MoveSpeed * Time.deltaTime);
-			rb.MovePosition(position);
+			Vector3 dir = (target.position - transform.position).normalized;
+			ChangeDirection(dir);
 		}
 	}
 
@@ -159,9 +164,26 @@ public class Bat : Enemy {
 		StartCoroutine(TargetPlayerDelay());
 	}
 
+	//Stop this coroutine if knocked.
 	IEnumerator TargetPlayerDelay()
 	{
 		yield return new WaitForSeconds(1f);
 		currentState = EnemyState.Random;
+		lastdir = -(target.position - transform.position).normalized;
+		yield return null;
+	}
+
+	void OnEnable()
+	{
+		currentState = EnemyState.Idle;
+		rb = GetComponent<Rigidbody2D>();
+		target = GameObject.FindWithTag("Player").transform;
+		Health = 2;
+		Damage = 1;
+		MoveSpeed = 3;
+		chaseRadius = 6;
+		attackRadius = 0;
+		CanSetRandomPos = true;
+		FlyPhase = 1;
 	}
 }

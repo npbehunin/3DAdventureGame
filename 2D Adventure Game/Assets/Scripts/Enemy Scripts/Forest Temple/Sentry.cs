@@ -15,10 +15,10 @@ public class Sentry : Enemy
 	public bool CanThrow;
 	public GameObject projectileType;
 	//public int Mask;
-	
-	protected override void Start ()
+
+	protected override void StartValues()
 	{
-		base.Start();
+		base.StartValues();
 		currentState = EnemyState.Idle;
 		rb = GetComponent<Rigidbody2D>();
 		target = GameObject.FindWithTag("Player").transform;

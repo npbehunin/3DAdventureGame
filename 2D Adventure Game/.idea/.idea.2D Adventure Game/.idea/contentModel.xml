@@ -58,6 +58,10 @@
           <e p="Scene Scripts" t="Include">
             <e p="SceneManage.cs" t="Include" />
           </e>
+          <e p="Testing Scripts" t="Include">
+            <e p="DirectionTest.cs" t="Include" />
+            <e p="LerpExample.cs" t="Include" />
+          </e>
           <e p="Weapon Scripts" t="Include">
             <e p="EquipWeapon.cs" t="Include" />
             <e p="Projectile Scripts" t="Include">

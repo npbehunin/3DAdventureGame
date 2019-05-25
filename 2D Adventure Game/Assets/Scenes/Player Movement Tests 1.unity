@@ -515,7 +515,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 317071829}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.9159209, y: -1.4176135, z: 0.01171875}
+  m_LocalPosition: {x: 0.81, y: 7.3, z: 0.01171875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 837465280}
@@ -742,7 +742,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 376838245}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.49, y: -4.11, z: 0.01171875}
+  m_LocalPosition: {x: -1.36, y: 5.32, z: 0.01171875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 837465280}
@@ -828,6 +828,12 @@ MonoBehaviour:
   CanSetRandomPos: 0
   RandomPos: {x: 0, y: 0}
   FlyPhase: 0
+  lerpchange: 0
+  CanGetDir: 0
+  dir: {x: 0, y: 0}
+  lastdir: {x: 0, y: 0}
+  speed: 1
+  startTime: 0
 --- !u!50 &376838249
 Rigidbody2D:
   serializedVersion: 4
@@ -1095,7 +1101,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 837465279}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.90592086, y: 8.987614, z: -0.01171875}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1282365207}
@@ -3358,7 +3364,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1282365204}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.684079, y: -4.9576135, z: 0.01171875}
+  m_LocalPosition: {x: -3.54, y: 4.67, z: 0.01171875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 837465280}

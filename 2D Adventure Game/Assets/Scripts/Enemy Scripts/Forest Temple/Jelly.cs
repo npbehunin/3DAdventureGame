@@ -6,9 +6,9 @@ public class Jelly : Enemy
 {
 	public float JumpMomentum, JumpMomentumPower, JumpMomentumScale, JumpMomentumSmooth;
 	
-	protected override void Start ()
+	protected override void StartValues()
 	{
-		base.Start();
+		base.StartValues();
 		currentState = EnemyState.Idle;
 		rb = GetComponent<Rigidbody2D>();
 		target = GameObject.FindWithTag("Player").transform;

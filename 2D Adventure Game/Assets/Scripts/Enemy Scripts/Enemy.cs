@@ -37,6 +37,11 @@ public class Enemy : MonoBehaviour
 	
 	protected virtual void Start ()
 	{
+		StartValues();
+	}
+
+	protected virtual void StartValues()
+	{
 		knockback = gameObject.GetComponent<Knockback>();
 	}
 
