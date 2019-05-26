@@ -151,7 +151,7 @@ public class SwordMechanic : Weapon
 		CanDelayForCombo = true;
 		player.currentState = PlayerState.Attack;
 		ClickCoroutine = StartCoroutine(MouseClickDelay());
-		yield return new WaitForSeconds(SwingTime);
+		yield return CustomTimer.Timer(SwingTime);
 		if (ComboPhase == 2)
 		{
 			SwordSwing();
@@ -169,18 +169,18 @@ public class SwordMechanic : Weapon
 		
 		if (SwingNumber < MaxSwingNumber)
 		{
-			yield return new WaitForSeconds(.12f);
+			yield return CustomTimer.Timer(.12f);
 			AnimatorSwingNumber = 0;
 			player.currentState = PlayerState.Idle;
-			yield return new WaitForSeconds(.15f);
+			yield return CustomTimer.Timer(.15f);
 			ResetSwordAttack();
 		}
 		else
 		{
-			yield return new WaitForSeconds(.2f);
+			yield return CustomTimer.Timer(.2f);
 			AnimatorSwingNumber = 0;
 			player.currentState = PlayerState.Idle;
-			yield return new WaitForSeconds(.2f);
+			yield return CustomTimer.Timer(.2f);
 			if (ComboPhase == 4)
 			{
 				ComboPhase = 0;
@@ -197,13 +197,13 @@ public class SwordMechanic : Weapon
 	//Handles the delay before the player can click to enable the next combo.
 	private IEnumerator DelayForNextCombo()
 	{
-		yield return new WaitForSeconds(.35f);
+		yield return CustomTimer.Timer(.35f);
 		ComboPhase = 3;
 	}
 
 	private IEnumerator MouseClickDelay()
 	{
-		yield return new WaitForSeconds(SwingTime*.25f);
+		yield return CustomTimer.Timer(SwingTime*.25f);
 		ComboPhase = 1;
 	}
 }

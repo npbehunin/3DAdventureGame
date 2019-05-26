@@ -365,7 +365,6 @@ GameObject:
   - component: {fileID: 317071832}
   - component: {fileID: 317071831}
   - component: {fileID: 317071830}
-  - component: {fileID: 317071835}
   m_Layer: 12
   m_Name: Stu
   m_TagString: Enemy
@@ -385,9 +384,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: 0
+  laststate: 0
   Health: 0
   Damage: 0
   Attacking: 0
+  CanSetState: 0
   MoveSpeed: 0
   chaseRadius: 0
   attackRadius: 0
@@ -519,22 +520,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 837465280}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &317071835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 317071829}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7d89aaab145477459b585adef73c089, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  KnockbackPower: 0
-  knockbackTime: 0
-  camera: {fileID: 5481639}
 --- !u!1001 &324112850
 Prefab:
   m_ObjectHideFlags: 0
@@ -727,14 +714,13 @@ GameObject:
   - component: {fileID: 376838249}
   - component: {fileID: 376838247}
   - component: {fileID: 376838248}
-  - component: {fileID: 376838251}
   m_Layer: 12
   m_Name: Bat
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &376838246
 Transform:
   m_ObjectHideFlags: 0
@@ -775,9 +761,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: 0
+  laststate: 0
   Health: 2
   Damage: 2
   Attacking: 0
+  CanSetState: 0
   MoveSpeed: 3
   chaseRadius: 6
   attackRadius: 4
@@ -829,11 +817,8 @@ MonoBehaviour:
   RandomPos: {x: 0, y: 0}
   FlyPhase: 0
   lerpchange: 0
-  CanGetDir: 0
   dir: {x: 0, y: 0}
   lastdir: {x: 0, y: 0}
-  speed: 1
-  startTime: 0
 --- !u!50 &376838249
 Rigidbody2D:
   serializedVersion: 4
@@ -841,7 +826,7 @@ Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 376838245}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -900,20 +885,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &376838251
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 376838245}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7d89aaab145477459b585adef73c089, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  KnockbackPower: 0
-  knockbackTime: 0
-  camera: {fileID: 5481639}
 --- !u!1 &473830028
 GameObject:
   m_ObjectHideFlags: 0
@@ -972,6 +943,61 @@ MonoBehaviour:
   WeaponDamage: 0
   SwordIndex: 0
   BowIndex: 0
+--- !u!1 &483601851
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 483601852}
+  - component: {fileID: 483601853}
+  - component: {fileID: 483601854}
+  m_Layer: 10
+  m_Name: ObjectManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &483601852
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 483601851}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1109576921}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &483601853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 483601851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7d89aaab145477459b585adef73c089, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  KnockbackPower: 0
+  knockbackTime: 0
+  camera: {fileID: 5481639}
+--- !u!114 &483601854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 483601851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8839e97b4068774595935f99a44f030, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &773295479
 GameObject:
   m_ObjectHideFlags: 0
@@ -1104,8 +1130,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1282365207}
   - {fileID: 317071834}
+  - {fileID: 1282365207}
   - {fileID: 376838246}
   m_Father: {fileID: 0}
   m_RootOrder: 5
@@ -3172,6 +3198,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1805384147}
+  - {fileID: 483601852}
   - {fileID: 1850236996}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -3288,14 +3315,13 @@ GameObject:
   - component: {fileID: 1282365208}
   - component: {fileID: 1282365205}
   - component: {fileID: 1282365209}
-  - component: {fileID: 1282365210}
   m_Layer: 12
   m_Name: Peefer
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!58 &1282365205
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -3368,7 +3394,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 837465280}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1282365208
 Rigidbody2D:
@@ -3402,9 +3428,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: 0
+  laststate: 0
   Health: 0
   Damage: 0
   Attacking: 0
+  CanSetState: 0
   MoveSpeed: 1.75
   chaseRadius: 3.5
   attackRadius: 1
@@ -3414,7 +3442,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
-  knockback: {fileID: 0}
+  knockback: {fileID: 483601853}
   EventInRadius:
     m_PersistentCalls:
       m_Calls:
@@ -3456,20 +3484,6 @@ MonoBehaviour:
   JumpMomentumPower: 0
   JumpMomentumScale: 0
   JumpMomentumSmooth: 0
---- !u!114 &1282365210
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1282365204}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7d89aaab145477459b585adef73c089, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  KnockbackPower: 0
-  knockbackTime: 1
-  camera: {fileID: 5481639}
 --- !u!1 &1306116920
 GameObject:
   m_ObjectHideFlags: 0
@@ -3758,6 +3772,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: 0
+  laststate: 0
   rb: {fileID: 1659612929}
   animator: {fileID: 342910429}
   targetMode: {fileID: 1659612934}
@@ -3768,7 +3783,6 @@ MonoBehaviour:
   MoveSpeed: 4
   test: {x: 0, y: 0, z: 0}
   position: {x: 0, y: 0, z: 0}
-  tempposition: {x: 0, y: 0, z: 0}
 --- !u!4 &1659612928
 Transform:
   m_ObjectHideFlags: 0
@@ -3858,7 +3872,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1669175740}
   - component: {fileID: 1669175741}
-  - component: {fileID: 1669175742}
   m_Layer: 11
   m_Name: Sword Hitbox
   m_TagString: WeaponHitbox
@@ -3907,20 +3920,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.62465715, y: 0.967361}
   m_EdgeRadius: 0
---- !u!114 &1669175742
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1669175739}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7d89aaab145477459b585adef73c089, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  KnockbackPower: 0
-  knockbackTime: 1
-  camera: {fileID: 5481639}
 --- !u!1 &1689185927
 GameObject:
   m_ObjectHideFlags: 0
@@ -4148,7 +4147,8 @@ Prefab:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 114023676723759514, guid: 31da7a3906d466c4288870dd9ac32c30, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: 31da7a3906d466c4288870dd9ac32c30, type: 2}
   m_IsPrefabAsset: 0
 --- !u!1 &1850236994
@@ -4191,7 +4191,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1109576921}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1850236997
 MonoBehaviour:

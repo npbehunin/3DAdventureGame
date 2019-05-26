@@ -27,6 +27,11 @@
               <e p="Turtle.cs" t="Include" />
             </e>
           </e>
+          <e p="Management Scripts" t="Include">
+            <e p="CustomTimer.cs" t="Include" />
+            <e p="Hitstun.cs" t="Include" />
+            <e p="PauseGame.cs" t="Include" />
+          </e>
           <e p="Movement Scripts" t="Include">
             <e p="HitPause.cs" t="Include" />
             <e p="Knockback.cs" t="Include" />
@@ -60,6 +65,7 @@
           </e>
           <e p="Testing Scripts" t="Include">
             <e p="DirectionTest.cs" t="Include" />
+            <e p="FollowTargetTest.cs" t="Include" />
             <e p="LerpExample.cs" t="Include" />
           </e>
           <e p="Weapon Scripts" t="Include">

@@ -5,29 +5,21 @@ using UnityEngine;
 
 public enum PlayerState
 {
-	Idle, Walk, Run, Attack, Paused, Interact, Dead
+	Idle, Walk, Run, Attack, Paused, Dead
 }
 
 public class PlayerMovement : MonoBehaviour
 {
-	public PlayerState currentState;
+	public PlayerState currentState, laststate;
 	public Rigidbody2D rb;
 	public Animator animator;
 	public LookTowardsTarget targetMode;
 
-	private float horizontalspeed;
-	private float verticalspeed;
-	public float SwordMomentumScale;
-	public float SwordMomentum;
-	public float SwordMomentumSmooth;
-	public float SwordMomentumPower;
-	public float MoveSpeed;
+	private float horizontalspeed, verticalspeed;
+	public float SwordMomentumScale, SwordMomentum, SwordMomentumSmooth, SwordMomentumPower, MoveSpeed;
 
-	public Vector3 test;
-
-	public Vector3 position;
-	public Vector3 tempposition;
-
+	public Vector3 test, position;
+	
 	void Start()
 	{
 		currentState = PlayerState.Idle;
@@ -46,6 +38,7 @@ public class PlayerMovement : MonoBehaviour
 
 	void Update()
 	{
+		CheckForPause();
 		if (currentState != PlayerState.Attack && currentState != PlayerState.Paused)
 		{
 			position = new Vector3(Input.GetAxisRaw("Horizontal"), (Input.GetAxisRaw("Vertical")), 0).normalized;
@@ -107,6 +100,43 @@ public class PlayerMovement : MonoBehaviour
 		}
 	}
 
+	//Check if game is paused
+	public void CheckForPause()
+	{
+		if (PauseGame.IsPaused)
+		{
+			currentState = PlayerState.Paused;
+		}
+
+		if (Input.GetKeyDown(KeyCode.Alpha8))
+		{
+			if (!PauseGame.IsPaused)
+			{
+				laststate = currentState;
+				PauseGame.PauseTheGame();
+			}
+			else
+			{
+				PauseGame.UnpauseTheGame();
+				currentState = laststate;
+			}
+		}
+		
+		if (currentState == PlayerState.Paused)
+		{
+			rb.bodyType = RigidbodyType2D.Static;
+		}
+		else
+		{
+			rb.bodyType = RigidbodyType2D.Dynamic;
+		}
+
+		if (Hitstun.HitStunEnabled)
+		{
+			//Run the hitstun coroutine. Set the playerstate to paused while hitstunenabled is true.
+		}
+	}
+	
 	public void GetSwordSwingDirection()
 	{
 		test = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0).normalized;

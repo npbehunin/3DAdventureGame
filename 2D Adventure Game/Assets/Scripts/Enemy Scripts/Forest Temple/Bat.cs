@@ -43,16 +43,19 @@ public class Bat : Enemy {
 
 	protected override void FixedUpdate()
 	{
-		base.FixedUpdate();
-		if (currentState == EnemyState.Delay)
+		if (currentState != EnemyState.Paused)
 		{
-			position = Vector3.MoveTowards(transform.position, target.position, -(MoveSpeed * Time.deltaTime));
-			rb.MovePosition(position);
-		}
+			base.FixedUpdate();
+			if (currentState == EnemyState.Delay)
+			{
+				position = Vector3.MoveTowards(transform.position, target.position, -(MoveSpeed * Time.deltaTime));
+				rb.MovePosition(position);
+			}
 
-		if (currentState == EnemyState.Random)
-		{
-			MoveTowardsRandomPos();
+			if (currentState == EnemyState.Random)
+			{
+				MoveTowardsRandomPos();
+			}
 		}
 	}
 	
@@ -167,7 +170,7 @@ public class Bat : Enemy {
 	//Stop this coroutine if knocked.
 	IEnumerator TargetPlayerDelay()
 	{
-		yield return new WaitForSeconds(1f);
+		yield return CustomTimer.Timer(1f);
 		currentState = EnemyState.Random;
 		lastdir = -(target.position - transform.position).normalized;
 		yield return null;

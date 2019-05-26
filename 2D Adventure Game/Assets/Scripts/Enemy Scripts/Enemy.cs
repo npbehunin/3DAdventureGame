@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -7,16 +8,17 @@ using UnityEngine.Events;
 
 public enum EnemyState
 {
-	Idle, Walk, Target, Attack, Knocked, Random, Delay, Dead
+	Idle, Walk, Target, Attack, Knocked, Random, Delay, Dead, Paused
 }
 
 public class Enemy : MonoBehaviour
 {
-	public EnemyState currentState;
+	public EnemyState currentState, laststate;
 
 	public int Health, Damage;
 	
 	public bool Attacking;
+	public bool CanSetState;
 
 	public float MoveSpeed, chaseRadius, attackRadius;
 	private float horizontalspeed,verticalspeed;
@@ -42,7 +44,7 @@ public class Enemy : MonoBehaviour
 
 	protected virtual void StartValues()
 	{
-		knockback = gameObject.GetComponent<Knockback>();
+		CanSetState = true;
 	}
 
 	protected virtual void FixedUpdate()
@@ -55,6 +57,38 @@ public class Enemy : MonoBehaviour
 		if (Health <= 0)
 		{
 			gameObject.SetActive(false);
+		}
+		CheckForPause();
+	}
+
+	//Checks if game is paused
+	protected void CheckForPause()
+	{
+		if (PauseGame.IsPaused)
+		{
+			if (CanSetState)
+			{
+				CanSetState = false;
+				laststate = currentState;
+			}
+			currentState = EnemyState.Paused;
+		}
+		else
+		{
+			if (!CanSetState)
+			{
+				CanSetState = true;
+				currentState = laststate;
+			}
+		}
+
+		if (currentState == EnemyState.Paused)
+		{
+			rb.bodyType = RigidbodyType2D.Static;
+		}
+		else
+		{
+			rb.bodyType = RigidbodyType2D.Dynamic;
 		}
 	}
 
