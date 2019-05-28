@@ -30,7 +30,6 @@ public class Knockback : MonoBehaviour
 				StopCoroutine(KnockCoroutine);
 			}
 
-			Debug.Log("Knocked");
 			//camera.Knocked = true;
 			Vector3 difference = rb.transform.position - col;
 			camera.StartSwordShake(.3f, difference.normalized);

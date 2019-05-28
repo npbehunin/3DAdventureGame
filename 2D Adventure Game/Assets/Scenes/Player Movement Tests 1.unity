@@ -389,12 +389,13 @@ MonoBehaviour:
   Damage: 0
   Attacking: 0
   CanSetState: 0
+  HitStunEnabled: 0
   MoveSpeed: 0
   chaseRadius: 0
   attackRadius: 0
-  WeaponEquipped: {fileID: 473830030}
   position: {x: 0, y: 0, z: 0}
   JumpPosition: {x: 0, y: 0, z: 0}
+  WeaponEquipped: {fileID: 473830030}
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
@@ -766,12 +767,13 @@ MonoBehaviour:
   Damage: 2
   Attacking: 0
   CanSetState: 0
+  HitStunEnabled: 0
   MoveSpeed: 3
   chaseRadius: 6
   attackRadius: 4
-  WeaponEquipped: {fileID: 473830030}
   position: {x: 0, y: 0, z: 0}
   JumpPosition: {x: 0, y: 0, z: 0}
+  WeaponEquipped: {fileID: 473830030}
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
@@ -953,8 +955,10 @@ GameObject:
   - component: {fileID: 483601852}
   - component: {fileID: 483601853}
   - component: {fileID: 483601854}
+  - component: {fileID: 483601855}
+  - component: {fileID: 483601856}
   m_Layer: 10
-  m_Name: ObjectManager
+  m_Name: PhysicsManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -996,6 +1000,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a8839e97b4068774595935f99a44f030, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &483601855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 483601851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fa42d62ca67a5c4ea43756221f06d73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &483601856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 483601851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f77fa033ebe15548a9a4d9af6c86f8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &773295479
@@ -3433,12 +3459,13 @@ MonoBehaviour:
   Damage: 0
   Attacking: 0
   CanSetState: 0
+  HitStunEnabled: 0
   MoveSpeed: 1.75
   chaseRadius: 3.5
   attackRadius: 1
-  WeaponEquipped: {fileID: 473830030}
   position: {x: 0, y: 0, z: 0}
   JumpPosition: {x: 0, y: 0, z: 0}
+  WeaponEquipped: {fileID: 473830030}
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}

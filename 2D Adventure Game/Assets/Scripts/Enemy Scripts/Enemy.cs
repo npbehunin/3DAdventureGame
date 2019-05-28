@@ -16,25 +16,19 @@ public class Enemy : MonoBehaviour
 	public EnemyState currentState, laststate;
 
 	public int Health, Damage;
-	
-	public bool Attacking;
-	public bool CanSetState;
+
+	public bool Attacking, CanSetState, HitStunEnabled;
 
 	public float MoveSpeed, chaseRadius, attackRadius;
 	private float horizontalspeed,verticalspeed;
+	
+	public Vector3 position, JumpPosition;
 
 	public EquipWeapon WeaponEquipped;
-
-	public Vector3 position, JumpPosition;
-	
 	public Rigidbody2D rb;
-
 	public Transform target, home;
-
 	public Coroutine JumpCoroutine;
-
 	public Knockback knockback;
-
 	public UnityEvent EventInRadius, EventAttack, EventPlayerCollision;
 	
 	protected virtual void Start ()
@@ -84,6 +78,7 @@ public class Enemy : MonoBehaviour
 
 		if (currentState == EnemyState.Paused)
 		{
+			Debug.Log("Enemy paused!");
 			rb.bodyType = RigidbodyType2D.Static;
 		}
 		else

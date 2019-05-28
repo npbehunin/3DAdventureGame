@@ -37,7 +37,6 @@ public class CameraFollowPlayer : MonoBehaviour
 		offset.y = direction.y * amount;
 		smoothSpeed = .2f;
 		yield return new WaitForSeconds(.15f);
-		Debug.Log("Reset the offset");
 		offset.x = 0;
 		offset.y = 0;
 		smoothSpeed = .15f;

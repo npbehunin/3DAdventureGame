@@ -81,7 +81,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   KnockbackPower: 0
   knockbackTime: 0
-  enemy: {fileID: 0}
   camera: {fileID: 0}
 --- !u!114 &114689882513983256
 MonoBehaviour:
@@ -135,7 +134,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: 398b81d02fdc8a64ead4978f2d1cabb8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

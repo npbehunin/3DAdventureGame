@@ -74,12 +74,12 @@ public class Jelly : Enemy
 		//Debug.Log("Starting jump at target");
 		//Animation for winding up attack
 		JumpPosition = (transform.position - target.position) * -1;
-		yield return new WaitForSeconds(.5f);
+		yield return CustomTimer.Timer(.5f);
 		Attacking = true;
 		//Debug.Log("YEET");
-		yield return new WaitForSeconds(.5f);
+		yield return CustomTimer.Timer(.5f);
 		currentState = EnemyState.Idle;
-		yield return new WaitForSeconds(1f);
+		yield return CustomTimer.Timer(1f);
 		JumpMomentum = 0;
 		JumpMomentumScale = 0;
 		Attacking = false;

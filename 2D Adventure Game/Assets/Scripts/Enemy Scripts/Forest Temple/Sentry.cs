@@ -60,10 +60,10 @@ public class Sentry : Enemy
 
 	IEnumerator ThrowRock()
 	{
-		yield return new WaitForSeconds(.5f);
+		yield return CustomTimer.Timer(.5f);
 		projectileType.GetComponent<Projectile>().target = target;
 		GameObject rock = Instantiate(projectileType, gameObject.transform.position, Quaternion.identity);
-		yield return new WaitForSeconds(2f);
+		yield return CustomTimer.Timer(2f);
 		currentState = EnemyState.Idle;
 		CanThrow = true;
 	}

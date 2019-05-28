@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
 	public Rigidbody2D rb;
 	public Animator animator;
 	public LookTowardsTarget targetMode;
+	//public Hitstun hitstun;
 
 	private float horizontalspeed, verticalspeed;
 	public float SwordMomentumScale, SwordMomentum, SwordMomentumSmooth, SwordMomentumPower, MoveSpeed;
@@ -124,16 +125,12 @@ public class PlayerMovement : MonoBehaviour
 		
 		if (currentState == PlayerState.Paused)
 		{
+			Debug.Log("Player paused!");
 			rb.bodyType = RigidbodyType2D.Static;
 		}
 		else
 		{
 			rb.bodyType = RigidbodyType2D.Dynamic;
-		}
-
-		if (Hitstun.HitStunEnabled)
-		{
-			//Run the hitstun coroutine. Set the playerstate to paused while hitstunenabled is true.
 		}
 	}
 	
