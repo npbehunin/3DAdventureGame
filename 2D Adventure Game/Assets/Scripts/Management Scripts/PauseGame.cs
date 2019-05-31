@@ -12,6 +12,21 @@ public class PauseGame : MonoBehaviour
 		IsPaused = false;
 	}
 
+	void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.E))
+		{
+			if (!IsPaused)
+			{
+				PauseTheGame();
+			}
+			else
+			{
+				UnpauseTheGame();
+			}
+		}
+	}
+
 	public static void PauseTheGame()
 	{
 		IsPaused = true;

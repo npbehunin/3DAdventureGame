@@ -6,19 +6,18 @@ using UnityEngine;
 public class Knockback : MonoBehaviour
 {
 	public float KnockbackPower;
-	public float knockbackTime;
 
 	private Coroutine KnockCoroutine;
 	public CameraFollowPlayer camera;
 
 	void Start()
 	{
-		knockbackTime = 1f;
+		//knockbackTime = 1f;
 	}
 
 	void Update()
 	{
-		KnockbackPower = Weapon.KnockbackPower;
+		//KnockbackPower = Weapon.KnockbackPower;
 	}
 
 	public void Knocked(Rigidbody2D rb, Vector3 col)
@@ -30,23 +29,21 @@ public class Knockback : MonoBehaviour
 				StopCoroutine(KnockCoroutine);
 			}
 
-			//camera.Knocked = true;
-			Vector3 difference = rb.transform.position - col;
-			camera.StartSwordShake(.3f, difference.normalized);
-			difference = difference.normalized * KnockbackPower;
-			rb.AddForce(difference, ForceMode2D.Impulse);
-			KnockCoroutine = StartCoroutine(ResetKnock(rb));
+			//Vector3 difference = rb.transform.position - col;
+			//camera.StartSwordShake(.3f, difference.normalized);
+			//difference = difference.normalized * KnockbackPower;
+			//rb.AddForce(difference, ForceMode2D.Impulse);
 		}
 	}
 
-	private IEnumerator ResetKnock(Rigidbody2D rb)
-	{
-		if (rb != null)
-		{
-			rb.gameObject.GetComponent<Enemy>().currentState = EnemyState.Knocked;
-			yield return new WaitForSeconds(knockbackTime);
-			rb.velocity = Vector2.zero;
-			rb.gameObject.GetComponent<Enemy>().currentState = EnemyState.Idle;
-		}
-	}
+	//private IEnumerator ResetKnock(Rigidbody2D rb)
+	//{
+	//	if (rb != null)
+	//	{
+	//		rb.gameObject.GetComponent<Enemy>().currentState = EnemyState.Knocked;
+	//		yield return new WaitForSeconds(knockbackTime);
+	//		rb.velocity = Vector2.zero;
+	//		rb.gameObject.GetComponent<Enemy>().currentState = EnemyState.Idle;
+	//	}
+	//}
 }

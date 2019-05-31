@@ -4,25 +4,16 @@ using UnityEngine;
 
 public class SwordMechanic : Weapon
 {
-	public bool SwordEquipped;
-	public bool CanSwing;
-	public bool CanDelayForCombo;
+	public bool SwordEquipped, CanSwing, CanDelayForCombo;
 
-	public int ComboPhase;
-
-	public int SwingNumber;
-	public int AnimatorSwingNumber;
-	public int MaxSwingNumber;
+	public int ComboPhase, SwingNumber, AnimatorSwingNumber, MaxSwingNumber;
 
 	public float SwingTime;
-	public float SwordThrust;
 	
 	public Animator animator;
 	public PlayerMovement player;
 
-	private Coroutine SwingCoroutine;
-	private Coroutine ClickCoroutine;
-	private Coroutine DelayForClickCombo;
+	private Coroutine SwingCoroutine, ClickCoroutine, DelayForClickCombo;
 
 	public EquipWeapon equipweapon;
 
@@ -62,31 +53,12 @@ public class SwordMechanic : Weapon
 				}
 			}
 		}
-		
-		//Knockback
-		KnockbackPower = SwordThrust;
-		if (PlayerObject != null)
-		{
-			PlayerObject.GetComponent<PlayerMovement>().GetSwordSwingDirection();
-			PlayerDirection = PlayerObject.GetComponent<PlayerMovement>().test;
-			if (PlayerDirection != Vector3.zero && PlayerDirection != null)
-			{
-				SwordThrust = 5;
-			}
-			else
-			{
-				SwordThrust = 0;
-			}
-		}
-		else
-		{
-			SwordThrust = 0;
-		}
 	}
 
 	//Enables the next sword swing
 	void SwordSwing()
 	{
+		Enemy.CanCollide = true; //Enemy can collide
 		if (SwingNumber < MaxSwingNumber)
 		{
 			if (DelayForClickCombo!= null)
@@ -141,8 +113,8 @@ public class SwordMechanic : Weapon
 		CanDelayForCombo = false;
 		CanSwing = true;
 		AnimatorSwingNumber = 0;
+		Enemy.CanCollide = true; //Enemy can collide
 		player.currentState = PlayerState.Idle;
-		SwordThrust = 0;
 	}
 
 	//Sword swing timing
@@ -194,7 +166,6 @@ public class SwordMechanic : Weapon
 		}
 	}
 
-	//Handles the delay before the player can click to enable the next combo.
 	private IEnumerator DelayForNextCombo()
 	{
 		yield return CustomTimer.Timer(.35f);

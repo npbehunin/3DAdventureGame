@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.Analytics;
 using UnityEngine.Experimental.UIElements;
 
-public class Projectile : MonoBehaviour
+public class Projectile : Weapon
 {
 	private Ray ray;
 	private RaycastHit2D hit;
@@ -26,7 +26,7 @@ public class Projectile : MonoBehaviour
 	public bool UsingMouse;
 	public Transform target;
 
-	void Start()
+	protected override void Start()
 	{
 		if (UsingMouse)
 		{
@@ -61,7 +61,7 @@ public class Projectile : MonoBehaviour
 		}
 	}
 
-	void Update()
+	protected override void Update()
 	{
 		transform.position += movementVector * Time.deltaTime;
 		//Debug.Log(projectileSpeed);

@@ -25,3 +25,7 @@ public class CustomTimer : MonoBehaviour
 		}	
 	}
 }
+
+//Instead of creating a hitstuntimer, simply pause the animation and movement. The coroutines will run at the
+//same timing. Under the assumption we only pause for a very brief moment like 1 or 2 frames, pausing the sword coroutines
+//shouldn't matter.

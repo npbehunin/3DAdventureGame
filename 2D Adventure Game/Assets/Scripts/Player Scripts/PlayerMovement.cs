@@ -14,12 +14,13 @@ public class PlayerMovement : MonoBehaviour
 	public Rigidbody2D rb;
 	public Animator animator;
 	public LookTowardsTarget targetMode;
-	//public Hitstun hitstun;
+	public bool CanSetState;
 
 	private float horizontalspeed, verticalspeed;
 	public float SwordMomentumScale, SwordMomentum, SwordMomentumSmooth, SwordMomentumPower, MoveSpeed;
 
-	public Vector3 test, position;
+	public Vector3 position;
+	public static Vector3 test;
 	
 	void Start()
 	{
@@ -27,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
 		rb = GetComponent<Rigidbody2D>();
 		SwordMomentumSmooth = 4f;
 		SwordMomentumPower = 1f;
+		CanSetState = true;
 	}
 
 	void FixedUpdate()
@@ -104,36 +106,37 @@ public class PlayerMovement : MonoBehaviour
 	//Check if game is paused
 	public void CheckForPause()
 	{
-		if (PauseGame.IsPaused)
+		if (PauseGame.IsPaused || Hitstun.HitStunEnabled)
 		{
+			if (CanSetState)
+			{
+				CanSetState = false;
+				laststate = currentState;
+			}
 			currentState = PlayerState.Paused;
 		}
-
-		if (Input.GetKeyDown(KeyCode.Alpha8))
+		else
 		{
-			if (!PauseGame.IsPaused)
+			if (!CanSetState)
 			{
-				laststate = currentState;
-				PauseGame.PauseTheGame();
-			}
-			else
-			{
-				PauseGame.UnpauseTheGame();
+				CanSetState = true;
 				currentState = laststate;
 			}
 		}
 		
 		if (currentState == PlayerState.Paused)
 		{
-			Debug.Log("Player paused!");
 			rb.bodyType = RigidbodyType2D.Static;
+			animator.enabled = false;
 		}
 		else
 		{
 			rb.bodyType = RigidbodyType2D.Dynamic;
+			animator.enabled = true;
 		}
 	}
 	
+	//Get sword swing direction
 	public void GetSwordSwingDirection()
 	{
 		test = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0).normalized;

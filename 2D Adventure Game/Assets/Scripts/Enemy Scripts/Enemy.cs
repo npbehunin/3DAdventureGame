@@ -17,19 +17,21 @@ public class Enemy : MonoBehaviour
 
 	public int Health, Damage;
 
-	public bool Attacking, CanSetState, HitStunEnabled;
+	public bool Attacking, CanSetState;
+	public static bool CanCollide;
 
 	public float MoveSpeed, chaseRadius, attackRadius;
+	public float knockMomentumScale, knockMomentum;
 	private float horizontalspeed,verticalspeed;
 	
-	public Vector3 position, JumpPosition;
+	public Vector3 position, JumpPosition, colPos;
 
 	public EquipWeapon WeaponEquipped;
 	public Rigidbody2D rb;
 	public Transform target, home;
 	public Coroutine JumpCoroutine;
 	public Knockback knockback;
-	public UnityEvent EventInRadius, EventAttack, EventPlayerCollision;
+	public UnityEvent EventInRadius, EventAttack, EventPlayerCollision, EventKnocked;
 	
 	protected virtual void Start ()
 	{
@@ -39,6 +41,7 @@ public class Enemy : MonoBehaviour
 	protected virtual void StartValues()
 	{
 		CanSetState = true;
+		CanCollide = true;
 	}
 
 	protected virtual void FixedUpdate()
@@ -48,7 +51,7 @@ public class Enemy : MonoBehaviour
 	
 	protected virtual void Update () 
 	{
-		if (Health <= 0)
+		if (Health <= 0 && !Hitstun.HitStunEnabled)
 		{
 			gameObject.SetActive(false);
 		}
@@ -76,9 +79,10 @@ public class Enemy : MonoBehaviour
 			}
 		}
 
+		//For now, no other enemies besides the jelly script get hitstunned
+		
 		if (currentState == EnemyState.Paused)
 		{
-			Debug.Log("Enemy paused!");
 			rb.bodyType = RigidbodyType2D.Static;
 		}
 		else
@@ -88,27 +92,40 @@ public class Enemy : MonoBehaviour
 	}
 
 	//Check triggers
-	protected void OnTriggerEnter2D(Collider2D col)
+	protected void OnTriggerStay2D(Collider2D col)
 	{
-		if (col.gameObject.CompareTag("WeaponHitbox"))
+		if (CanCollide)
 		{
-			Damage = WeaponEquipped.WeaponDamage;
-			TakeDamage();
-			if (knockback != null)
+			if (col.gameObject.CompareTag("WeaponHitbox"))
 			{
-				knockback.Knocked(rb, col.transform.position);
+				CanCollide = false;
+				RunEventKnocked(col.transform.position);
 			}
-		}
 
-		if (col.gameObject.CompareTag("Player"))
-		{
-			if (EventPlayerCollision != null)
+			if (col.gameObject.CompareTag("Player"))
 			{
-				EventPlayerCollision.Invoke();
+				if (EventPlayerCollision != null)
+				{
+					EventPlayerCollision.Invoke();
+				}
 			}
 		}
 	}
+	
+	//Knocked stuff
+	public void RunEventKnocked(Vector3 pos)
+	{
+		Damage = WeaponEquipped.WeaponDamage;
+		TakeDamage();
+		if (EventKnocked != null)
+		{
+			EventKnocked.Invoke();
+		}
 
+		colPos = pos;
+	}
+
+	//Take damage
 	void TakeDamage()
 	{
 		Health -= Damage;
@@ -117,7 +134,7 @@ public class Enemy : MonoBehaviour
 	protected void CheckDistance()
 	{
 		if (currentState != EnemyState.Knocked && currentState != EnemyState.Attack &&
-		     currentState != EnemyState.Delay && currentState != EnemyState.Random)
+		     currentState != EnemyState.Delay && currentState != EnemyState.Random && currentState != EnemyState.Paused)
 		{
 			if (Vector3.Distance(target.position, transform.position) <= chaseRadius
 			    && Vector3.Distance(target.position, transform.position) > attackRadius)
@@ -140,7 +157,7 @@ public class Enemy : MonoBehaviour
 			}
 		}
 	}
-
+	
 	public void ChangeState(EnemyState newState)
 	{
 		if (currentState != newState)

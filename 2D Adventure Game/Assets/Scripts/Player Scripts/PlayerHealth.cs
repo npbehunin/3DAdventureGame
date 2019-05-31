@@ -43,7 +43,7 @@ public class PlayerHealth : MonoBehaviour
 	void TakeDamage()
 	{
 		Health -= EnemyDamage;
-		Debug.Log(Health);
+		//Debug.Log(Health);
 		StartCoroutine(Invincibility());
 	}
 
@@ -61,7 +61,7 @@ public class PlayerHealth : MonoBehaviour
 		{
 			Debug.Log("Player has died!");
 			yield return new WaitForSeconds(1.5f);
-			manager.RestartScene(manager.loadedlevel);
+			//manager.RestartScene(manager.loadedlevel);
 		}
 	}
 }
