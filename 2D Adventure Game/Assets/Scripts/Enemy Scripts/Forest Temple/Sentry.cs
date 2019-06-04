@@ -36,7 +36,7 @@ public class Sentry : Enemy
 		//Debug.DrawLine(transform.position, target.position, Color.red);
 	}
 
-	public void StartThrowRocks()
+	protected override void InRadiusEvent()
 	{
 		ChangeState(EnemyState.Attack);
 		int Mask = 1 << 9;

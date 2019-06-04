@@ -4,12 +4,10 @@ using UnityEngine;
 
 public class Jelly : Enemy
 {
-	public float JumpMomentum, JumpMomentumPower, JumpMomentumScale, JumpMomentumSmooth;
-	public bool CanSetDifference;
-
-	public Vector3 difference, playerDirection;
-
-	public Coroutine knockCo;
+	private float JumpMomentum, JumpMomentumPower, JumpMomentumScale, JumpMomentumSmooth;
+	private bool CanSetDifference;
+	private Vector3 difference;//playerDirection;
+	private Coroutine knockCo;
 	
 	protected override void StartValues()
 	{
@@ -25,12 +23,13 @@ public class Jelly : Enemy
 		chaseRadius = 3.5f;
 		attackRadius = 1;
 		CanSetDifference = false;
+		CanAttack = true;
 	}
 
 	protected override void Update()
 	{
 		base.Update();
-		if (Attacking)
+		if (!CanAttack)
 		{
 			//Run this through a while loop to work better with pause system
 			JumpMomentumScale += JumpMomentumSmooth * Time.deltaTime;
@@ -44,7 +43,7 @@ public class Jelly : Enemy
 			{
 				CanSetDifference = false;
 				difference = (transform.position - target.position).normalized;
-				playerDirection = PlayerMovement.test;
+				//playerDirection = PlayerMovement.test;
 			}
 
 			float smooth = 4f;
@@ -52,9 +51,6 @@ public class Jelly : Enemy
 			knockMomentumScale += smooth * Time.deltaTime;
 			knockMomentum = Mathf.Lerp(power, 0, knockMomentumScale);
 			position = (knockMomentum * difference);
-			
-			//position = (knockMomentum * new Vector3(difference.x * playerDirection.x, difference.y * playerDirection.y, 0));
-			//Use this instead for knockback depending on player's position. HOWEVER, knockback from projectiles won't work if the player is standing still.
 		}
 		else
 		{
@@ -66,7 +62,7 @@ public class Jelly : Enemy
 	protected override void FixedUpdate()
 	{
 		base.FixedUpdate();
-		if (Attacking && currentState == EnemyState.Attack)
+		if (!CanAttack && currentState == EnemyState.Attack)
 		{
 			rb.MovePosition(transform.position + position * MoveSpeed * Time.deltaTime);
 		}
@@ -81,26 +77,33 @@ public class Jelly : Enemy
 	}
 	
 	//Follow event
-	public void FollowPlayer()
+	protected override void InRadiusEvent()
 	{
+		base.InRadiusEvent();
 		ChangeState(EnemyState.Target);
 		position = Vector3.MoveTowards(transform.position, target.position, MoveSpeed * Time.deltaTime);
 		rb.MovePosition(position);
 	}
 
 	//Attack event
-	public void JumpAttackCoroutine()
+	protected override void AttackEvent()
 	{
-		ChangeState(EnemyState.Attack);
-		if (!Attacking)
+		base.AttackEvent();
+		if (CanAttack)
 		{
+			ChangeState(EnemyState.Attack);
 			JumpCoroutine = StartCoroutine(JumpAtTarget());
+		}
+		else
+		{
+			ChangeState(EnemyState.Target);
 		}
 	}
 	
 	//Knocked event
-	public void KnockEvent()
+	protected override void KnockedEvent()
 	{
+		base.KnockedEvent();
 		StartCoroutine(Knocked());
 		if (knockCo != null)
 		{
@@ -133,7 +136,7 @@ public class Jelly : Enemy
 	{
 		JumpMomentum = 0;
 		JumpMomentumScale = 0;
-		Attacking = false;
+		CanAttack = true;
 	}
 	
 	private IEnumerator JumpAtTarget()
@@ -141,7 +144,7 @@ public class Jelly : Enemy
 		//Animation for winding up attack
 		JumpPosition = (transform.position - target.position) * -1;
 		yield return CustomTimer.Timer(.5f);
-		Attacking = true;
+		CanAttack = false;
 		yield return CustomTimer.Timer(.5f);
 		currentState = EnemyState.Idle;
 		yield return CustomTimer.Timer(1f);

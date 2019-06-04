@@ -24,7 +24,7 @@ public class KnockbackOriginal : MonoBehaviour {
 			Rigidbody2D enemy = other.GetComponent<Rigidbody2D>();
 			if(enemy != null)
 			{
-				enemy.GetComponent<Enemy>().currentState = EnemyState.Knocked;
+				//enemy.GetComponent<Enemy>().currentState = EnemyState.Knocked;
 				Debug.Log("Collision");
 				Vector2 difference = enemy.transform.position - transform.position;
 				difference = difference.normalized * thrust;
@@ -40,7 +40,7 @@ public class KnockbackOriginal : MonoBehaviour {
 		{
 			yield return new WaitForSeconds(knockbackTime);
 			enemy.velocity = Vector2.zero;
-			enemy.GetComponent<Enemy>().currentState = EnemyState.Idle;
+			//enemy.GetComponent<Enemy>().currentState = EnemyState.Idle;
 		}
 	}
 }

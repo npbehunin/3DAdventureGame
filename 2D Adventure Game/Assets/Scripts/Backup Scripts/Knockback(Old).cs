@@ -60,7 +60,7 @@ public class KnockbackOld : MonoBehaviour
 
 	void Knocked()
 	{
-		enemy.GetComponent<Enemy>().currentState = EnemyState.Knocked;
+		//enemy.GetComponent<Enemy>().currentState = EnemyState.Knocked;
 		if (enemy != null)
 		{
 			ResetKnock(enemy);
@@ -96,7 +96,7 @@ public class KnockbackOld : MonoBehaviour
 	private void ResetKnock(Rigidbody2D enemy)
 	{
 		enemy.velocity = Vector2.zero;
-		enemy.GetComponent<Enemy>().currentState = EnemyState.Idle;
+		//enemy.GetComponent<Enemy>().currentState = EnemyState.Idle;
 	}
 
 	private IEnumerator Knock(Rigidbody2D enemy)

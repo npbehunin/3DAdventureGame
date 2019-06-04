@@ -100,7 +100,7 @@ public class SwordTest : Weapon
 				StopCoroutine(ClickCoroutine);
 			}
 			CanSwing = false;
-			player.SwordMomentumScale = 0;
+			//player.SwordMomentumScale = 0;
 			SwingCoroutine = StartCoroutine(SwordSwingTiming());
 			SwingNumber += 1;
 			AnimatorSwingNumber = SwingNumber;

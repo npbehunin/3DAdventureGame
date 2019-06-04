@@ -124,6 +124,7 @@ GameObject:
   - component: {fileID: 5481637}
   - component: {fileID: 5481636}
   - component: {fileID: 5481639}
+  - component: {fileID: 5481640}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -207,7 +208,36 @@ MonoBehaviour:
   smoothSpeed: 0.15
   offset: {x: 0, y: 0, z: -10}
   desiredPosition: {x: 0, y: 0, z: 0}
+  ShakeDir: {fileID: 11400000, guid: c4d0f9da8123eb744bd501e70d49e338, type: 2}
   Knocked: 0
+--- !u!114 &5481640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 5481635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 824ca21c777ec3c4296d394f50330945, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  signal: {fileID: 11400000, guid: e9270158190f5d74ba51984178cda4f4, type: 2}
+  signalEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5481639}
+        m_MethodName: StartSwordShake
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!1 &20902911
 GameObject:
   m_ObjectHideFlags: 0
@@ -251,85 +281,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe7c6f5abfad70f4d8ac2c3caa098d5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentState: 0
-  laststate: 0
+  CamShakeSignal: {fileID: 11400000, guid: e9270158190f5d74ba51984178cda4f4, type: 2}
+  CamShakeDir: {fileID: 11400000, guid: c4d0f9da8123eb744bd501e70d49e338, type: 2}
   Health: 0
   Damage: 0
-  Attacking: 0
-  CanSetState: 0
-  MoveSpeed: 1.75
-  chaseRadius: 3.5
-  attackRadius: 1
-  knockMomentumScale: 0
-  knockMomentum: 0
-  position: {x: 0, y: 0, z: 0}
-  JumpPosition: {x: 0, y: 0, z: 0}
-  colPos: {x: 0, y: 0, z: 0}
-  WeaponEquipped: {fileID: 473830030}
+  WeaponDamage: {fileID: 11400000, guid: 8a811f3aa7c4e8a4f9d5fa3c2edb7446, type: 2}
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
-  knockback: {fileID: 483601853}
-  EventInRadius:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 20902913}
-        m_MethodName: FollowPlayer
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  EventAttack:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 20902913}
-        m_MethodName: JumpAttackCoroutine
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  EventPlayerCollision:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  EventKnocked:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 20902913}
-        m_MethodName: KnockEvent
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  JumpMomentum: 0
-  JumpMomentumPower: 0
-  JumpMomentumScale: 0
-  JumpMomentumSmooth: 0
-  CanSetDifference: 0
-  difference: {x: 0, y: 0, z: 0}
-  playerDirection: {x: 0, y: 0, z: 0}
 --- !u!58 &20902914
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -586,56 +545,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5adbee0a1e09ad74c8c209b2b4c1d297, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentState: 0
-  laststate: 0
+  CamShakeSignal: {fileID: 11400000, guid: e9270158190f5d74ba51984178cda4f4, type: 2}
+  CamShakeDir: {fileID: 11400000, guid: c4d0f9da8123eb744bd501e70d49e338, type: 2}
   Health: 0
   Damage: 0
-  Attacking: 0
-  CanSetState: 0
-  MoveSpeed: 0
-  chaseRadius: 0
-  attackRadius: 0
-  knockMomentumScale: 0
-  knockMomentum: 0
-  position: {x: 0, y: 0, z: 0}
-  JumpPosition: {x: 0, y: 0, z: 0}
-  colPos: {x: 0, y: 0, z: 0}
-  WeaponEquipped: {fileID: 473830030}
+  WeaponDamage: {fileID: 11400000, guid: 8a811f3aa7c4e8a4f9d5fa3c2edb7446, type: 2}
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
-  knockback: {fileID: 0}
-  EventInRadius:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  EventAttack:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 317071830}
-        m_MethodName: StartThrowRocks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  EventPlayerCollision:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  EventKnocked:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   CanThrow: 0
   projectileType: {fileID: 1719595767031652, guid: 691418f770845344fa090d06c472141a,
     type: 2}
@@ -799,6 +716,7 @@ GameObject:
   - component: {fileID: 342910428}
   - component: {fileID: 342910430}
   - component: {fileID: 342910429}
+  - component: {fileID: 342910431}
   m_Layer: 11
   m_Name: Player Graphics
   m_TagString: Untagged
@@ -885,6 +803,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &342910431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 342910427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 369d19d5d1cd14a45b97f1f36210f4b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animState: 0
+  animator: {fileID: 342910429}
+  targetMode: {fileID: 1659612934}
 --- !u!1 &354236330
 GameObject:
   m_ObjectHideFlags: 0
@@ -971,67 +903,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 389e49d67a96d8f4492c8441624e4cbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentState: 0
-  laststate: 0
+  CamShakeSignal: {fileID: 11400000, guid: e9270158190f5d74ba51984178cda4f4, type: 2}
+  CamShakeDir: {fileID: 11400000, guid: c4d0f9da8123eb744bd501e70d49e338, type: 2}
   Health: 2
   Damage: 2
-  Attacking: 0
-  CanSetState: 0
-  MoveSpeed: 3
-  chaseRadius: 6
-  attackRadius: 4
-  knockMomentumScale: 0
-  knockMomentum: 0
-  position: {x: 0, y: 0, z: 0}
-  JumpPosition: {x: 0, y: 0, z: 0}
-  colPos: {x: 0, y: 0, z: 0}
-  WeaponEquipped: {fileID: 473830030}
+  WeaponDamage: {fileID: 11400000, guid: 8a811f3aa7c4e8a4f9d5fa3c2edb7446, type: 2}
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
-  knockback: {fileID: 0}
-  EventInRadius:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 376838248}
-        m_MethodName: FollowPlayer
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  EventAttack:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  EventPlayerCollision:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 376838248}
-        m_MethodName: PlayerCollision
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  EventKnocked:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   CanSetRandomPos: 0
   RandomPos: {x: 0, y: 0}
   FlyPhase: 0
@@ -1199,7 +1078,6 @@ MonoBehaviour:
   SwordEquipped: 0
   BowEquipped: 0
   BombEquipped: 0
-  WeaponDamage: 0
   SwordIndex: 0
   BowIndex: 0
 --- !u!1 &483601851
@@ -1320,7 +1198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1df3f628b56115f48a0b7400ca0017f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damage: 0
+  WeaponDamage: {fileID: 11400000, guid: 8a811f3aa7c4e8a4f9d5fa3c2edb7446, type: 2}
   BowEquipped: 0
   canStartBowHold: 0
   canShoot: 0
@@ -1329,7 +1207,7 @@ MonoBehaviour:
     type: 2}
   equipweapon: {fileID: 473830030}
   player: {fileID: 1659612925}
-  animator: {fileID: 342910429}
+  playerAnim: {fileID: 342910431}
 --- !u!1 &799494596
 GameObject:
   m_ObjectHideFlags: 0
@@ -1622,7 +1500,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd0c1424197339a47a5062bc1c56f2f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damage: 0
+  WeaponDamage: {fileID: 0}
   SwordEquipped: 0
   CanSwing: 0
   CanDelayForCombo: 0
@@ -1631,7 +1509,8 @@ MonoBehaviour:
   AnimatorSwingNumber: 0
   MaxSwingNumber: 0
   SwingTime: 0
-  animator: {fileID: 342910429}
+  SwordMomentumScaleValue: {fileID: 0}
+  playerAnim: {fileID: 0}
   player: {fileID: 1659612925}
   equipweapon: {fileID: 473830030}
 --- !u!1 &990717298
@@ -3404,7 +3283,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b130f55e642652478621ef7601cf6b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damage: 5
+  WeaponDamage: {fileID: 0}
   SwordEquipped: 0
   CanSwing: 0
   CanDelayForCombo: 0
@@ -3413,7 +3292,8 @@ MonoBehaviour:
   AnimatorSwingNumber: 0
   MaxSwingNumber: 0
   SwingTime: 0
-  animator: {fileID: 342910429}
+  SwordMomentumScaleValue: {fileID: 0}
+  playerAnim: {fileID: 0}
   player: {fileID: 1659612925}
   equipweapon: {fileID: 473830030}
 --- !u!1 &1059047447
@@ -3701,85 +3581,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe7c6f5abfad70f4d8ac2c3caa098d5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentState: 0
-  laststate: 0
+  CamShakeSignal: {fileID: 11400000, guid: e9270158190f5d74ba51984178cda4f4, type: 2}
+  CamShakeDir: {fileID: 11400000, guid: c4d0f9da8123eb744bd501e70d49e338, type: 2}
   Health: 0
   Damage: 0
-  Attacking: 0
-  CanSetState: 0
-  MoveSpeed: 1.75
-  chaseRadius: 3.5
-  attackRadius: 1
-  knockMomentumScale: 0
-  knockMomentum: 0
-  position: {x: 0, y: 0, z: 0}
-  JumpPosition: {x: 0, y: 0, z: 0}
-  colPos: {x: 0, y: 0, z: 0}
-  WeaponEquipped: {fileID: 473830030}
+  WeaponDamage: {fileID: 11400000, guid: 8a811f3aa7c4e8a4f9d5fa3c2edb7446, type: 2}
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
-  knockback: {fileID: 483601853}
-  EventInRadius:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1282365209}
-        m_MethodName: FollowPlayer
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  EventAttack:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1282365209}
-        m_MethodName: JumpAttackCoroutine
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  EventPlayerCollision:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  EventKnocked:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1282365209}
-        m_MethodName: KnockEvent
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  JumpMomentum: 0
-  JumpMomentumPower: 0
-  JumpMomentumScale: 0
-  JumpMomentumSmooth: 0
-  CanSetDifference: 0
-  difference: {x: 0, y: 0, z: 0}
-  playerDirection: {x: 0, y: 0, z: 0}
 --- !u!1 &1306116920
 GameObject:
   m_ObjectHideFlags: 0
@@ -3910,7 +3719,7 @@ MonoBehaviour:
   MoveSpeed: 4
   rb: {fileID: 1468615832}
   CurrentState: 0
-  player: {fileID: 1659612925}
+  playerMoveSpeed: {fileID: 11400000, guid: 8315aec1680244b49a520f9f11120688, type: 2}
   path: {fileID: 1468615834}
 --- !u!58 &1468615831
 CircleCollider2D:
@@ -4070,14 +3879,10 @@ MonoBehaviour:
   currentState: 0
   laststate: 0
   rb: {fileID: 1659612929}
-  animator: {fileID: 342910429}
+  playerAnim: {fileID: 342910431}
   targetMode: {fileID: 1659612934}
-  CanSetState: 0
-  SwordMomentumScale: 0
-  SwordMomentum: 0
-  SwordMomentumSmooth: 0
-  SwordMomentumPower: 0
-  MoveSpeed: 4
+  SwordMomentumScale: {fileID: 11400000, guid: 5c28ab169c95d0849b5c377dda9b308a, type: 2}
+  MoveSpeed: {fileID: 11400000, guid: 8315aec1680244b49a520f9f11120688, type: 2}
   position: {x: 0, y: 0, z: 0}
 --- !u!4 &1659612928
 Transform:
@@ -4228,7 +4033,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 520a96b75dcd82c4099a4a23b1fa4327, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damage: 1
+  WeaponDamage: {fileID: 11400000, guid: 8a811f3aa7c4e8a4f9d5fa3c2edb7446, type: 2}
   SwordEquipped: 0
   CanSwing: 0
   CanDelayForCombo: 0
@@ -4237,7 +4042,8 @@ MonoBehaviour:
   AnimatorSwingNumber: 0
   MaxSwingNumber: 0
   SwingTime: 0
-  animator: {fileID: 342910429}
+  SwordMomentumScaleValue: {fileID: 0}
+  playerAnim: {fileID: 342910431}
   player: {fileID: 1659612925}
   equipweapon: {fileID: 473830030}
 --- !u!1 &1689185927
@@ -4280,7 +4086,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7e9d226b1d3b9940af21ba2f8b14594, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damage: 0
+  WeaponDamage: {fileID: 0}
   BowEquipped: 0
   canStartBowHold: 0
   canShoot: 0
@@ -4289,7 +4095,7 @@ MonoBehaviour:
     type: 2}
   equipweapon: {fileID: 473830030}
   player: {fileID: 1659612925}
-  animator: {fileID: 342910429}
+  playerAnim: {fileID: 0}
 --- !u!1 &1708960404
 GameObject:
   m_ObjectHideFlags: 0
@@ -4330,7 +4136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 520a96b75dcd82c4099a4a23b1fa4327, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damage: 1
+  WeaponDamage: {fileID: 0}
   SwordEquipped: 0
   CanSwing: 0
   CanDelayForCombo: 0
@@ -4339,7 +4145,8 @@ MonoBehaviour:
   AnimatorSwingNumber: 0
   MaxSwingNumber: 0
   SwingTime: 0
-  animator: {fileID: 342910429}
+  SwordMomentumScaleValue: {fileID: 0}
+  playerAnim: {fileID: 0}
   player: {fileID: 1659612925}
   equipweapon: {fileID: 473830030}
 --- !u!1 &1805384146

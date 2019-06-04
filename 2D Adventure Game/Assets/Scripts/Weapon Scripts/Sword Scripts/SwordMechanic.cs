@@ -9,8 +9,9 @@ public class SwordMechanic : Weapon
 	public int ComboPhase, SwingNumber, AnimatorSwingNumber, MaxSwingNumber;
 
 	public float SwingTime;
-	
-	public Animator animator;
+	public FloatValue SwordMomentumScaleValue;
+
+	public PlayerAnimation playerAnim;
 	public PlayerMovement player;
 
 	private Coroutine SwingCoroutine, ClickCoroutine, DelayForClickCombo;
@@ -32,7 +33,7 @@ public class SwordMechanic : Weapon
 	{
 		base.Update();
 		SwordEquipped = equipweapon.SwordEquipped;
-		animator.SetInteger("SwordAttackState", AnimatorSwingNumber);
+		playerAnim.SetAnimSwordAttack(AnimatorSwingNumber);
 		if (Input.GetButtonDown("Fire1"))
 		{
 			if (SwordEquipped)
@@ -77,7 +78,7 @@ public class SwordMechanic : Weapon
 
 			ComboPhase = 0;
 			CanSwing = false;
-			player.SwordMomentumScale = 0;
+			player.SwordMomentumScale.initialValue = 0;
 			SwingCoroutine = StartCoroutine(SwordSwingTiming());
 			SwingNumber += 1;
 			AnimatorSwingNumber = SwingNumber;
@@ -107,7 +108,7 @@ public class SwordMechanic : Weapon
 		{
 			StopCoroutine(ClickCoroutine);
 		}
-		animator.SetInteger("SwordAttackState", 0);
+		playerAnim.SetAnimSwordAttack(0);
 		ComboPhase = 0;
 		SwingNumber = 0;
 		CanDelayForCombo = false;

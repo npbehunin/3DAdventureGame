@@ -12,12 +12,13 @@ public class PlayerMovement : MonoBehaviour
 {
 	public PlayerState currentState, laststate;
 	public Rigidbody2D rb;
-	public Animator animator;
+	public PlayerAnimation playerAnim;
 	public LookTowardsTarget targetMode;
-	public bool CanSetState;
+	private bool CanSetState;
 
 	private float horizontalspeed, verticalspeed;
-	public float SwordMomentumScale, SwordMomentum, SwordMomentumSmooth, SwordMomentumPower, MoveSpeed;
+	private float SwordMomentum, SwordMomentumSmooth, SwordMomentumPower;
+	public FloatValue SwordMomentumScale, MoveSpeed;
 
 	public Vector3 position;
 	public static Vector3 test;
@@ -35,7 +36,7 @@ public class PlayerMovement : MonoBehaviour
 	{
 		if (currentState == PlayerState.Run || currentState == PlayerState.Walk || currentState == PlayerState.Attack)
 		{
-			rb.MovePosition(transform.position + position * MoveSpeed * Time.deltaTime);
+			rb.MovePosition(transform.position + position * MoveSpeed.initialValue * Time.deltaTime);
 		}
 	}
 
@@ -51,32 +52,25 @@ public class PlayerMovement : MonoBehaviour
 		{
 			horizontalspeed = position.x;
 			verticalspeed = position.y;
+			playerAnim.AnimSpeed(horizontalspeed, verticalspeed); //Anim speed
 
 			//Run
 			if (currentState == PlayerState.Idle || currentState == PlayerState.Run)
 			{
-				animator.SetFloat("SpeedX", horizontalspeed);
-				animator.SetFloat("SpeedY", verticalspeed);
+				playerAnim.SetAnimState(AnimationState.Run);
 				currentState = PlayerState.Run;
-				MoveSpeed = 4;
-				animator.SetBool("Running", true);
+				MoveSpeed.initialValue = 4;
 			}
-
-			if (currentState != PlayerState.Run)
-			{
-				animator.SetBool("Running", false);
-			}
-
+			
 			//Walk
 			if (currentState == PlayerState.Walk)
 			{
-				MoveSpeed = 2;
-				animator.SetBool("Walking", true);
+				playerAnim.SetAnimState(AnimationState.Walk);
+				MoveSpeed.initialValue = 2;
 			}
 			else
 			{
-				MoveSpeed = 4;
-				animator.SetBool("Walking", false);
+				MoveSpeed.initialValue = 4;
 			}
 		}
 
@@ -85,8 +79,8 @@ public class PlayerMovement : MonoBehaviour
 		{
 			if (position == Vector3.zero)
 			{
+				playerAnim.SetAnimState(AnimationState.Idle);
 				currentState = PlayerState.Idle;
-				animator.SetBool("Running", false);
 				test = Vector3.zero;
 			}
 		}
@@ -94,11 +88,9 @@ public class PlayerMovement : MonoBehaviour
 		//Attack
 		if (currentState == PlayerState.Attack)
 		{
-			animator.SetFloat("SpeedX", horizontalspeed);
-			animator.SetFloat("SpeedY", verticalspeed);
-			SwordMomentumScale += SwordMomentumSmooth * Time.deltaTime;
-			SwordMomentum = Mathf.Lerp(SwordMomentumPower, 0, SwordMomentumScale);
-			//Debug.Log(SwordMomentumScale);
+			playerAnim.SetAnimState(AnimationState.SwordAttack);
+			SwordMomentumScale.initialValue += SwordMomentumSmooth * Time.deltaTime;
+			SwordMomentum = Mathf.Lerp(SwordMomentumPower, 0, SwordMomentumScale.initialValue);
 			position = (SwordMomentum * test);
 		}
 	}
@@ -127,12 +119,12 @@ public class PlayerMovement : MonoBehaviour
 		if (currentState == PlayerState.Paused)
 		{
 			rb.bodyType = RigidbodyType2D.Static;
-			animator.enabled = false;
+			playerAnim.AnimPause(true);
 		}
 		else
 		{
 			rb.bodyType = RigidbodyType2D.Dynamic;
-			animator.enabled = true;
+			playerAnim.AnimPause(false);
 		}
 	}
 	

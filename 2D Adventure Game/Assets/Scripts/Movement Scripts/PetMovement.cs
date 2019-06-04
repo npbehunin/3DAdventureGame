@@ -16,7 +16,7 @@ public class PetMovement : MonoBehaviour {
 
 	public PetState CurrentState;
 
-	public PlayerMovement player;
+	public FloatValue playerMoveSpeed;
 	public UnitFollow path;
 	
 	void Start () 
@@ -59,7 +59,7 @@ public class PetMovement : MonoBehaviour {
 
 		if (CurrentState == PetState.Run)
 		{
-			MoveSpeed = player.MoveSpeed;
+			MoveSpeed = playerMoveSpeed.initialValue;
 		}
 
 		if (CurrentState == PetState.Walk)

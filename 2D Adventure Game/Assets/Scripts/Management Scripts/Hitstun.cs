@@ -6,11 +6,6 @@ public class Hitstun : MonoBehaviour
 {
 	public static bool HitStunEnabled;
 
-	void Update()
-	{
-		//Debug.Log(HitStunEnabled);
-	}
-
 	public static IEnumerator StartHitstun()
 	{
 		HitStunEnabled = true;

@@ -18,6 +18,6 @@ public class FastBow : ShootingMechanic {
 	
 	void GetWeaponStats()
 	{
-		Damage = 5;
+		WeaponDamage.initialValue = 1;
 	}
 }

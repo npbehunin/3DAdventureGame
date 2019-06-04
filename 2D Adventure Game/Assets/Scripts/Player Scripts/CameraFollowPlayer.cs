@@ -9,6 +9,7 @@ public class CameraFollowPlayer : MonoBehaviour
 
 	public float smoothSpeed;
 	public Vector3 offset, desiredPosition;
+	public Vector3Value ShakeDir;
 	private Vector3 velocity = Vector3.zero;
 
 	public bool Knocked;
@@ -26,11 +27,12 @@ public class CameraFollowPlayer : MonoBehaviour
 		transform.position = smoothedPosition;
 	}
 
-	public void StartSwordShake(float amount, Vector3 direction)
+	public void StartSwordShake()
 	{
-		StartCoroutine(SwordShake(amount, direction));
+		StartCoroutine(SwordShake(.5f, ShakeDir.initialPos));
 	}
 
+	//Adjust this to take into account the player's position so it feels consistent even if the player is moving.
 	public IEnumerator SwordShake(float amount, Vector3 direction)
 	{
 		offset.x = direction.x * amount;

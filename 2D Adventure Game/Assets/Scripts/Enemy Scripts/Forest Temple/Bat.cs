@@ -35,12 +35,6 @@ public class Bat : Enemy {
 		lerpchange = 0;
 	}
 
-	protected override void Update()
-	{
-		base.Update();
-		//Debug.Log(RandomPos);
-	}
-
 	protected override void FixedUpdate()
 	{
 		if (currentState != EnemyState.Paused)
@@ -152,7 +146,8 @@ public class Bat : Enemy {
 		Debug.DrawLine(transform.position, randompos, Color.yellow, 5f);
 	}
 
-	public void FollowPlayer()
+	//In radius event
+	protected override void InRadiusEvent()
 	{
 		if (currentState!=EnemyState.Delay)
 		{
@@ -161,7 +156,8 @@ public class Bat : Enemy {
 		}
 	}
 
-	public void PlayerCollision()
+	//Collision event
+	protected override void CollisionEvent()
 	{
 		currentState = EnemyState.Delay;
 		StartCoroutine(TargetPlayerDelay());

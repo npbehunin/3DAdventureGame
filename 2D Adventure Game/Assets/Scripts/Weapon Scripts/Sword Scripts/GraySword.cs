@@ -7,21 +7,19 @@ public class GraySword : SwordMechanic
     protected override void Start()
     {
         base.Start();
-        GetWeaponStats();
+        GraySwordStats();
     }
     
     void OnEnable()
     {
-        GetWeaponStats();
+        //GetWeaponStats();
     }
 
-    void GetWeaponStats()
+    void GraySwordStats()
     {
-        Damage = 1;
+        WeaponDamage.initialValue = 1;
         MaxSwingNumber = 3;
-       // SwingTimeDelay = .3f;
+        //SwingTimeDelay = .3f;
         SwingTime = .25f;
-        player.SwordMomentumSmooth = 4f;
-        player.SwordMomentumPower = 1f;
     }
 }

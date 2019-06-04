@@ -18,11 +18,11 @@ public class IceSword : SwordMechanic
 
     void GetWeaponStats()
     {
-        Damage = 5;
+        WeaponDamage.initialValue = 5;
         MaxSwingNumber = 2;
        // SwingTimeDelay = .2f;
         SwingTime = .1f;
-        player.SwordMomentumSmooth = 2f;
-        player.SwordMomentumPower = 2f;
+        //player.SwordMomentumSmooth = 2f;
+        //player.SwordMomentumPower = 2f;
     }
 }

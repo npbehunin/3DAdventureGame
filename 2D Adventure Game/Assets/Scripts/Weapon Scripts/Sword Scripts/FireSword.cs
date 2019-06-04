@@ -17,11 +17,11 @@ public class FireSword : SwordMechanic
 
     void GetWeaponStats()
     {
-        Damage = 10;
+        WeaponDamage.initialValue = 10;
         MaxSwingNumber = 3;
         //SwingTimeDelay = .3f;
         SwingTime = .5f;
-        player.SwordMomentumSmooth = 3f;
-        player.SwordMomentumPower = 3f;
+       //player.SwordMomentumSmooth = 3f;
+       //player.SwordMomentumPower = 3f;
     }
 }

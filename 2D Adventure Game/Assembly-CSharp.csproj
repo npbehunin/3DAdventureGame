@@ -73,6 +73,7 @@
     <Compile Include="Assets\Scripts\Management Scripts\CustomTimer.cs" />
     <Compile Include="Assets\Scripts\Management Scripts\Hitstun.cs" />
     <Compile Include="Assets\Scripts\Management Scripts\PauseGame.cs" />
+    <Compile Include="Assets\Scripts\Management Scripts\SignalListener.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\HitPause.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\Knockback.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\LookTowardsTarget.cs" />
@@ -91,9 +92,14 @@
     <Compile Include="Assets\Scripts\Pet Scripts\Pet.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\CameraFollowPlayer.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\Clothes.cs" />
+    <Compile Include="Assets\Scripts\Player Scripts\PlayerAnimation.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\PlayerHealth.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\Scene Scripts\SceneManage.cs" />
+    <Compile Include="Assets\Scripts\Scriptable Objects\Float Values\FloatValue.cs" />
+    <Compile Include="Assets\Scripts\Scriptable Objects\Int Values\IntValue.cs" />
+    <Compile Include="Assets\Scripts\Scriptable Objects\Signals\Signal.cs" />
+    <Compile Include="Assets\Scripts\Scriptable Objects\Vector3 Values\Vector3Value.cs" />
     <Compile Include="Assets\Scripts\Testing Scripts\DirectionTest.cs" />
     <Compile Include="Assets\Scripts\Testing Scripts\FollowTargetTest.cs" />
     <Compile Include="Assets\Scripts\Testing Scripts\LerpExample.cs" />

@@ -13,25 +13,22 @@ public enum EnemyState
 
 public class Enemy : MonoBehaviour
 {
-	public EnemyState currentState, laststate;
-
+	public Signal CamShakeSignal;
+	public Vector3Value CamShakeDir;
 	public int Health, Damage;
-
-	public bool Attacking, CanSetState;
+	public IntValue WeaponDamage;
 	public static bool CanCollide;
-
-	public float MoveSpeed, chaseRadius, attackRadius;
-	public float knockMomentumScale, knockMomentum;
-	private float horizontalspeed,verticalspeed;
-	
-	public Vector3 position, JumpPosition, colPos;
-
-	public EquipWeapon WeaponEquipped;
 	public Rigidbody2D rb;
 	public Transform target, home;
-	public Coroutine JumpCoroutine;
-	public Knockback knockback;
-	public UnityEvent EventInRadius, EventAttack, EventPlayerCollision, EventKnocked;
+
+	protected EnemyState currentState, laststate;
+	protected Vector3 position, JumpPosition, colPos;
+	protected bool CanAttack;
+	protected Coroutine JumpCoroutine;
+	protected float MoveSpeed, chaseRadius, attackRadius, knockMomentumScale, knockMomentum;
+	
+	private bool CanSetState;
+	//private float horizontalspeed,verticalspeed;
 	
 	protected virtual void Start ()
 	{
@@ -104,10 +101,7 @@ public class Enemy : MonoBehaviour
 
 			if (col.gameObject.CompareTag("Player"))
 			{
-				if (EventPlayerCollision != null)
-				{
-					EventPlayerCollision.Invoke();
-				}
+				CollisionEvent();
 			}
 		}
 	}
@@ -115,45 +109,32 @@ public class Enemy : MonoBehaviour
 	//Knocked stuff
 	public void RunEventKnocked(Vector3 pos)
 	{
-		Damage = WeaponEquipped.WeaponDamage;
 		TakeDamage();
-		if (EventKnocked != null)
-		{
-			EventKnocked.Invoke();
-		}
-
+		CamShakeSignal.Raise();
+		CamShakeDir.initialPos = transform.position - pos;
+		KnockedEvent();
 		colPos = pos;
 	}
 
 	//Take damage
 	void TakeDamage()
 	{
-		Health -= Damage;
+		Health -= WeaponDamage.initialValue;
 	}
 	
 	protected void CheckDistance()
 	{
-		if (currentState != EnemyState.Knocked && currentState != EnemyState.Attack &&
-		     currentState != EnemyState.Delay && currentState != EnemyState.Random && currentState != EnemyState.Paused)
+		if (currentState == EnemyState.Idle || currentState == EnemyState.Target)
 		{
 			if (Vector3.Distance(target.position, transform.position) <= chaseRadius
 			    && Vector3.Distance(target.position, transform.position) > attackRadius)
 			{
-				//Follow player
-				if (EventInRadius != null)
-				{
-					
-					EventInRadius.Invoke(); //Will run constantly
-				}
+				InRadiusEvent();
 			}
 
 			if (Vector3.Distance(target.position, transform.position) <= attackRadius)
 			{
-				if (!Attacking && EventAttack!=null)
-				{
-					//Attack player
-					EventAttack.Invoke(); //Runs once
-				}
+				AttackEvent();
 			}
 		}
 	}
@@ -164,5 +145,22 @@ public class Enemy : MonoBehaviour
 		{
 			currentState = newState;
 		}
+	}
+
+	protected virtual void InRadiusEvent()
+	{
+		//Do something
+	}
+	protected virtual void AttackEvent()
+	{
+		//Do something
+	}
+	protected virtual void CollisionEvent()
+	{
+		//Do something
+	}
+	protected virtual void KnockedEvent()
+	{
+		//Do something
 	}
 }

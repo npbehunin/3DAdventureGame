@@ -7,27 +7,34 @@ public class ShootingMechanic : Weapon
 	private Ray ray;
 	private RaycastHit hit;
 
-	public bool BowEquipped;
-	public bool canStartBowHold;
-	public bool canShoot;
+	public bool BowEquipped, canStartBowHold, canShoot;
 	
 	private WeaponPhase phase;
 
 	public float moveSpeed;
 
-	private IEnumerator bowholdcheckcoroutine;
-	private IEnumerator shootdelaycoroutine;
-	
+	private IEnumerator bowholdcheckcoroutine, shootdelaycoroutine;
+
 	public GameObject projectileType;
 
 	public EquipWeapon equipweapon;
 
 	public PlayerMovement player;
-	public Animator animator;
+	public PlayerAnimation playerAnim;
 
 	protected override void Start ()
 	{
 		base.Start();
+		StartValues();
+	}
+
+	protected virtual void OnEnable()
+	{
+		StartValues();
+	}
+
+	void StartValues()
+	{
 		canShoot = true;
 		canStartBowHold = true;
 		phase = WeaponPhase.Inactive;
@@ -52,12 +59,11 @@ public class ShootingMechanic : Weapon
 
 			if (Input.GetMouseButtonUp(0))
 			{
+				player.targetMode.CanTarget = false;
+				player.currentState = PlayerState.Idle;
+
 				if (canShoot)
 				{
-					player.targetMode.CanTarget = false;
-					animator.SetBool("IsChargingBow", false);
-					player.currentState = PlayerState.Idle;
-					
 					GameObject arrow = Instantiate(projectileType, gameObject.transform.position, Quaternion.identity);
 					arrow.GetComponent<Projectile>().projectileSpeed = moveSpeed;
 					phase = WeaponPhase.Phase1;
@@ -87,56 +93,25 @@ public class ShootingMechanic : Weapon
 
 	void PlayerBowAnimation()
 	{
-		animator.SetBool("IsChargingBow", true);
+		playerAnim.SetAnimState(AnimationState.Walk);
+		playerAnim.AnimLookDirection();
 		player.currentState = PlayerState.Walk;
 		player.targetMode.CanTarget = true;
-
-		switch (player.targetMode.direction)
-		{
-			case AnimatorDirection.Up:
-				animator.SetFloat("DirectionY", 1);
-				animator.SetFloat("DirectionX", 0);
-				animator.SetFloat("SpeedX", 0);
-				animator.SetFloat("SpeedY", 1);
-				break;
-			case AnimatorDirection.Down:
-				animator.SetFloat("DirectionY", -1);
-				animator.SetFloat("DirectionX", 0);
-				animator.SetFloat("SpeedX", 0);
-				animator.SetFloat("SpeedY", -1);
-				break;
-			case AnimatorDirection.Left:
-				animator.SetFloat("DirectionY", 0);
-				animator.SetFloat("DirectionX", -1);
-				animator.SetFloat("SpeedX", -1);
-				animator.SetFloat("SpeedY", 0);
-				break;
-			case AnimatorDirection.Right:
-				animator.SetFloat("DirectionY", 0);
-				animator.SetFloat("DirectionX", 1);
-				animator.SetFloat("SpeedX", 1);
-				animator.SetFloat("SpeedY", 0);
-				break;
-			default:
-				Debug.Log("No angle detected");
-				break;
-		}
-		//Idea: Could make an animation script that controls the animations. Then the functions could just be called here.
 	}
 
 	private IEnumerator BowHoldCheck()
 	{
 		phase = WeaponPhase.Phase1;
-		yield return new WaitForSeconds(.3f);
+		yield return CustomTimer.Timer(.3f);
 		phase = WeaponPhase.Phase2;
-		yield return new WaitForSeconds(.3f);
+		yield return CustomTimer.Timer(.3f);
 		phase = WeaponPhase.Phase3;
 	}
 
 	private IEnumerator CanShootDelay()
 	{
 		canShoot = false;
-		yield return new WaitForSeconds(.5f);
+		yield return CustomTimer.Timer(.5f);
 		canShoot = true;
 		canStartBowHold = true;
 	}

@@ -79,7 +79,7 @@ public class Enemy2 : MonoBehaviour
 		{
 			if (col.gameObject.CompareTag("WeaponHitbox"))
 			{
-				Damage = WeaponEquipped.WeaponDamage;
+				//Damage = WeaponEquipped.WeaponDamage;
 				TakeDamage();
 			}
 		}

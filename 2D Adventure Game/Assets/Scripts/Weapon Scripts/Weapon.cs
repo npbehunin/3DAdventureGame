@@ -5,7 +5,8 @@ using UnityEngine.Events;
 
 public class Weapon : MonoBehaviour
 {
-    public int Damage;
+    public IntValue WeaponDamage;
+    //public int Damage;
     
     //public Vector3 PlayerDirection;
     //public GameObject PlayerObject;

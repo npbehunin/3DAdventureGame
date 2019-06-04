@@ -31,6 +31,7 @@
             <e p="CustomTimer.cs" t="Include" />
             <e p="Hitstun.cs" t="Include" />
             <e p="PauseGame.cs" t="Include" />
+            <e p="SignalListener.cs" t="Include" />
           </e>
           <e p="Movement Scripts" t="Include">
             <e p="HitPause.cs" t="Include" />
@@ -57,11 +58,26 @@
           <e p="Player Scripts" t="Include">
             <e p="CameraFollowPlayer.cs" t="Include" />
             <e p="Clothes.cs" t="Include" />
+            <e p="PlayerAnimation.cs" t="Include" />
             <e p="PlayerHealth.cs" t="Include" />
             <e p="PlayerMovement.cs" t="Include" />
           </e>
           <e p="Scene Scripts" t="Include">
             <e p="SceneManage.cs" t="Include" />
+          </e>
+          <e p="Scriptable Objects" t="Include">
+            <e p="Float Values" t="Include">
+              <e p="FloatValue.cs" t="Include" />
+            </e>
+            <e p="Int Values" t="Include">
+              <e p="IntValue.cs" t="Include" />
+            </e>
+            <e p="Signals" t="Include">
+              <e p="Signal.cs" t="Include" />
+            </e>
+            <e p="Vector3 Values" t="Include">
+              <e p="Vector3Value.cs" t="Include" />
+            </e>
           </e>
           <e p="Testing Scripts" t="Include">
             <e p="DirectionTest.cs" t="Include" />

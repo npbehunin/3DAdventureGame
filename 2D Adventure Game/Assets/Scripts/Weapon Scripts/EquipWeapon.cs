@@ -14,7 +14,6 @@ public class EquipWeapon : MonoBehaviour
 	public bool BowEquipped;
 	public bool BombEquipped;
 
-	public int WeaponDamage;
 	public int SwordIndex;
 	public int BowIndex;
 
@@ -28,7 +27,7 @@ public class EquipWeapon : MonoBehaviour
 
 	void Update()
 	{
-		GetDamage();
+		//GetDamage();
 		if (WeaponEquipped)
 		{
 			if (SwordEquipped)
@@ -132,17 +131,17 @@ public class EquipWeapon : MonoBehaviour
 		}
 	}
 	
-	void GetDamage()
-	{
-		if (SwordEquipped)
-		{
-			WeaponDamage = SwordTypes[SwordIndex].gameObject.GetComponent<Weapon>().Damage;
-		}
-
-		if (BowEquipped)
-		{
-			WeaponDamage = BowTypes[BowIndex].gameObject.GetComponent<Weapon>().Damage;
-		}
-		//Debug.Log(WeaponDamage);
-	}
+	//void GetDamage()
+	//{
+	//	if (SwordEquipped)
+	//	{
+	//		WeaponDamage = SwordTypes[SwordIndex].gameObject.GetComponent<Weapon>().Damage;
+	//	}
+//
+	//	if (BowEquipped)
+	//	{
+	//		WeaponDamage = BowTypes[BowIndex].gameObject.GetComponent<Weapon>().Damage;
+	//	}
+	//	//Debug.Log(WeaponDamage);
+	//}
 }

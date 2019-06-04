@@ -14,10 +14,11 @@ public class WoodenBow : ShootingMechanic {
 	void OnEnable()
 	{
 		GetWeaponStats();
+		base.OnEnable();
 	}
 	
 	void GetWeaponStats()
 	{
-		Damage = 2;
+		WeaponDamage.initialValue = 2;
 	}
 }
