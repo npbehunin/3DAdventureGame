@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
-	public int Health;
+	public IntValue Health;
 	public int EnemyDamage;
 	public bool IsInvincible;
 
@@ -15,14 +15,14 @@ public class PlayerHealth : MonoBehaviour
 	
 	void Start ()
 	{
-		Health = 10;
+		Health.initialValue = 10;
 		IsInvincible = false;
 		InvincibilityTime = 2;
 	}
 	
 	void Update () 
 	{
-		if (Health <= 0)
+		if (Health.initialValue <= 0)
 		{
 			StartCoroutine(PlayerDeath());
 		}
@@ -42,7 +42,7 @@ public class PlayerHealth : MonoBehaviour
 
 	void TakeDamage()
 	{
-		Health -= EnemyDamage;
+		Health.initialValue -= EnemyDamage;
 		//Debug.Log(Health);
 		StartCoroutine(Invincibility());
 	}

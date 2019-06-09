@@ -9,7 +9,7 @@ public class SwordMechanic : Weapon
 	public int ComboPhase, SwingNumber, AnimatorSwingNumber, MaxSwingNumber;
 
 	public float SwingTime;
-	public FloatValue SwordMomentumScaleValue;
+	public FloatValue SwordMomentumScale;
 
 	public PlayerAnimation playerAnim;
 	public PlayerMovement player;
@@ -78,7 +78,7 @@ public class SwordMechanic : Weapon
 
 			ComboPhase = 0;
 			CanSwing = false;
-			player.SwordMomentumScale.initialValue = 0;
+			SwordMomentumScale.initialValue = 0;
 			SwingCoroutine = StartCoroutine(SwordSwingTiming());
 			SwingNumber += 1;
 			AnimatorSwingNumber = SwingNumber;

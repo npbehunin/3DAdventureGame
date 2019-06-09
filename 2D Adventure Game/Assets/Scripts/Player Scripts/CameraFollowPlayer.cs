@@ -29,16 +29,15 @@ public class CameraFollowPlayer : MonoBehaviour
 
 	public void StartSwordShake()
 	{
-		StartCoroutine(SwordShake(.5f, ShakeDir.initialPos));
+		StartCoroutine(SwordShake(.12f, ShakeDir.initialPos));
 	}
 
-	//Adjust this to take into account the player's position so it feels consistent even if the player is moving.
 	public IEnumerator SwordShake(float amount, Vector3 direction)
 	{
 		offset.x = direction.x * amount;
 		offset.y = direction.y * amount;
-		smoothSpeed = .2f;
-		yield return new WaitForSeconds(.15f);
+		smoothSpeed = .1f;
+		yield return new WaitForSeconds(.05f);
 		offset.x = 0;
 		offset.y = 0;
 		smoothSpeed = .15f;

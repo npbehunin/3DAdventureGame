@@ -70,6 +70,8 @@
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Sentry.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Trap.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Turtle.cs" />
+    <Compile Include="Assets\Scripts\Interaction Scripts\Interaction.cs" />
+    <Compile Include="Assets\Scripts\Interaction Scripts\PlantInteraction.cs" />
     <Compile Include="Assets\Scripts\Management Scripts\CustomTimer.cs" />
     <Compile Include="Assets\Scripts\Management Scripts\Hitstun.cs" />
     <Compile Include="Assets\Scripts\Management Scripts\PauseGame.cs" />
@@ -92,6 +94,7 @@
     <Compile Include="Assets\Scripts\Pet Scripts\Pet.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\CameraFollowPlayer.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\Clothes.cs" />
+    <Compile Include="Assets\Scripts\Player Scripts\InteractableCollision.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\PlayerAnimation.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\PlayerHealth.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\PlayerMovement.cs" />
@@ -103,6 +106,7 @@
     <Compile Include="Assets\Scripts\Testing Scripts\DirectionTest.cs" />
     <Compile Include="Assets\Scripts\Testing Scripts\FollowTargetTest.cs" />
     <Compile Include="Assets\Scripts\Testing Scripts\LerpExample.cs" />
+    <Compile Include="Assets\Scripts\UI Scripts\InteractionSymbol.cs" />
     <Compile Include="Assets\Scripts\Weapon Scripts\EquipWeapon.cs" />
     <Compile Include="Assets\Scripts\Weapon Scripts\Projectile Scripts\FastBow.cs" />
     <Compile Include="Assets\Scripts\Weapon Scripts\Projectile Scripts\Projectile.cs" />
