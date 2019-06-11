@@ -130,6 +130,7 @@ public class PetMovement : MonoBehaviour {
 	{
 		Debug.Log("OutOfRange");
 		transform.position = target.position;
+		path.CanFollowPath = true;
 	}
 
 	private IEnumerator IdleWaitTime()

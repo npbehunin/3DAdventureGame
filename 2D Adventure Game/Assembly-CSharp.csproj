@@ -70,8 +70,8 @@
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Sentry.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Trap.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Turtle.cs" />
-    <Compile Include="Assets\Scripts\Interaction Scripts\Interaction.cs" />
-    <Compile Include="Assets\Scripts\Interaction Scripts\PlantInteraction.cs" />
+    <Compile Include="Assets\Scripts\Interaction Scripts\Interactable.cs" />
+    <Compile Include="Assets\Scripts\Interaction Scripts\Plant.cs" />
     <Compile Include="Assets\Scripts\Management Scripts\CustomTimer.cs" />
     <Compile Include="Assets\Scripts\Management Scripts\Hitstun.cs" />
     <Compile Include="Assets\Scripts\Management Scripts\PauseGame.cs" />

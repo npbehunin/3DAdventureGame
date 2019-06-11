@@ -28,8 +28,8 @@
             </e>
           </e>
           <e p="Interaction Scripts" t="Include">
-            <e p="Interaction.cs" t="Include" />
-            <e p="PlantInteraction.cs" t="Include" />
+            <e p="Interactable.cs" t="Include" />
+            <e p="Plant.cs" t="Include" />
           </e>
           <e p="Management Scripts" t="Include">
             <e p="CustomTimer.cs" t="Include" />

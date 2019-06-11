@@ -289,6 +289,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
+  currentState: 0
 --- !u!58 &20902914
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -553,6 +554,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
+  currentState: 0
   CanThrow: 0
   projectileType: {fileID: 1719595767031652, guid: 691418f770845344fa090d06c472141a,
     type: 2}
@@ -911,6 +913,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
+  currentState: 0
   CanSetRandomPos: 0
   RandomPos: {x: 0, y: 0}
   FlyPhase: 0
@@ -1223,7 +1226,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &799494597
 Transform:
   m_ObjectHideFlags: 0
@@ -1302,18 +1305,44 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 848566756}
-  - component: {fileID: 848566755}
-  - component: {fileID: 848566754}
+  - component: {fileID: 848566759}
   - component: {fileID: 848566758}
-  - component: {fileID: 848566757}
   m_Layer: 0
   m_Name: Plant
-  m_TagString: Untagged
+  m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!61 &848566754
+--- !u!4 &848566756
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 848566753}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -5.79, y: 2.97, z: 0}
+  m_LocalScale: {x: 0.797501, y: 0.797501, z: 0.797501}
+  m_Children:
+  - {fileID: 915061245}
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &848566758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 848566753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a498c47d7556c948be8f310aac53978, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InteractDir: 4
+  PlayerDir: {fileID: 11400000, guid: f903f6903d9aea641ade7b874ec606a3, type: 2}
+  plantString: The player has interacted with a plant!
+--- !u!61 &848566759
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1322,10 +1351,10 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.008209586, y: 0.06218957}
+  m_Offset: {x: -0.004523754, y: 0.012884587}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -1336,14 +1365,43 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.6587658, y: 0.45708477}
+  m_Size: {x: 1.1217356, y: 0.64187557}
   m_EdgeRadius: 0
---- !u!212 &848566755
+--- !u!1 &915061244
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 915061245}
+  - component: {fileID: 915061246}
+  m_Layer: 0
+  m_Name: Plant Graphics
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &915061245
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 915061244}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 848566756}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &915061246
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 848566753}
+  m_GameObject: {fileID: 915061244}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -1384,127 +1442,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!4 &848566756
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 848566753}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.96, y: 3.07, z: 0}
-  m_LocalScale: {x: 0.797501, y: 0.797501, z: 0.797501}
-  m_Children:
-  - {fileID: 915061245}
-  m_Father: {fileID: 0}
-  m_RootOrder: 11
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &848566757
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 848566753}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 824ca21c777ec3c4296d394f50330945, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  signal: {fileID: 11400000, guid: 57057eb96e8f00443a78a2fb5361151f, type: 2}
-  signalEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 848566758}
-        m_MethodName: PlantInteract
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
---- !u!114 &848566758
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 848566753}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a498c47d7556c948be8f310aac53978, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  plantString: The player has interacted with a plant!
---- !u!1 &915061244
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 915061245}
-  - component: {fileID: 915061247}
-  - component: {fileID: 915061246}
-  m_Layer: 0
-  m_Name: Interaction
-  m_TagString: InteractableObject
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &915061245
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 915061244}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 848566756}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &915061246
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 915061244}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 615c7b620d254724f9bf657f595f14aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  InteractionSignal: {fileID: 11400000, guid: 57057eb96e8f00443a78a2fb5361151f, type: 2}
---- !u!61 &915061247
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 915061244}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0.019242406, y: -0.025656462}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.0333333, y: 0.65}
-    newSize: {x: 0.64, y: 0.64}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1.4823232, y: 1.4453542}
-  m_EdgeRadius: 0
 --- !u!1 &943171244
 GameObject:
   m_ObjectHideFlags: 0
@@ -3895,6 +3832,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
+  currentState: 0
 --- !u!1 &1294750320
 GameObject:
   m_ObjectHideFlags: 0
@@ -4328,6 +4266,7 @@ MonoBehaviour:
   SwordMomentumScale: {fileID: 11400000, guid: 5c28ab169c95d0849b5c377dda9b308a, type: 2}
   MoveSpeed: {fileID: 11400000, guid: 8315aec1680244b49a520f9f11120688, type: 2}
   position: {x: 0, y: 0, z: 0}
+  direction: {fileID: 11400000, guid: f903f6903d9aea641ade7b874ec606a3, type: 2}
 --- !u!114 &1659612926
 MonoBehaviour:
   m_ObjectHideFlags: 0

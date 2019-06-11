@@ -59,7 +59,7 @@ public class SwordMechanic : Weapon
 	//Enables the next sword swing
 	void SwordSwing()
 	{
-		Enemy.CanCollide = true; //Enemy can collide
+		//Enemy.CanCollide = true; //Enemy can collide
 		if (SwingNumber < MaxSwingNumber)
 		{
 			if (DelayForClickCombo!= null)
@@ -114,7 +114,7 @@ public class SwordMechanic : Weapon
 		CanDelayForCombo = false;
 		CanSwing = true;
 		AnimatorSwingNumber = 0;
-		Enemy.CanCollide = true; //Enemy can collide
+		//Enemy.CanCollide = true; //Enemy can collide
 		player.currentState = PlayerState.Idle;
 	}
 

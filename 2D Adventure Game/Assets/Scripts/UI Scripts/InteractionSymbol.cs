@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class InteractionSymbol : MonoBehaviour
 {
-
 	public GameObject exclamation;
 	
 	void Start()

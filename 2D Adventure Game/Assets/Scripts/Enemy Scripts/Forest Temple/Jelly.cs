@@ -128,7 +128,7 @@ public class Jelly : Enemy
 	private IEnumerator SetKnockedState()
 	{
 		currentState = EnemyState.Knocked;
-		yield return CustomTimer.Timer(.5f);
+		yield return CustomTimer.Timer(.25f);
 		currentState = EnemyState.Idle;
 	}
 
@@ -151,3 +151,10 @@ public class Jelly : Enemy
 		ResetJump();
 	}
 }
+
+//TO DO
+//During the first half of the prep jump, enemy can be knocked away.
+//During the second half, the enemy won't be knocked and will continue its jump.
+
+//The jelly knocked state should end when the sword swing ends.
+//Jelly can be hit even if knocked. Set CanCollide to true a bit before it exits the knocked state.

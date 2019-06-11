@@ -113,9 +113,6 @@ public class UnitFollow : MonoBehaviour {
 	}
 }
 
-//TO DO 5/12/19
-
-//Implement the movement script to work alongside this unit movement
-
-//Tell the script to create a new path whenever the raycast between the pet and player results in a collision. Otherwise,
-//do the simple follow movement we already have in our pet movement script.
+//KNOWN ISSUES
+//If the player is inside red points on the grid, the pet will teleport. This means even if the player isn't colliding
+//with the wall, the player can still be in the red point on the grid.

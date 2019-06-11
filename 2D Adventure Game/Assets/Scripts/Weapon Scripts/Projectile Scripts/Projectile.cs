@@ -14,14 +14,11 @@ public class Projectile : Weapon
 	private RaycastHit2D hit;
 
 	public float projectileSpeed;
-	public float ThrustFromBow;
 
 	private Vector3 movementVector;
 	private Vector3 targetpos;
 	private Vector3 targetDir;
 	private Vector2 mousePos2D;
-
-	public LayerMask Mask;
 
 	public bool UsingMouse;
 	public Transform target;
@@ -32,7 +29,7 @@ public class Projectile : Weapon
 		{
 			ray = Camera.main.ScreenPointToRay(Input.mousePosition); //Converts mouse position to units on camera.
 			mousePos2D.Set(ray.origin.x, ray.origin.y);
-			RaycastHit2D hit = Physics2D.Raycast(mousePos2D, ray.direction, Mask);
+			RaycastHit2D hit = Physics2D.Raycast(mousePos2D, ray.direction);
 
 			if (hit)
 			{

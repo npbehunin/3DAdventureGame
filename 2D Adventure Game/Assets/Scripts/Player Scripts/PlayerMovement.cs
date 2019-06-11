@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
 	public FloatValue SwordMomentumScale, MoveSpeed;
 
 	public Vector3 position;
+	public Vector3Value direction;
 	public static Vector3 test;
 	
 	void Start()
@@ -50,6 +51,7 @@ public class PlayerMovement : MonoBehaviour
 
 		if (position != Vector3.zero)
 		{
+			direction.initialPos = position;
 			horizontalspeed = position.x;
 			verticalspeed = position.y;
 			playerAnim.AnimSpeed(horizontalspeed, verticalspeed); //Anim speed

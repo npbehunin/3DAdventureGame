@@ -21,10 +21,11 @@ public class Enemy : MonoBehaviour
 	public Rigidbody2D rb;
 	public Transform target, home;
 
-	protected EnemyState currentState, laststate;
+	public EnemyState currentState;
+	protected EnemyState laststate;
 	protected Vector3 position, JumpPosition, colPos;
 	protected bool CanAttack;
-	protected Coroutine JumpCoroutine;
+	protected Coroutine JumpCoroutine, KnockedCoroutine;
 	protected float MoveSpeed, chaseRadius, attackRadius, knockMomentumScale, knockMomentum;
 	
 	private bool CanSetState;
@@ -53,6 +54,11 @@ public class Enemy : MonoBehaviour
 			gameObject.SetActive(false);
 		}
 		CheckForPause();
+
+		//if (currentState != EnemyState.Knocked && currentState != EnemyState.Paused) //Just a backup
+		//{
+		//	CanCollide = true;
+		//}
 	}
 
 	//Checks if game is paused
@@ -95,7 +101,6 @@ public class Enemy : MonoBehaviour
 		{
 			if (col.gameObject.CompareTag("WeaponHitbox"))
 			{
-				CanCollide = false;
 				RunEventKnocked(col.transform.position);
 			}
 
@@ -109,6 +114,11 @@ public class Enemy : MonoBehaviour
 	//Knocked stuff
 	public void RunEventKnocked(Vector3 pos)
 	{
+		//if (KnockedCoroutine != null)
+		//{
+		//	StopCoroutine(KnockedCoroutine);
+		//}
+		//KnockedCoroutine = StartCoroutine(Invincibility());	
 		TakeDamage();
 		CamShakeSignal.Raise();
 		CamShakeDir.initialPos = transform.position - pos;
@@ -147,6 +157,13 @@ public class Enemy : MonoBehaviour
 		}
 	}
 
+	//private IEnumerator Invincibility()
+	//{
+	//	CanCollide = false;
+	//	yield return CustomTimer.Timer(.15f);
+	//	CanCollide = true;
+	//}
+
 	protected virtual void InRadiusEvent()
 	{
 		//Do something
@@ -164,3 +181,6 @@ public class Enemy : MonoBehaviour
 		//Do something
 	}
 }
+
+//TO DO
+//Figure out a good system to set cancollide back to true.
