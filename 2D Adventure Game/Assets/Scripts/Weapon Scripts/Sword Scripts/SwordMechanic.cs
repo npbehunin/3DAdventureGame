@@ -179,3 +179,7 @@ public class SwordMechanic : Weapon
 		ComboPhase = 1;
 	}
 }
+
+//Known issues:
+//If the hitstun lasts longer than the sword swing, the player's last state will be put into the attack state and the
+//player can do nothing.

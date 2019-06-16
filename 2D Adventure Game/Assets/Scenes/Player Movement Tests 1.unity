@@ -264,7 +264,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 20902911}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.03, y: 4.09, z: 0.01171875}
+  m_LocalPosition: {x: -0.33, y: 4.09, z: 0.01171875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 837465280}
@@ -286,6 +286,7 @@ MonoBehaviour:
   Health: 0
   Damage: 0
   WeaponDamage: {fileID: 11400000, guid: 8a811f3aa7c4e8a4f9d5fa3c2edb7446, type: 2}
+  CanCollide: 0
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
@@ -551,6 +552,7 @@ MonoBehaviour:
   Health: 0
   Damage: 0
   WeaponDamage: {fileID: 11400000, guid: 8a811f3aa7c4e8a4f9d5fa3c2edb7446, type: 2}
+  CanCollide: 0
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
@@ -910,6 +912,7 @@ MonoBehaviour:
   Health: 0
   Damage: 2
   WeaponDamage: {fileID: 11400000, guid: 8a811f3aa7c4e8a4f9d5fa3c2edb7446, type: 2}
+  CanCollide: 0
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
@@ -1226,7 +1229,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &799494597
 Transform:
   m_ObjectHideFlags: 0
@@ -3829,6 +3832,7 @@ MonoBehaviour:
   Health: 0
   Damage: 0
   WeaponDamage: {fileID: 11400000, guid: 8a811f3aa7c4e8a4f9d5fa3c2edb7446, type: 2}
+  CanCollide: 0
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
@@ -4405,7 +4409,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.61811376, y: -0.0067625046}
+  m_Offset: {x: 0.7499969, y: -0.0067625046}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -4416,7 +4420,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.6866069, y: 0.86474514}
+  m_Size: {x: 0.6780982, y: 0.86474514}
   m_EdgeRadius: 0
 --- !u!114 &1669175742
 MonoBehaviour:

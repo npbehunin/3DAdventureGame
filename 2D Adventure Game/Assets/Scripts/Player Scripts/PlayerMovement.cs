@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum PlayerState
 {
-	Idle, Walk, Run, Attack, Paused, Dead
+	Idle, Walk, Run, Attack, Paused, Dead, Hitstun
 }
 
 public class PlayerMovement : MonoBehaviour
@@ -22,7 +22,7 @@ public class PlayerMovement : MonoBehaviour
 
 	public Vector3 position;
 	public Vector3Value direction;
-	public static Vector3 test;
+	public static Vector3 inputDirection;
 	
 	void Start()
 	{
@@ -31,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
 		SwordMomentumSmooth = 4f;
 		SwordMomentumPower = 1f;
 		CanSetState = true;
+		direction.initialPos = new Vector3(1, 0, 0); //Set to the dir the player spawns in
 	}
 
 	void FixedUpdate()
@@ -44,14 +45,14 @@ public class PlayerMovement : MonoBehaviour
 	void Update()
 	{
 		CheckForPause();
-		if (currentState != PlayerState.Attack && currentState != PlayerState.Paused)
+		if (currentState == PlayerState.Idle || currentState == PlayerState.Walk || currentState == PlayerState.Run)
 		{
-			position = new Vector3(Input.GetAxisRaw("Horizontal"), (Input.GetAxisRaw("Vertical")), 0).normalized;
+			position = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0).normalized;
 		}
 
 		if (position != Vector3.zero)
 		{
-			direction.initialPos = position;
+			GetDirection();
 			horizontalspeed = position.x;
 			verticalspeed = position.y;
 			playerAnim.AnimSpeed(horizontalspeed, verticalspeed); //Anim speed
@@ -77,13 +78,13 @@ public class PlayerMovement : MonoBehaviour
 		}
 
 		//Idle
-		if (currentState != PlayerState.Attack && currentState != PlayerState.Paused)
+		if (currentState != PlayerState.Attack && currentState != PlayerState.Paused && currentState != PlayerState.Hitstun)
 		{
 			if (position == Vector3.zero)
 			{
 				playerAnim.SetAnimState(AnimationState.Idle);
 				currentState = PlayerState.Idle;
-				test = Vector3.zero;
+				inputDirection = Vector3.zero;
 			}
 		}
 
@@ -93,14 +94,23 @@ public class PlayerMovement : MonoBehaviour
 			playerAnim.SetAnimState(AnimationState.SwordAttack);
 			SwordMomentumScale.initialValue += SwordMomentumSmooth * Time.deltaTime;
 			SwordMomentum = Mathf.Lerp(SwordMomentumPower, 0, SwordMomentumScale.initialValue);
-			position = (SwordMomentum * test);
+			
+			//Check if there's an input, otherwise move in the anim's direction.
+			if (inputDirection != Vector3.zero)
+			{
+				position = (SwordMomentum * inputDirection);
+			}
+			else
+			{
+				position = (SwordMomentum * direction.initialPos);
+			}
 		}
 	}
 
-	//Check if game is paused
+	//Check if game is paused or if player is hitstunned
 	public void CheckForPause()
 	{
-		if (PauseGame.IsPaused || Hitstun.HitStunEnabled)
+		if (PauseGame.IsPaused)
 		{
 			if (CanSetState)
 			{
@@ -109,30 +119,66 @@ public class PlayerMovement : MonoBehaviour
 			}
 			currentState = PlayerState.Paused;
 		}
+		else if (Hitstun.HitStunEnabled)
+		{
+			if (CanSetState)
+			{
+				CanSetState = false;
+				laststate = currentState;
+			}
+			currentState = PlayerState.Hitstun;
+		}
 		else
 		{
 			if (!CanSetState)
 			{
 				CanSetState = true;
-				currentState = laststate;
+				currentState = laststate; //*if last state was attack, player COULD end up being stuck.
 			}
 		}
-		
-		if (currentState == PlayerState.Paused)
+
+		switch (currentState)
 		{
-			rb.bodyType = RigidbodyType2D.Static;
-			playerAnim.AnimPause(true);
+			case PlayerState.Paused:
+				rb.bodyType = RigidbodyType2D.Static;
+				playerAnim.AnimPause(true);
+				break;
+			case PlayerState.Hitstun:
+				position = Vector3.zero;
+				playerAnim.AnimPause(true);
+				break;
+			default:
+				rb.bodyType = RigidbodyType2D.Dynamic;
+				playerAnim.AnimPause(false);
+				break;
+		}
+	}
+
+	//Returns the direction the player's animation is facing.
+	public void GetDirection()
+	{
+		if (Mathf.Abs(position.x) >= Mathf.Abs(position.y))
+		{
+			if (Mathf.Round(position.x) != 0)
+			{
+				direction.initialPos = new Vector3(Mathf.Round(position.x), 0, 0); //x dir
+			}
 		}
 		else
 		{
-			rb.bodyType = RigidbodyType2D.Dynamic;
-			playerAnim.AnimPause(false);
+			if (Mathf.Round(position.y) != 0)
+			{
+				direction.initialPos = new Vector3(0, Mathf.Round(position.y), 0); //y dir
+			}
 		}
 	}
-	
-	//Get sword swing direction
+
+	//Get sword swing direction, not called through update.
 	public void GetSwordSwingDirection()
 	{
-		test = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0).normalized;
+		inputDirection = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0).normalized;
 	}
 }
+
+//To do
+//1: Switch statement instead of normal state checks.

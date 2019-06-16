@@ -11,4 +11,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c47bf7cda3c5d5409fda64b4fd42782, type: 3}
   m_Name: PlayerDirection
   m_EditorClassIdentifier: 
-  initialPos: {x: 0, y: 0, z: 0}
+  initialPos: {x: 1, y: 0, z: 0}

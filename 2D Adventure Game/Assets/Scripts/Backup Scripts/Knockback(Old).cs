@@ -30,7 +30,7 @@ public class KnockbackOld : MonoBehaviour
 		if (Player != null)
 		{
 			Player.GetComponent<PlayerMovement>().GetSwordSwingDirection();
-			PlayerDirection = PlayerMovement.test;
+			PlayerDirection = PlayerMovement.inputDirection;
 		}
 
 		if (IsPlayer)

@@ -119,7 +119,7 @@ public class Jelly : Enemy
 	//Knocked coroutine
 	private IEnumerator Knocked()
 	{
-		currentState = EnemyState.Paused;
+		currentState = EnemyState.Hitstun;
 		yield return Hitstun.StartHitstun();
 		CanSetDifference = true;
 		knockCo = StartCoroutine(SetKnockedState());
