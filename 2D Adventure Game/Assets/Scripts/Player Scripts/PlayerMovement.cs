@@ -45,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
 	void Update()
 	{
 		CheckForPause();
+		GetDirection();
 		if (currentState == PlayerState.Idle || currentState == PlayerState.Walk || currentState == PlayerState.Run)
 		{
 			position = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0).normalized;
@@ -52,7 +53,6 @@ public class PlayerMovement : MonoBehaviour
 
 		if (position != Vector3.zero)
 		{
-			GetDirection();
 			horizontalspeed = position.x;
 			verticalspeed = position.y;
 			playerAnim.AnimSpeed(horizontalspeed, verticalspeed); //Anim speed
@@ -157,18 +157,45 @@ public class PlayerMovement : MonoBehaviour
 	//Returns the direction the player's animation is facing.
 	public void GetDirection()
 	{
-		if (Mathf.Abs(position.x) >= Mathf.Abs(position.y))
+		if (targetMode.CanTarget)
 		{
-			if (Mathf.Round(position.x) != 0)
+			switch (targetMode.direction)
 			{
-				direction.initialPos = new Vector3(Mathf.Round(position.x), 0, 0); //x dir
+				case AnimatorDirection.Up:
+					direction.initialPos = new Vector3(0, 1, 0);
+					break;
+				case AnimatorDirection.Down:
+					direction.initialPos = new Vector3(0, -1, 0);
+					break;
+				case AnimatorDirection.Left:
+					direction.initialPos = new Vector3(-1, 0, 0);
+					break;
+				case AnimatorDirection.Right:
+					direction.initialPos = new Vector3(1, 0, 0);
+					break;
+				default:
+					direction.initialPos = Vector3.zero;
+					break;
 			}
 		}
 		else
 		{
-			if (Mathf.Round(position.y) != 0)
+			if (position != Vector3.zero)
 			{
-				direction.initialPos = new Vector3(0, Mathf.Round(position.y), 0); //y dir
+				if (Mathf.Abs(position.x) >= Mathf.Abs(position.y))
+				{
+					if (Mathf.Round(position.x) != 0)
+					{
+						direction.initialPos = new Vector3(Mathf.Round(position.x), 0, 0); //x dir
+					}
+				}
+				else
+				{
+					if (Mathf.Round(position.y) != 0)
+					{
+						direction.initialPos = new Vector3(0, Mathf.Round(position.y), 0); //y dir
+					}
+				}
 			}
 		}
 	}

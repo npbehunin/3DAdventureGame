@@ -2,10 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PetState
+{
+	Follow, Attack, Heel, Idle, Run, Walk
+}
+
 public class PetMovement : MonoBehaviour {
 
 	public Transform target;
+	public BoolValue CanFollowEnemy;
 	public bool CanFollowPlayer, FollowPath; //CanFollowPath;
+	public Vector3Value enemyPos;
 	
 	public float ChaseRadius;
 	public float WalkRadius;
@@ -34,9 +41,58 @@ public class PetMovement : MonoBehaviour {
 	
 	void Update () 
 	{
+		//Temporary way to set pet to attack state
+		if (Input.GetKeyDown(KeyCode.LeftShift))
+		{
+			if (CurrentState != PetState.Attack)
+			{
+				CurrentState = PetState.Attack;
+			}
+			else
+			{
+				CurrentState = PetState.Idle;
+			}
+			
+		}
+		
+		if (CurrentState!=PetState.Attack)
+		{
+			CheckPath();
+			CanFollowEnemy.initialBool = false;
+		}
+		
+		//If pet is too far, teleport
+		if (Vector3.Distance(target.position, transform.position) > WarpRadius)
+		{
+			OutOfRange();
+		}
+
+		//Movespeed
+		switch (CurrentState)
+		{
+			case PetState.Run:
+				MoveSpeed = playerMoveSpeed.initialValue;
+				break;
+			case PetState.Walk:
+				MoveSpeed = 1;
+				break;
+			case PetState.Idle:
+				MoveSpeed = 0;
+				break;
+			case PetState.Attack:
+				MoveSpeed = 4;
+				CanFollowEnemy.initialBool = true;
+				break;
+			default:
+				MoveSpeed = 0;
+				break;
+		}
+	}
+
+	void CheckPath()
+	{
 		if (FollowPath)
 		{
-			//CanFollowPath = true;
 			path.CheckIfCanFollowPath();
 			CanFollowPlayer = false;
 		}
@@ -52,77 +108,62 @@ public class PetMovement : MonoBehaviour {
 			path.CannotReachPlayer = false;
 		}
 		
-		if (Vector3.Distance(target.position, transform.position) > WarpRadius)
-		{
-			OutOfRange();
-		}
-
-		if (CurrentState == PetState.Run)
-		{
-			MoveSpeed = playerMoveSpeed.initialValue;
-		}
-
-		if (CurrentState == PetState.Walk)
-		{
-			MoveSpeed = 1;
-		}
-
-		if (CurrentState == PetState.Idle)
-		{
-			MoveSpeed = 0;
-		}
-
 		//Check any collision between pet and player
 		//RaycastHit hit;
 		int wallLayerMask = 1 << 9;
 		if (Physics2D.Linecast(transform.position, target.position, wallLayerMask))//, 15, wallLayerMask))
 		{
-			//Debug.Log("Hello");
 			FollowPath = true;
 			Debug.DrawLine(transform.position, target.position, Color.yellow);
-			//Debug.DrawRay(transform.position, hit.point, Color.yellow, 30f, false);
 		}
 		else
 		{
-			//Debug.Log("Oy don't follow path");
-			//Debug.DrawRay(transform.position, target.position, Color.yellow, 30f, false);
 			FollowPath = false;
 		}
 	}
 		
 	void CheckDistance()
 	{
-		if (Vector3.Distance(target.position, transform.position) <= ChaseRadius
-		    && Vector3.Distance(target.position, transform.position) > WalkRadius)
+		if (CurrentState != PetState.Attack)
 		{
-			CanFollowPlayer = true;
-			CurrentState = PetState.Run;
-		}
-		
-		if (Vector3.Distance(target.position, transform.position) <= WalkRadius
-		    && Vector3.Distance(target.position, transform.position) > StopRadius)
-		{
-			if (CurrentState == PetState.Idle)
-			{
-				StartCoroutine(IdleWaitTime());
-			}
-			else
+			if (Vector3.Distance(target.position, transform.position) <= ChaseRadius
+			    && Vector3.Distance(target.position, transform.position) > WalkRadius)
 			{
 				CanFollowPlayer = true;
-				CurrentState = PetState.Walk;
+				CurrentState = PetState.Run;
+			}
+
+			if (Vector3.Distance(target.position, transform.position) <= WalkRadius
+			    && Vector3.Distance(target.position, transform.position) > StopRadius)
+			{
+				if (CurrentState == PetState.Idle)
+				{
+					StartCoroutine(IdleWaitTime());
+				}
+				else
+				{
+					CanFollowPlayer = true;
+					CurrentState = PetState.Walk;
+				}
+			}
+
+			if (Vector3.Distance(target.position, transform.position) <= StopRadius)
+			{
+				CanFollowPlayer = false;
+				CurrentState = PetState.Idle;
+			}
+
+			if (CanFollowPlayer)
+			{
+				Vector3 temp = Vector3.MoveTowards(transform.position, target.position, MoveSpeed * Time.deltaTime);
+				rb.MovePosition(temp);
 			}
 		}
-		
-		if (Vector3.Distance(target.position, transform.position) <= StopRadius)
-		{
-			CanFollowPlayer = false;
-			CurrentState = PetState.Idle;
-		}
-		
-		if (CanFollowPlayer)
-		{
-			Vector3 temp = Vector3.MoveTowards(transform.position, target.position, MoveSpeed * Time.deltaTime);
-			rb.MovePosition(temp);
+
+		if (CanFollowEnemy.initialBool)
+		{	
+			Vector3 pos = Vector3.MoveTowards(transform.position, enemyPos.initialPos, MoveSpeed * Time.deltaTime);
+			rb.MovePosition(pos);
 		}
 	}
 	
@@ -131,6 +172,7 @@ public class PetMovement : MonoBehaviour {
 		Debug.Log("OutOfRange");
 		transform.position = target.position;
 		path.CanFollowPath = true;
+		CurrentState = PetState.Idle;
 	}
 
 	private IEnumerator IdleWaitTime()

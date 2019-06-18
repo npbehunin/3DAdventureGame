@@ -70,6 +70,7 @@
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Sentry.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Trap.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Turtle.cs" />
+    <Compile Include="Assets\Scripts\Icon Scripts\TargetModeIcon.cs" />
     <Compile Include="Assets\Scripts\Interaction Scripts\Interactable.cs" />
     <Compile Include="Assets\Scripts\Interaction Scripts\Plant.cs" />
     <Compile Include="Assets\Scripts\Management Scripts\CustomTimer.cs" />
@@ -98,7 +99,9 @@
     <Compile Include="Assets\Scripts\Player Scripts\PlayerAnimation.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\PlayerHealth.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\PlayerMovement.cs" />
+    <Compile Include="Assets\Scripts\Player Scripts\TargetingSystem.cs" />
     <Compile Include="Assets\Scripts\Scene Scripts\SceneManage.cs" />
+    <Compile Include="Assets\Scripts\Scriptable Objects\Bool Values\BoolValue.cs" />
     <Compile Include="Assets\Scripts\Scriptable Objects\Float Values\FloatValue.cs" />
     <Compile Include="Assets\Scripts\Scriptable Objects\Int Values\IntValue.cs" />
     <Compile Include="Assets\Scripts\Scriptable Objects\Signals\Signal.cs" />

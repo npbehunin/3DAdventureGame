@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PetState
-{
-	Follow, Attack, Mimic, Idle, Run, Walk
-}
+//	Follow, Attack, Mimic, Idle, Run, Walk
+//}
 
 public class Pet : MonoBehaviour {
 

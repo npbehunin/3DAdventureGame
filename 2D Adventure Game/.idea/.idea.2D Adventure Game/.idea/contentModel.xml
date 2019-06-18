@@ -27,6 +27,9 @@
               <e p="Turtle.cs" t="Include" />
             </e>
           </e>
+          <e p="Icon Scripts" t="Include">
+            <e p="TargetModeIcon.cs" t="Include" />
+          </e>
           <e p="Interaction Scripts" t="Include">
             <e p="Interactable.cs" t="Include" />
             <e p="Plant.cs" t="Include" />
@@ -66,11 +69,15 @@
             <e p="PlayerAnimation.cs" t="Include" />
             <e p="PlayerHealth.cs" t="Include" />
             <e p="PlayerMovement.cs" t="Include" />
+            <e p="TargetingSystem.cs" t="Include" />
           </e>
           <e p="Scene Scripts" t="Include">
             <e p="SceneManage.cs" t="Include" />
           </e>
           <e p="Scriptable Objects" t="Include">
+            <e p="Bool Values" t="Include">
+              <e p="BoolValue.cs" t="Include" />
+            </e>
             <e p="Float Values" t="Include">
               <e p="FloatValue.cs" t="Include" />
             </e>
