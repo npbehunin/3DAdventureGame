@@ -45,12 +45,15 @@ public class PlayerMovement : MonoBehaviour
 	void Update()
 	{
 		CheckForPause();
+		CheckStates();
 		GetDirection();
+		
 		if (currentState == PlayerState.Idle || currentState == PlayerState.Walk || currentState == PlayerState.Run)
 		{
 			position = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0).normalized;
 		}
 
+		//If there's input...
 		if (position != Vector3.zero)
 		{
 			horizontalspeed = position.x;
@@ -58,51 +61,78 @@ public class PlayerMovement : MonoBehaviour
 			playerAnim.AnimSpeed(horizontalspeed, verticalspeed); //Anim speed
 
 			//Run
-			if (currentState == PlayerState.Idle || currentState == PlayerState.Run)
+			if (currentState == PlayerState.Idle)
 			{
-				playerAnim.SetAnimState(AnimationState.Run);
 				currentState = PlayerState.Run;
-				MoveSpeed.initialValue = 4;
-			}
-			
-			//Walk
-			if (currentState == PlayerState.Walk)
-			{
-				playerAnim.SetAnimState(AnimationState.Walk);
-				MoveSpeed.initialValue = 2;
-			}
-			else
-			{
-				MoveSpeed.initialValue = 4;
 			}
 		}
+	}
 
-		//Idle
+	//Check the currentState of the player.
+	void CheckStates()
+	{
+		switch (currentState)
+		{
+			case PlayerState.Idle:
+				playerAnim.SetAnimState(AnimationState.Idle);
+				inputDirection = Vector3.zero;
+				break;
+			case PlayerState.Walk:
+				playerAnim.SetAnimState(AnimationState.Walk);
+				MoveSpeed.initialValue = 2;
+				break;
+			case PlayerState.Run:
+				playerAnim.SetAnimState(AnimationState.Run);
+				break;
+			case PlayerState.Attack:
+				playerAnim.SetAnimState(AnimationState.SwordAttack);
+				SwordMomentumScale.initialValue += SwordMomentumSmooth * Time.deltaTime;
+				SwordMomentum = Mathf.Lerp(SwordMomentumPower, 0, SwordMomentumScale.initialValue);
+
+				//Check if there's an input, otherwise move in the anim's direction.
+				if (inputDirection != Vector3.zero)
+				{
+					position = (SwordMomentum * inputDirection);
+				}
+				else
+				{
+					position = (SwordMomentum * direction.initialPos);
+				}
+
+				break;
+			case PlayerState.Paused:
+				rb.bodyType = RigidbodyType2D.Static;
+				playerAnim.AnimPause(true);
+				break;
+			case PlayerState.Hitstun:
+				position = Vector3.zero;
+				playerAnim.AnimPause(true);
+				break;
+			default:
+				currentState = PlayerState.Idle;
+				break;
+		}
+		
+		//CurrentState special checks
+		//IF not paused
+		if (currentState != PlayerState.Paused)
+		{
+			rb.bodyType = RigidbodyType2D.Dynamic;
+			playerAnim.AnimPause(false);
+		}
+
+		//If not walk
+		if (currentState != PlayerState.Walk)
+		{
+			MoveSpeed.initialValue = 4;
+		}
+
+		//Set Idle
 		if (currentState != PlayerState.Attack && currentState != PlayerState.Paused && currentState != PlayerState.Hitstun)
 		{
 			if (position == Vector3.zero)
 			{
-				playerAnim.SetAnimState(AnimationState.Idle);
 				currentState = PlayerState.Idle;
-				inputDirection = Vector3.zero;
-			}
-		}
-
-		//Attack
-		if (currentState == PlayerState.Attack)
-		{
-			playerAnim.SetAnimState(AnimationState.SwordAttack);
-			SwordMomentumScale.initialValue += SwordMomentumSmooth * Time.deltaTime;
-			SwordMomentum = Mathf.Lerp(SwordMomentumPower, 0, SwordMomentumScale.initialValue);
-			
-			//Check if there's an input, otherwise move in the anim's direction.
-			if (inputDirection != Vector3.zero)
-			{
-				position = (SwordMomentum * inputDirection);
-			}
-			else
-			{
-				position = (SwordMomentum * direction.initialPos);
 			}
 		}
 	}
@@ -135,22 +165,6 @@ public class PlayerMovement : MonoBehaviour
 				CanSetState = true;
 				currentState = laststate; //*if last state was attack, player COULD end up being stuck.
 			}
-		}
-
-		switch (currentState)
-		{
-			case PlayerState.Paused:
-				rb.bodyType = RigidbodyType2D.Static;
-				playerAnim.AnimPause(true);
-				break;
-			case PlayerState.Hitstun:
-				position = Vector3.zero;
-				playerAnim.AnimPause(true);
-				break;
-			default:
-				rb.bodyType = RigidbodyType2D.Dynamic;
-				playerAnim.AnimPause(false);
-				break;
 		}
 	}
 

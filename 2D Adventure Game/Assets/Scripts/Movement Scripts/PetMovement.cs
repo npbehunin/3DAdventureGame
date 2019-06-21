@@ -4,21 +4,18 @@ using UnityEngine;
 
 public enum PetState
 {
-	Follow, Attack, Heel, Idle, Run, Walk
+	Attack, Heel, Idle, Run, Walk
 }
 
 public class PetMovement : MonoBehaviour {
 
 	public Transform target;
 	public BoolValue CanFollowEnemy;
-	public bool CanFollowPlayer, FollowPath; //CanFollowPath;
+	public bool CanFollowPlayer, FollowPath, Attacking, CanAttack, Jumping, CanGetTargetDir;
 	public Vector3Value enemyPos;
+	public Vector3 position, difference;
 	
-	public float ChaseRadius;
-	public float WalkRadius;
-	public float StopRadius;
-	public float WarpRadius;
-	public float MoveSpeed;
+	public float ChaseRadius, WalkRadius, StopRadius, WarpRadius, MoveSpeed, JumpMomentum, JumpMomentumScale;
 	public Rigidbody2D rb;
 
 	public PetState CurrentState;
@@ -26,9 +23,10 @@ public class PetMovement : MonoBehaviour {
 	public FloatValue playerMoveSpeed;
 	public UnitFollow path;
 	
-	void Start () 
+	void Start ()
 	{
-		
+		CanAttack = true;
+		CurrentState = PetState.Idle;
 	}
 
 	void FixedUpdate()
@@ -36,6 +34,11 @@ public class PetMovement : MonoBehaviour {
 		if (!FollowPath)
 		{
 			CheckDistance();
+		}
+
+		if (Attacking)
+		{
+			rb.MovePosition(transform.position + position * MoveSpeed * Time.deltaTime);
 		}
 	}
 	
@@ -52,7 +55,6 @@ public class PetMovement : MonoBehaviour {
 			{
 				CurrentState = PetState.Idle;
 			}
-			
 		}
 		
 		if (CurrentState!=PetState.Attack)
@@ -159,11 +161,48 @@ public class PetMovement : MonoBehaviour {
 				rb.MovePosition(temp);
 			}
 		}
+		else
+		{
+			if (Attacking)
+			{
+				Attack();
+			}
+			else
+			{
+				if (Vector3.Distance(enemyPos.initialPos, transform.position) <= WalkRadius)
+				{
+					if (!CanAttack) return; //Reduces nesting
+					StartCoroutine(AttackEnemy());
+					CanAttack = false;
+				}
+				else
+				{
+					Vector3 pos = Vector3.MoveTowards(transform.position, enemyPos.initialPos, MoveSpeed * Time.deltaTime);
+					rb.MovePosition(pos);
+				}
+			}
+		}
+	}
 
-		if (CanFollowEnemy.initialBool)
-		{	
-			Vector3 pos = Vector3.MoveTowards(transform.position, enemyPos.initialPos, MoveSpeed * Time.deltaTime);
-			rb.MovePosition(pos);
+	void Attack()
+	{
+		if (CanGetTargetDir)
+		{
+			CanGetTargetDir = false;
+			difference = enemyPos.initialPos - transform.position;
+		}
+		float smooth = 4f;
+		float power = 2.5f;
+		JumpMomentumScale += smooth * Time.deltaTime;
+		JumpMomentum = Mathf.Lerp(power, 0, JumpMomentumScale);
+
+		if (Jumping)
+		{
+			position = (JumpMomentum * difference);
+		}
+		else
+		{
+			position = (JumpMomentum * -difference);
 		}
 	}
 	
@@ -173,6 +212,28 @@ public class PetMovement : MonoBehaviour {
 		transform.position = target.position;
 		path.CanFollowPath = true;
 		CurrentState = PetState.Idle;
+	}
+
+	private IEnumerator AttackEnemy()
+	{
+		yield return CustomTimer.Timer(.5f);
+		Attacking = true;
+		Jumping = true;
+		yield return CustomTimer.Timer(.5f);
+		JumpMomentum = 0;
+		JumpMomentumScale = 0;
+		Jumping = false;
+		yield return CustomTimer.Timer(1f);
+		ResetAttack();
+	}
+
+	void ResetAttack()
+	{
+		CanAttack = true;
+		Attacking = false;
+		JumpMomentum = 0;
+		JumpMomentumScale = 0;
+		CanGetTargetDir = true;
 	}
 
 	private IEnumerator IdleWaitTime()
