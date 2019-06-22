@@ -9,7 +9,7 @@ public enum InteractDirection
 public class Interactable : MonoBehaviour
 {
 	protected bool CanInteract;
-	private bool PlayerDirChecked, IsTriggered;
+	public bool PlayerDirChecked, IsTriggered;
 	public InteractDirection InteractDir;
 	public Vector3Value PlayerDir;
 	private Vector3 dir;
@@ -73,8 +73,19 @@ public class Interactable : MonoBehaviour
 		}
 	}
 
+	void OnTriggerExit2D(Collider2D col)
+	{
+		if (col.gameObject.CompareTag("Player"))
+		{
+			IsTriggered = false;
+		}
+	}
+
 	protected virtual void Interact()
 	{
 		//Do something
 	}
 }
+
+//Known issues:
+//1: OnTriggerEnter sometimes doesn't register. (Maybe the player's circle collider causes it?)

@@ -9,7 +9,7 @@ public class Plant : Interactable {
 
 	protected override void Start()
 	{
-		InteractDir = InteractDirection.all;
+		InteractDir = InteractDirection.down;
 		CanInteract = true;
 		CheckDir();
 	}

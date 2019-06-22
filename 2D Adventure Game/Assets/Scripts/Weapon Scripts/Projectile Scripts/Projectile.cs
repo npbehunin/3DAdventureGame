@@ -25,6 +25,7 @@ public class Projectile : Weapon
 
 	protected override void Start()
 	{
+		StartCoroutine(Destroy());
 		if (UsingMouse)
 		{
 			ray = Camera.main.ScreenPointToRay(Input.mousePosition); //Converts mouse position to units on camera.
@@ -42,8 +43,6 @@ public class Projectile : Weapon
 				float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
 				Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
 				transform.rotation = q;
-
-				StartCoroutine(Destroy());
 			}
 		}
 		else
@@ -54,7 +53,7 @@ public class Projectile : Weapon
 				movementVector = (targetpos - transform.position).normalized * projectileSpeed;
 				Debug.Log(movementVector);
 			}
-			StartCoroutine(Destroy());
+			//StartCoroutine(Destroy());
 		}
 	}
 
@@ -66,7 +65,7 @@ public class Projectile : Weapon
 
 	IEnumerator Destroy()
 	{
-		yield return new WaitForSeconds(1);
+		yield return CustomTimer.Timer(1f);
 		Destroy(gameObject);
 	}
 }

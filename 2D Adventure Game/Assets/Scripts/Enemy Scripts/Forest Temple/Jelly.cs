@@ -15,7 +15,7 @@ public class Jelly : Enemy
 		currentState = EnemyState.Idle;
 		rb = GetComponent<Rigidbody2D>();
 		target = GameObject.FindWithTag("Player").transform; //Fix
-		Health = 45;
+		Health = 10;
 		Damage = 1;
 		JumpMomentumSmooth = 4f;
 		JumpMomentumPower = 4f;

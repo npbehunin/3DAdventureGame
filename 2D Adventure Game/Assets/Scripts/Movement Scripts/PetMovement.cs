@@ -10,8 +10,8 @@ public enum PetState
 public class PetMovement : MonoBehaviour {
 
 	public Transform target;
-	public BoolValue CanFollowEnemy;
-	public bool CanFollowPlayer, FollowPath, Attacking, CanAttack, Jumping, CanGetTargetDir;
+	public BoolValue EnemyExists;
+	public bool CanFollowPlayer, FollowPath, Attacking, CanAttack, AttackMode, Jumping, CanGetTargetDir;
 	public Vector3Value enemyPos;
 	public Vector3 position, difference;
 	
@@ -22,6 +22,8 @@ public class PetMovement : MonoBehaviour {
 
 	public FloatValue playerMoveSpeed;
 	public UnitFollow path;
+
+	public Coroutine AttackCoroutine;
 	
 	void Start ()
 	{
@@ -47,12 +49,13 @@ public class PetMovement : MonoBehaviour {
 		//Temporary way to set pet to attack state
 		if (Input.GetKeyDown(KeyCode.LeftShift))
 		{
-			if (CurrentState != PetState.Attack)
+			if (!AttackMode)
 			{
-				CurrentState = PetState.Attack;
+				AttackMode = true;
 			}
 			else
 			{
+				AttackMode = false;
 				CurrentState = PetState.Idle;
 			}
 		}
@@ -60,7 +63,6 @@ public class PetMovement : MonoBehaviour {
 		if (CurrentState!=PetState.Attack)
 		{
 			CheckPath();
-			CanFollowEnemy.initialBool = false;
 		}
 		
 		//If pet is too far, teleport
@@ -83,7 +85,6 @@ public class PetMovement : MonoBehaviour {
 				break;
 			case PetState.Attack:
 				MoveSpeed = 4;
-				CanFollowEnemy.initialBool = true;
 				break;
 			default:
 				MoveSpeed = 0;
@@ -126,8 +127,38 @@ public class PetMovement : MonoBehaviour {
 		
 	void CheckDistance()
 	{
-		if (CurrentState != PetState.Attack)
+		if (AttackMode && EnemyExists.initialBool) //If attackmode is enabled and an enemy target exists...
 		{
+			CanFollowPlayer = false;
+			CurrentState = PetState.Attack;
+			if (Attacking)
+			{
+				Attack();
+			}
+			else
+			{
+				if (Vector3.Distance(enemyPos.initialPos, transform.position) <= WalkRadius)
+				{
+					if (CanAttack)
+					{
+						AttackCoroutine = StartCoroutine(AttackEnemy());
+						CanAttack = false;
+					}
+				}
+				else
+				{
+					Vector3 pos = Vector3.MoveTowards(transform.position, enemyPos.initialPos, MoveSpeed * Time.deltaTime);
+					rb.MovePosition(pos);
+				}
+			}
+		}
+		else
+		{
+			if (AttackCoroutine != null)
+			{
+				ResetAttack();
+				StopCoroutine(AttackCoroutine);
+			}
 			if (Vector3.Distance(target.position, transform.position) <= ChaseRadius
 			    && Vector3.Distance(target.position, transform.position) > WalkRadius)
 			{
@@ -159,27 +190,6 @@ public class PetMovement : MonoBehaviour {
 			{
 				Vector3 temp = Vector3.MoveTowards(transform.position, target.position, MoveSpeed * Time.deltaTime);
 				rb.MovePosition(temp);
-			}
-		}
-		else
-		{
-			if (Attacking)
-			{
-				Attack();
-			}
-			else
-			{
-				if (Vector3.Distance(enemyPos.initialPos, transform.position) <= WalkRadius)
-				{
-					if (!CanAttack) return; //Reduces nesting
-					StartCoroutine(AttackEnemy());
-					CanAttack = false;
-				}
-				else
-				{
-					Vector3 pos = Vector3.MoveTowards(transform.position, enemyPos.initialPos, MoveSpeed * Time.deltaTime);
-					rb.MovePosition(pos);
-				}
 			}
 		}
 	}
@@ -231,6 +241,7 @@ public class PetMovement : MonoBehaviour {
 	{
 		CanAttack = true;
 		Attacking = false;
+		Jumping = false;
 		JumpMomentum = 0;
 		JumpMomentumScale = 0;
 		CanGetTargetDir = true;
@@ -246,5 +257,14 @@ public class PetMovement : MonoBehaviour {
 
 //TO DO
 
-//Pathfinding works great. A new path is created when the pet gets out of range. Adjust the bools to work consistently
+//1: If pet is behind a wall with the player, the pet will attempt to chase the enemy and get stuck on the wall. Add
+//a drawline check OR add pathfinding so the pet can find the enemy reliably. My suggestion is to add a drawline check
+//from the player, then tell the pet to use pathfinding until it sees the enemy.
+
+//2: Do a radius check on the player before telling the pet to attack something. Right now the pet just attacks the
+//closest enemy on the list, but it should also check to make sure it's within the player's radius.
+
+//Known issues:
+
+//1: Pathfinding works great. A new path is created when the pet gets out of range. Adjust the bools to work consistently
 //and edit the warp radius a bit so the pet can actually complete certain paths.

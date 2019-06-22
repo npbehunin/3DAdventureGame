@@ -4,36 +4,50 @@ using UnityEngine;
 
 public class TargetingSystem : MonoBehaviour
 {
+	public List<GameObject> EnemiesList = new List<GameObject>();
 	public GameObject[] enemies;
 	public GameObject target;
 	public Vector3Value targetPosition;
-	public BoolValue PetCanFollowTarget;
+	public BoolValue EnemyExists;
+	public bool NoEnemiesFound;
 	
 	void Start () 
 	{
 		//If enemies instantiate in the scene, this should run again.
 		enemies = GameObject.FindGameObjectsWithTag("Enemy");
+		EnemiesList.AddRange(enemies);
+		NoEnemiesFound = false;
 	}
 	
 	void Update ()
 	{
-		if (!PetCanFollowTarget.initialBool)
+		if (!EnemyExists.initialBool && !NoEnemiesFound)
 		{
-			target = GetClosestTarget(enemies);
+			target = GetClosestTarget(EnemiesList);
+			Debug.Log("Checking target");
 		}
 
 		if (target != null)
 		{
-			targetPosition.initialPos = target.transform.position;
+			if (target.activeSelf) //If the target is active
+			{
+				EnemyExists.initialBool = true;
+				targetPosition.initialPos = target.transform.position;
+			}
+			else
+			{
+				EnemyExists.initialBool = false; //Remove it from the list
+				EnemiesList.Remove(target);
+			}
+		}
+		else //If there are no targets
+		{
+			//Debug.Log("No enemies found!");
+			NoEnemiesFound = true;
 		}
 	}
 
-	void FindClosestTarget()
-	{
-		//targetTransform.initialTransform = GetClosestTarget(enemies).transform;
-	}
-
-	GameObject GetClosestTarget (GameObject[] objectList)
+	GameObject GetClosestTarget (List<GameObject> objectList)
     {
         GameObject bestTarget = null;
         float closestDistanceSqr = Mathf.Infinity;
@@ -50,5 +64,4 @@ public class TargetingSystem : MonoBehaviour
         }
         return bestTarget;
     }
-	
 }
