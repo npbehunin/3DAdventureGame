@@ -264,7 +264,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 20902911}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.33, y: 4.09, z: 0.01171875}
+  m_LocalPosition: {x: 4.87, y: 9.09, z: 0.01171875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 837465280}
@@ -283,10 +283,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CamShakeSignal: {fileID: 11400000, guid: e9270158190f5d74ba51984178cda4f4, type: 2}
   CamShakeDir: {fileID: 11400000, guid: c4d0f9da8123eb744bd501e70d49e338, type: 2}
+  PlayerTransform: {fileID: 11400000, guid: a2ad014b0bcb86145b9eae1a794bea2d, type: 2}
   Health: 0
   Damage: 0
   WeaponDamage: {fileID: 11400000, guid: 8a811f3aa7c4e8a4f9d5fa3c2edb7446, type: 2}
   CanCollide: 0
+  EnemyLOS: 0
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
@@ -395,7 +397,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 127170511}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.000015258789, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1468615829}
@@ -549,10 +551,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CamShakeSignal: {fileID: 11400000, guid: e9270158190f5d74ba51984178cda4f4, type: 2}
   CamShakeDir: {fileID: 11400000, guid: c4d0f9da8123eb744bd501e70d49e338, type: 2}
+  PlayerTransform: {fileID: 0}
   Health: 0
   Damage: 0
   WeaponDamage: {fileID: 11400000, guid: 8a811f3aa7c4e8a4f9d5fa3c2edb7446, type: 2}
   CanCollide: 0
+  EnemyLOS: 0
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
@@ -735,7 +739,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 342910427}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.267, z: 0}
+  m_LocalPosition: {x: 0, y: 0.244, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 147235735}
@@ -909,10 +913,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CamShakeSignal: {fileID: 11400000, guid: e9270158190f5d74ba51984178cda4f4, type: 2}
   CamShakeDir: {fileID: 11400000, guid: c4d0f9da8123eb744bd501e70d49e338, type: 2}
+  PlayerTransform: {fileID: 0}
   Health: 0
   Damage: 2
   WeaponDamage: {fileID: 11400000, guid: 8a811f3aa7c4e8a4f9d5fa3c2edb7446, type: 2}
   CanCollide: 0
+  EnemyLOS: 0
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
@@ -3564,9 +3570,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc975c4a95756d245b8a943ce1a5c0a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 1659612928}
-  CanFollowPath: 0
+  path: []
   CannotReachPlayer: 0
+  PetCanFollowPath: {fileID: 0}
+  TargetTransform: {fileID: 0}
 --- !u!1 &1219879506
 GameObject:
   m_ObjectHideFlags: 0
@@ -3749,7 +3756,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1282365204}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.54, y: 5.5, z: 0.01171875}
+  m_LocalPosition: {x: 1.95, y: 7.09, z: 0.01171875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 837465280}
@@ -3788,10 +3795,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CamShakeSignal: {fileID: 11400000, guid: e9270158190f5d74ba51984178cda4f4, type: 2}
   CamShakeDir: {fileID: 11400000, guid: c4d0f9da8123eb744bd501e70d49e338, type: 2}
+  PlayerTransform: {fileID: 11400000, guid: a2ad014b0bcb86145b9eae1a794bea2d, type: 2}
   Health: 0
   Damage: 0
   WeaponDamage: {fileID: 11400000, guid: 8a811f3aa7c4e8a4f9d5fa3c2edb7446, type: 2}
   CanCollide: 0
+  EnemyLOS: 0
   rb: {fileID: 0}
   target: {fileID: 1659612928}
   home: {fileID: 0}
@@ -3960,7 +3969,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1468615828}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -13.51, y: 3.19, z: 0}
+  m_LocalPosition: {x: -6.74, y: 6.97, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 127170512}
@@ -3978,8 +3987,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0775a36ec6c73849b8440c0aa3a50a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 1659612928}
   EnemyExists: {fileID: 11400000, guid: c51e5db9cea65e94b9303da2c7dd0e56, type: 2}
+  CanFollowPath: {fileID: 11400000, guid: 7340128e6759f784b91166421e8bfebb, type: 2}
+  EnemyFound: {fileID: 11400000, guid: 0fb42f4e664de2a4386949aac4b40db2, type: 2}
+  PetIsAttacking: {fileID: 11400000, guid: 9a52260159436524bb6f72b68ad65e2b, type: 2}
   CanFollowPlayer: 0
   FollowPath: 0
   Attacking: 0
@@ -3987,7 +3998,9 @@ MonoBehaviour:
   AttackMode: 0
   Jumping: 0
   CanGetTargetDir: 0
-  enemyPos: {fileID: 11400000, guid: a6393f11d867dd244ad91ae63fc6ae2a, type: 2}
+  enemyPos: {fileID: 11400000, guid: 70d5766d06c434048a03d78d1699577c, type: 2}
+  PlayerTransform: {fileID: 11400000, guid: a2ad014b0bcb86145b9eae1a794bea2d, type: 2}
+  TargetTransform: {fileID: 11400000, guid: a6393f11d867dd244ad91ae63fc6ae2a, type: 2}
   position: {x: 0, y: 0, z: 0}
   difference: {x: 0, y: 0, z: 0}
   ChaseRadius: 12
@@ -4093,9 +4106,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc975c4a95756d245b8a943ce1a5c0a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 1659612928}
-  CanFollowPath: 0
+  path: []
   CannotReachPlayer: 0
+  PetCanFollowPath: {fileID: 11400000, guid: 7340128e6759f784b91166421e8bfebb, type: 2}
+  TargetTransform: {fileID: 11400000, guid: a6393f11d867dd244ad91ae63fc6ae2a, type: 2}
 --- !u!1 &1508917328
 GameObject:
   m_ObjectHideFlags: 0
@@ -4355,10 +4369,13 @@ MonoBehaviour:
   rb: {fileID: 1659612929}
   playerAnim: {fileID: 342910431}
   targetMode: {fileID: 1659612934}
+  EnemyLOS: {fileID: 11400000, guid: 82aa0038367dfca4b9fced3de9f814fd, type: 2}
   SwordMomentumScale: {fileID: 11400000, guid: 5c28ab169c95d0849b5c377dda9b308a, type: 2}
   MoveSpeed: {fileID: 11400000, guid: 8315aec1680244b49a520f9f11120688, type: 2}
   position: {x: 0, y: 0, z: 0}
   direction: {fileID: 11400000, guid: f903f6903d9aea641ade7b874ec606a3, type: 2}
+  PlayerTransform: {fileID: 11400000, guid: a2ad014b0bcb86145b9eae1a794bea2d, type: 2}
+  TargetTransform: {fileID: 11400000, guid: a6393f11d867dd244ad91ae63fc6ae2a, type: 2}
 --- !u!114 &1659612926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4386,9 +4403,10 @@ MonoBehaviour:
   EnemiesList: []
   enemies: []
   target: {fileID: 0}
-  targetPosition: {fileID: 11400000, guid: a6393f11d867dd244ad91ae63fc6ae2a, type: 2}
+  targetPosition: {fileID: 11400000, guid: 70d5766d06c434048a03d78d1699577c, type: 2}
   EnemyExists: {fileID: 11400000, guid: c51e5db9cea65e94b9303da2c7dd0e56, type: 2}
-  NoEnemiesFound: 0
+  EnemiesFound: {fileID: 11400000, guid: 0fb42f4e664de2a4386949aac4b40db2, type: 2}
+  PetIsAttacking: {fileID: 11400000, guid: 9a52260159436524bb6f72b68ad65e2b, type: 2}
 --- !u!4 &1659612928
 Transform:
   m_ObjectHideFlags: 0
@@ -4396,7 +4414,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1659612924}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -8.06, y: 3.72, z: 0}
+  m_LocalPosition: {x: -3.68, y: 8.763, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 342910428}

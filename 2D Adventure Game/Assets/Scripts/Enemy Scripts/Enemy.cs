@@ -14,10 +14,11 @@ public enum EnemyState
 public class Enemy : MonoBehaviour
 {
 	public Signal CamShakeSignal;
-	public Vector3Value CamShakeDir;
+	public Vector3Value CamShakeDir, PlayerTransform;
 	public int Health, Damage;
 	public IntValue WeaponDamage;
-	public bool CanCollide;
+	public bool CanCollide, EnemyLOS;
+	//public BoolValue ;
 	public Rigidbody2D rb;
 	public Transform target, home;
 
@@ -55,10 +56,22 @@ public class Enemy : MonoBehaviour
 		}
 		CheckForPause();
 
-		//if (currentState != EnemyState.Knocked && currentState != EnemyState.Paused) //Just a backup
-		//{
-		//	CanCollide = true;
-		//}
+		//*Fix obviously
+		//Check if this enemy is in LOS (of player).
+		float chaseRadius = 6f;
+		int wallLayerMask = 1 << 9;
+		if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= chaseRadius)
+		{
+			if (Physics2D.Linecast(PlayerTransform.initialPos, transform.position, wallLayerMask))//, 15, wallLayerMask))
+			{
+				EnemyLOS = false;
+			}
+			else
+			{
+				Debug.DrawLine(PlayerTransform.initialPos, transform.position, Color.yellow);
+				EnemyLOS = true;
+			}
+		}
 	}
 
 	//Checks if game is paused

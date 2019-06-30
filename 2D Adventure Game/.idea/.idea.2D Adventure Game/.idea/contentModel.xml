@@ -84,6 +84,9 @@
             <e p="Int Values" t="Include">
               <e p="IntValue.cs" t="Include" />
             </e>
+            <e p="Lists" t="Include">
+              <e p="ListVector3.cs" t="Include" />
+            </e>
             <e p="Signals" t="Include">
               <e p="Signal.cs" t="Include" />
             </e>

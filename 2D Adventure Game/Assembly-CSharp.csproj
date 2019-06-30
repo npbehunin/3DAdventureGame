@@ -104,6 +104,7 @@
     <Compile Include="Assets\Scripts\Scriptable Objects\Bool Values\BoolValue.cs" />
     <Compile Include="Assets\Scripts\Scriptable Objects\Float Values\FloatValue.cs" />
     <Compile Include="Assets\Scripts\Scriptable Objects\Int Values\IntValue.cs" />
+    <Compile Include="Assets\Scripts\Scriptable Objects\Lists\ListVector3.cs" />
     <Compile Include="Assets\Scripts\Scriptable Objects\Signals\Signal.cs" />
     <Compile Include="Assets\Scripts\Scriptable Objects\Vector3 Values\Vector3Value.cs" />
     <Compile Include="Assets\Scripts\Testing Scripts\DirectionTest.cs" />

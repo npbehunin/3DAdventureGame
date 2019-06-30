@@ -15,13 +15,14 @@ public class PlayerMovement : MonoBehaviour
 	public PlayerAnimation playerAnim;
 	public LookTowardsTarget targetMode;
 	private bool CanSetState;
+	public BoolValue EnemyLOS;
 
 	private float horizontalspeed, verticalspeed;
 	private float SwordMomentum, SwordMomentumSmooth, SwordMomentumPower;
 	public FloatValue SwordMomentumScale, MoveSpeed;
 
 	public Vector3 position;
-	public Vector3Value direction;
+	public Vector3Value direction, PlayerTransform, TargetTransform;
 	public static Vector3 inputDirection;
 	
 	void Start()
@@ -44,6 +45,8 @@ public class PlayerMovement : MonoBehaviour
 
 	void Update()
 	{
+		PlayerTransform.initialPos = transform.position;
+		CheckLineOfSight();
 		CheckForPause();
 		CheckStates();
 		GetDirection();
@@ -135,6 +138,12 @@ public class PlayerMovement : MonoBehaviour
 				currentState = PlayerState.Idle;
 			}
 		}
+	}
+
+	//*Change to make sure this doesn't run forever!
+	void CheckLineOfSight()
+	{
+		//Handled in the pet for now
 	}
 
 	//Check if game is paused or if player is hitstunned

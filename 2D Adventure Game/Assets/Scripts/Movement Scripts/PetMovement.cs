@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public enum PetState
@@ -9,10 +10,10 @@ public enum PetState
 
 public class PetMovement : MonoBehaviour {
 
-	public Transform target;
-	public BoolValue EnemyExists;
+	//public Transform target;
+	public BoolValue EnemyExists, CanFollowPath, EnemyFound, PetIsAttacking;
 	public bool CanFollowPlayer, FollowPath, Attacking, CanAttack, AttackMode, Jumping, CanGetTargetDir;
-	public Vector3Value enemyPos;
+	public Vector3Value enemyPos, PlayerTransform, TargetTransform;
 	public Vector3 position, difference;
 	
 	public float ChaseRadius, WalkRadius, StopRadius, WarpRadius, MoveSpeed, JumpMomentum, JumpMomentumScale;
@@ -29,6 +30,10 @@ public class PetMovement : MonoBehaviour {
 	{
 		CanAttack = true;
 		CurrentState = PetState.Idle;
+		TargetTransform.initialPos = PlayerTransform.initialPos;
+		//CanReachEnemy.initialBool = false;
+		CanFollowPath.initialBool = true;
+		PetIsAttacking.initialBool = false;
 	}
 
 	void FixedUpdate()
@@ -49,6 +54,8 @@ public class PetMovement : MonoBehaviour {
 		//Temporary way to set pet to attack state
 		if (Input.GetKeyDown(KeyCode.LeftShift))
 		{
+			path.StopFollowPath();
+			//CanFollowPath.initialBool = true;
 			if (!AttackMode)
 			{
 				AttackMode = true;
@@ -60,13 +67,22 @@ public class PetMovement : MonoBehaviour {
 			}
 		}
 		
-		if (CurrentState!=PetState.Attack)
+		//***Need a way to send a signal to the pet to let it know its target is dead. Then...
+		//EnemyLOS.initialBool = false;
+
+		if (CurrentState != PetState.Attack)
 		{
-			CheckPath();
+			TargetTransform.initialPos = PlayerTransform.initialPos;
+		}
+		else
+		{
+			TargetTransform.initialPos = enemyPos.initialPos;
 		}
 		
+		CheckPath();
+		
 		//If pet is too far, teleport
-		if (Vector3.Distance(target.position, transform.position) > WarpRadius)
+		if (Vector3.Distance(PlayerTransform.initialPos, transform.position) > WarpRadius)
 		{
 			OutOfRange();
 		}
@@ -94,8 +110,9 @@ public class PetMovement : MonoBehaviour {
 
 	void CheckPath()
 	{
-		if (FollowPath)
+		if (FollowPath && CanFollowPath.initialBool)
 		{
+			CanFollowPath.initialBool = false;
 			path.CheckIfCanFollowPath();
 			CanFollowPlayer = false;
 		}
@@ -103,25 +120,49 @@ public class PetMovement : MonoBehaviour {
 		if (!FollowPath)
 		{
 			path.StopFollowPath();
+			//CanFollowPath.initialBool = true;
 		}
 
-		if (path.CannotReachPlayer)
+		if (path.CannotReachPlayer) //Runs once
 		{
-			OutOfRange();
 			path.CannotReachPlayer = false;
+			if (CurrentState != PetState.Attack)
+			{
+				OutOfRange();
+			}
+			else
+			{
+				//DO SOMETHING WHEN IT CAN'T REACH THE ENEMY
+				transform.position = enemyPos.initialPos;
+			}
 		}
-		
-		//Check any collision between pet and player
-		//RaycastHit hit;
+
+		//ENEMY LINECAST CHECK
 		int wallLayerMask = 1 << 9;
-		if (Physics2D.Linecast(transform.position, target.position, wallLayerMask))//, 15, wallLayerMask))
+		if (AttackMode && EnemyExists.initialBool && EnemyFound) //EnemyFound means there's one in LOS of the PLAYER, not pet
 		{
-			FollowPath = true;
-			Debug.DrawLine(transform.position, target.position, Color.yellow);
+			if (Physics2D.Linecast(transform.position, enemyPos.initialPos, wallLayerMask))
+			{
+				FollowPath = true;
+				Debug.DrawLine(transform.position, enemyPos.initialPos, Color.yellow);
+			}
+			else
+			{
+				FollowPath = false;
+			}
 		}
 		else
 		{
-			FollowPath = false;
+			//Player check if the above condition isn't met
+			if (Physics2D.Linecast(transform.position, PlayerTransform.initialPos, wallLayerMask))
+			{
+				FollowPath = true;
+				Debug.DrawLine(transform.position, PlayerTransform.initialPos, Color.yellow);
+			}
+			else
+			{
+				FollowPath = false;
+			}
 		}
 	}
 		
@@ -129,6 +170,8 @@ public class PetMovement : MonoBehaviour {
 	{
 		if (AttackMode && EnemyExists.initialBool) //If attackmode is enabled and an enemy target exists...
 		{
+			//Attack check
+			PetIsAttacking.initialBool = true;
 			CanFollowPlayer = false;
 			CurrentState = PetState.Attack;
 			if (Attacking)
@@ -154,20 +197,21 @@ public class PetMovement : MonoBehaviour {
 		}
 		else
 		{
+			PetIsAttacking.initialBool = false;
 			if (AttackCoroutine != null)
 			{
 				ResetAttack();
 				StopCoroutine(AttackCoroutine);
 			}
-			if (Vector3.Distance(target.position, transform.position) <= ChaseRadius
-			    && Vector3.Distance(target.position, transform.position) > WalkRadius)
+			if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= ChaseRadius
+			    && Vector3.Distance(PlayerTransform.initialPos, transform.position) > WalkRadius)
 			{
 				CanFollowPlayer = true;
 				CurrentState = PetState.Run;
 			}
 
-			if (Vector3.Distance(target.position, transform.position) <= WalkRadius
-			    && Vector3.Distance(target.position, transform.position) > StopRadius)
+			if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= WalkRadius
+			    && Vector3.Distance(PlayerTransform.initialPos, transform.position) > StopRadius)
 			{
 				if (CurrentState == PetState.Idle)
 				{
@@ -180,7 +224,7 @@ public class PetMovement : MonoBehaviour {
 				}
 			}
 
-			if (Vector3.Distance(target.position, transform.position) <= StopRadius)
+			if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= StopRadius)
 			{
 				CanFollowPlayer = false;
 				CurrentState = PetState.Idle;
@@ -188,7 +232,7 @@ public class PetMovement : MonoBehaviour {
 
 			if (CanFollowPlayer)
 			{
-				Vector3 temp = Vector3.MoveTowards(transform.position, target.position, MoveSpeed * Time.deltaTime);
+				Vector3 temp = Vector3.MoveTowards(transform.position, PlayerTransform.initialPos, MoveSpeed * Time.deltaTime);
 				rb.MovePosition(temp);
 			}
 		}
@@ -219,8 +263,8 @@ public class PetMovement : MonoBehaviour {
 	void OutOfRange()
 	{
 		Debug.Log("OutOfRange");
-		transform.position = target.position;
-		path.CanFollowPath = true;
+		transform.position = PlayerTransform.initialPos;
+		//CanFollowPath = true;
 		CurrentState = PetState.Idle;
 	}
 
@@ -247,24 +291,25 @@ public class PetMovement : MonoBehaviour {
 		CanGetTargetDir = true;
 	}
 
-	private IEnumerator IdleWaitTime()
+	private IEnumerator IdleWaitTime() //*Fix this to only run once
 	{
 		yield return new WaitForSeconds(.75f);
 		CanFollowPlayer = true;
-		CurrentState = PetState.Run;
+		//CurrentState = PetState.Run; //DON'T LEAVE THIS IN
 	}
 }
 
 //TO DO
 
-//1: If pet is behind a wall with the player, the pet will attempt to chase the enemy and get stuck on the wall. Add
-//a drawline check OR add pathfinding so the pet can find the enemy reliably. My suggestion is to add a drawline check
-//from the player, then tell the pet to use pathfinding until it sees the enemy.
+//1: Prevent the array out of index error when the player toggles Attackmode over and over rapidly.
 
-//2: Do a radius check on the player before telling the pet to attack something. Right now the pet just attacks the
-//closest enemy on the list, but it should also check to make sure it's within the player's radius.
+//2: Tell the pet to do something when it can't reach the enemy instead of just teleporting to it. (6/24/19)
+
+//3: Do a radius check on the player before telling the pet to attack something. Right now the pet just attacks the
+//closest enemy on the list, but it should also check to make sure it's within the player's radius. (6/22/19)
 
 //Known issues:
 
-//1: Pathfinding works great. A new path is created when the pet gets out of range. Adjust the bools to work consistently
-//and edit the warp radius a bit so the pet can actually complete certain paths.
+//1: Range exception error is caused when a path is requested too many times in a row...
+
+//2: THE DUMB IDLEWAITTIME COROUTINE CAUSES THE ATTACK STATE TO FIGHT WITH THE RUN STATE AND CAUSED ALL THE PROBLEMS

@@ -4,43 +4,50 @@ using System.Collections;
 public class UnitFollow : MonoBehaviour {
 
 
-	public Transform target;
+	//public Transform target;
 	float speed = 3.5f;
-	Vector3[] path;
+	public Vector3[] path;
 	int targetIndex;
 	public Coroutine FollowPathCoroutine;
 	public Coroutine UpdateThePath;
-	public bool CanFollowPath, CannotReachPlayer;
+	public bool CannotReachPlayer;
+	public BoolValue PetCanFollowPath;
+	public Vector3Value TargetTransform;
 
 	void Start() {
 		//PathRequestManager.RequestPath(transform.position,target.position, OnPathFound);
-		CanFollowPath = true;
+		//CanFollowPath = true;
 		CannotReachPlayer = false;
 		//This method needs to stop once the pet's linecast with the player is true. We need to tell everything to reset.
 	}
 
 	void Update()
 	{
-		//Debug.Log(path);
+
 	}
 
 	public void StopFollowPath()
 	{
+		PetCanFollowPath.initialBool = true;
 		if (FollowPathCoroutine != null)
 		{
 			StopCoroutine(FollowPathCoroutine);
-			CanFollowPath = true;
+		}
+
+		if (UpdateThePath != null)
+		{
+			StopCoroutine(UpdateThePath);
 		}
 	}
 
 	public void CheckIfCanFollowPath()
 	{
 		//Enable this when we want to enable bools again
-		if (CanFollowPath)
+		//if (CanFollowPath)
 		{
-			CanFollowPath = false;
-			//Debug.Log("Doing the thing");
-			PathRequestManager.RequestPath(transform.position,target.position, OnPathFound);
+			//CanFollowPath = false;
+			Debug.Log("Requesting a path");
+			PathRequestManager.RequestPath(transform.position, TargetTransform.initialPos, OnPathFound);
 		}
 	}
 	
@@ -53,10 +60,12 @@ public class UnitFollow : MonoBehaviour {
 				StopCoroutine(FollowPathCoroutine);
 			}
 
+			//Debug.Log("Path successful");
 			FollowPathCoroutine = StartCoroutine(FollowPath());
 		}
 		else
 		{
+			Debug.Log("Can't reach target");
 			CannotReachPlayer = true;
 		}
 	}
@@ -64,9 +73,9 @@ public class UnitFollow : MonoBehaviour {
 	IEnumerator FollowPath()
 	{
 		//...follow the path!
-		if (path != null)
+		if (path.Length != 0)
 		{
-			Vector3 currentWaypoint = path[0];
+			Vector3 currentWaypoint = path[0]; //OUT OF RANGE ERROR HERE
 			UpdateThePath = StartCoroutine(UpdatePath());
 			while (true)
 			{
@@ -82,11 +91,18 @@ public class UnitFollow : MonoBehaviour {
 					currentWaypoint = path[targetIndex];
 				}
 
+				//Debug.Log("REEE");
+				//CanReachEnemy.initialBool = true;
 				transform.position =
 					Vector3.MoveTowards(transform.position, currentWaypoint,
 						speed * Time.deltaTime); //Adjust this to work with our movement script
 				yield return null;
 			}
+		}
+		else //Not actually redundant lol
+		{
+			StopFollowPath();
+			Debug.Log("AAGUh");
 		}
 	}
 
@@ -116,3 +132,7 @@ public class UnitFollow : MonoBehaviour {
 //KNOWN ISSUES
 //If the player is inside red points on the grid, the pet will teleport. This means even if the player isn't colliding
 //with the wall, the player can still be in the red point on the grid.
+
+//NOTES
+//I added a second check on followpath to make sure the length of the array is greater than 0, that way if the path
+//length IS zero we won't get an error when we set the currentwaypoint.
