@@ -21,7 +21,7 @@ public class Sentry : Enemy
 		base.StartValues();
 		currentState = EnemyState.Idle;
 		rb = GetComponent<Rigidbody2D>();
-		target = GameObject.FindWithTag("Player").transform;
+		//target = GameObject.FindWithTag("Player").transform;
 		Health = 3;
 		Damage = 1;
 		MoveSpeed = 0;
@@ -42,7 +42,7 @@ public class Sentry : Enemy
 		int Mask = 1 << 9;
 		if (CanThrow)
 		{
-			if (Physics2D.Linecast(transform.position, target.position, Mask))
+			if (Physics2D.Linecast(transform.position, target, Mask))
 			{
 				currentState = EnemyState.Idle;
 			}

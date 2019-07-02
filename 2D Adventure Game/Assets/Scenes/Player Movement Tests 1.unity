@@ -264,7 +264,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 20902911}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.87, y: 9.09, z: 0.01171875}
+  m_LocalPosition: {x: 2.88, y: 5.63, z: 0.01171875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 837465280}
@@ -284,14 +284,15 @@ MonoBehaviour:
   CamShakeSignal: {fileID: 11400000, guid: e9270158190f5d74ba51984178cda4f4, type: 2}
   CamShakeDir: {fileID: 11400000, guid: c4d0f9da8123eb744bd501e70d49e338, type: 2}
   PlayerTransform: {fileID: 11400000, guid: a2ad014b0bcb86145b9eae1a794bea2d, type: 2}
+  PetTransform: {fileID: 11400000, guid: 7b3aaf022a718fd48b2b794693ade79c, type: 2}
   Health: 0
   Damage: 0
   WeaponDamage: {fileID: 11400000, guid: 8a811f3aa7c4e8a4f9d5fa3c2edb7446, type: 2}
   CanCollide: 0
   EnemyLOS: 0
+  IsTarget: 0
+  PetIsAttacking: {fileID: 11400000, guid: 9a52260159436524bb6f72b68ad65e2b, type: 2}
   rb: {fileID: 0}
-  target: {fileID: 1659612928}
-  home: {fileID: 0}
   currentState: 0
 --- !u!58 &20902914
 CircleCollider2D:
@@ -551,15 +552,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CamShakeSignal: {fileID: 11400000, guid: e9270158190f5d74ba51984178cda4f4, type: 2}
   CamShakeDir: {fileID: 11400000, guid: c4d0f9da8123eb744bd501e70d49e338, type: 2}
-  PlayerTransform: {fileID: 0}
+  PlayerTransform: {fileID: 11400000, guid: a2ad014b0bcb86145b9eae1a794bea2d, type: 2}
+  PetTransform: {fileID: 11400000, guid: 7b3aaf022a718fd48b2b794693ade79c, type: 2}
   Health: 0
   Damage: 0
   WeaponDamage: {fileID: 11400000, guid: 8a811f3aa7c4e8a4f9d5fa3c2edb7446, type: 2}
   CanCollide: 0
   EnemyLOS: 0
+  IsTarget: 0
+  PetIsAttacking: {fileID: 11400000, guid: 9a52260159436524bb6f72b68ad65e2b, type: 2}
   rb: {fileID: 0}
-  target: {fileID: 1659612928}
-  home: {fileID: 0}
   currentState: 0
   CanThrow: 0
   projectileType: {fileID: 1719595767031652, guid: 691418f770845344fa090d06c472141a,
@@ -913,15 +915,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CamShakeSignal: {fileID: 11400000, guid: e9270158190f5d74ba51984178cda4f4, type: 2}
   CamShakeDir: {fileID: 11400000, guid: c4d0f9da8123eb744bd501e70d49e338, type: 2}
-  PlayerTransform: {fileID: 0}
+  PlayerTransform: {fileID: 11400000, guid: a2ad014b0bcb86145b9eae1a794bea2d, type: 2}
+  PetTransform: {fileID: 11400000, guid: 7b3aaf022a718fd48b2b794693ade79c, type: 2}
   Health: 0
   Damage: 2
   WeaponDamage: {fileID: 11400000, guid: 8a811f3aa7c4e8a4f9d5fa3c2edb7446, type: 2}
   CanCollide: 0
   EnemyLOS: 0
+  IsTarget: 0
+  PetIsAttacking: {fileID: 11400000, guid: 9a52260159436524bb6f72b68ad65e2b, type: 2}
   rb: {fileID: 0}
-  target: {fileID: 1659612928}
-  home: {fileID: 0}
   currentState: 0
   CanSetRandomPos: 0
   RandomPos: {x: 0, y: 0}
@@ -3756,7 +3759,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1282365204}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.95, y: 7.09, z: 0.01171875}
+  m_LocalPosition: {x: 4.04, y: 9.88, z: 0.01171875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 837465280}
@@ -3796,14 +3799,15 @@ MonoBehaviour:
   CamShakeSignal: {fileID: 11400000, guid: e9270158190f5d74ba51984178cda4f4, type: 2}
   CamShakeDir: {fileID: 11400000, guid: c4d0f9da8123eb744bd501e70d49e338, type: 2}
   PlayerTransform: {fileID: 11400000, guid: a2ad014b0bcb86145b9eae1a794bea2d, type: 2}
+  PetTransform: {fileID: 11400000, guid: 7b3aaf022a718fd48b2b794693ade79c, type: 2}
   Health: 0
   Damage: 0
   WeaponDamage: {fileID: 11400000, guid: 8a811f3aa7c4e8a4f9d5fa3c2edb7446, type: 2}
   CanCollide: 0
   EnemyLOS: 0
+  IsTarget: 0
+  PetIsAttacking: {fileID: 11400000, guid: 9a52260159436524bb6f72b68ad65e2b, type: 2}
   rb: {fileID: 0}
-  target: {fileID: 1659612928}
-  home: {fileID: 0}
   currentState: 0
 --- !u!1 &1294750320
 GameObject:
@@ -3957,7 +3961,7 @@ GameObject:
   - component: {fileID: 1468615834}
   m_Layer: 10
   m_Name: Fox
-  m_TagString: Untagged
+  m_TagString: Pet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3969,7 +3973,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1468615828}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.74, y: 6.97, z: 0}
+  m_LocalPosition: {x: 3.47, y: 3.09, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 127170512}
@@ -3989,7 +3993,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyExists: {fileID: 11400000, guid: c51e5db9cea65e94b9303da2c7dd0e56, type: 2}
   CanFollowPath: {fileID: 11400000, guid: 7340128e6759f784b91166421e8bfebb, type: 2}
-  EnemyFound: {fileID: 11400000, guid: 0fb42f4e664de2a4386949aac4b40db2, type: 2}
+  EnemyIsInLOS: {fileID: 11400000, guid: 82aa0038367dfca4b9fced3de9f814fd, type: 2}
   PetIsAttacking: {fileID: 11400000, guid: 9a52260159436524bb6f72b68ad65e2b, type: 2}
   CanFollowPlayer: 0
   FollowPath: 0
@@ -3998,9 +4002,11 @@ MonoBehaviour:
   AttackMode: 0
   Jumping: 0
   CanGetTargetDir: 0
+  EnemyLOS: 0
   enemyPos: {fileID: 11400000, guid: 70d5766d06c434048a03d78d1699577c, type: 2}
   PlayerTransform: {fileID: 11400000, guid: a2ad014b0bcb86145b9eae1a794bea2d, type: 2}
   TargetTransform: {fileID: 11400000, guid: a6393f11d867dd244ad91ae63fc6ae2a, type: 2}
+  PetTransform: {fileID: 11400000, guid: 7b3aaf022a718fd48b2b794693ade79c, type: 2}
   position: {x: 0, y: 0, z: 0}
   difference: {x: 0, y: 0, z: 0}
   ChaseRadius: 12
@@ -4369,7 +4375,6 @@ MonoBehaviour:
   rb: {fileID: 1659612929}
   playerAnim: {fileID: 342910431}
   targetMode: {fileID: 1659612934}
-  EnemyLOS: {fileID: 11400000, guid: 82aa0038367dfca4b9fced3de9f814fd, type: 2}
   SwordMomentumScale: {fileID: 11400000, guid: 5c28ab169c95d0849b5c377dda9b308a, type: 2}
   MoveSpeed: {fileID: 11400000, guid: 8315aec1680244b49a520f9f11120688, type: 2}
   position: {x: 0, y: 0, z: 0}
@@ -4405,8 +4410,8 @@ MonoBehaviour:
   target: {fileID: 0}
   targetPosition: {fileID: 11400000, guid: 70d5766d06c434048a03d78d1699577c, type: 2}
   EnemyExists: {fileID: 11400000, guid: c51e5db9cea65e94b9303da2c7dd0e56, type: 2}
-  EnemiesFound: {fileID: 11400000, guid: 0fb42f4e664de2a4386949aac4b40db2, type: 2}
   PetIsAttacking: {fileID: 11400000, guid: 9a52260159436524bb6f72b68ad65e2b, type: 2}
+  EnemyLOS: {fileID: 11400000, guid: 82aa0038367dfca4b9fced3de9f814fd, type: 2}
 --- !u!4 &1659612928
 Transform:
   m_ObjectHideFlags: 0
@@ -4414,7 +4419,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1659612924}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.68, y: 8.763, z: 0}
+  m_LocalPosition: {x: 7.83, y: 7.12, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 342910428}

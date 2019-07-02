@@ -14,7 +14,6 @@ public class Jelly : Enemy
 		base.StartValues();
 		currentState = EnemyState.Idle;
 		rb = GetComponent<Rigidbody2D>();
-		target = GameObject.FindWithTag("Player").transform; //Fix
 		Health = 10;
 		Damage = 1;
 		JumpMomentumSmooth = 4f;
@@ -42,7 +41,7 @@ public class Jelly : Enemy
 			if (CanSetDifference)
 			{
 				CanSetDifference = false;
-				difference = (transform.position - target.position).normalized;
+				difference = (transform.position - target).normalized;
 				//playerDirection = PlayerMovement.test;
 			}
 
@@ -81,7 +80,7 @@ public class Jelly : Enemy
 	{
 		base.InRadiusEvent();
 		ChangeState(EnemyState.Target);
-		position = Vector3.MoveTowards(transform.position, target.position, MoveSpeed * Time.deltaTime);
+		position = Vector3.MoveTowards(transform.position, target, MoveSpeed * Time.deltaTime);
 		rb.MovePosition(position);
 	}
 
@@ -142,7 +141,7 @@ public class Jelly : Enemy
 	private IEnumerator JumpAtTarget()
 	{
 		//Animation for winding up attack
-		JumpPosition = (transform.position - target.position) * -1;
+		JumpPosition = (transform.position - target) * -1;
 		yield return CustomTimer.Timer(.5f);
 		CanAttack = false;
 		yield return CustomTimer.Timer(.5f);

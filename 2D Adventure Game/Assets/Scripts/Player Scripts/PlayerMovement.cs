@@ -15,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
 	public PlayerAnimation playerAnim;
 	public LookTowardsTarget targetMode;
 	private bool CanSetState;
-	public BoolValue EnemyLOS;
+	//public BoolValue EnemyLOS;
 
 	private float horizontalspeed, verticalspeed;
 	private float SwordMomentum, SwordMomentumSmooth, SwordMomentumPower;

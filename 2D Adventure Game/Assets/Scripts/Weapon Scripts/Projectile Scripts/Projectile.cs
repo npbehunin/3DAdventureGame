@@ -21,7 +21,7 @@ public class Projectile : Weapon
 	private Vector2 mousePos2D;
 
 	public bool UsingMouse;
-	public Transform target;
+	public Vector3 target;
 
 	protected override void Start()
 	{
@@ -47,9 +47,9 @@ public class Projectile : Weapon
 		}
 		else
 		{
-			if (target != null)
+			//if (target != null)
 			{
-				targetpos = target.position;
+				targetpos = target;
 				movementVector = (targetpos - transform.position).normalized * projectileSpeed;
 				Debug.Log(movementVector);
 			}

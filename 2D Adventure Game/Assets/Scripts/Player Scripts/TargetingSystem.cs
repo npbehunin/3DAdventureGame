@@ -9,7 +9,7 @@ public class TargetingSystem : MonoBehaviour
 	public GameObject[] enemies;
 	public GameObject target;//, possibleTarget;
 	public Vector3Value targetPosition;
-	public BoolValue EnemyExists, EnemiesFound, PetIsAttacking;//, EnemyLOS;
+	public BoolValue EnemyExists, PetIsAttacking, EnemyLOS;
 	//public bool ;
 	
 	void Start () 
@@ -17,22 +17,26 @@ public class TargetingSystem : MonoBehaviour
 		//If enemies instantiate in the scene, this should run again.
 		enemies = GameObject.FindGameObjectsWithTag("Enemy");
 		EnemiesList.AddRange(enemies);
-		EnemiesFound.initialBool = false;
+		//EnemiesFound.initialBool = false;
 		EnemyExists.initialBool = false;
 	}
 	
 	void Update ()
 	{
-		//if (!EnemyExists.initialBool && !NoEnemiesFound) //Removed for now, *but pet will switch between targets
 		if (!PetIsAttacking.initialBool)
 		{
 			target = GetClosestTarget(EnemiesList);
-			Debug.Log("Checking target");
+			//Debug.Log("Checking target");
 		}
 		
 		if (target != null)
 		{
-			EnemiesFound.initialBool = true;
+			if (target.GetComponent<Enemy>() != null)
+			{
+				EnemyLOS.initialBool = target.GetComponent<Enemy>().EnemyLOS;
+				target.GetComponent<Enemy>().IsTarget = true;
+			}
+			
 			if (target.activeSelf) //If the target is active
 			{
 				EnemyExists.initialBool = true;
@@ -46,8 +50,7 @@ public class TargetingSystem : MonoBehaviour
 		}
 		else //If there are no targets
 		{
-			//Debug.Log("No enemies found!");
-			EnemiesFound.initialBool = false;
+			EnemyLOS.initialBool = false;
 		}
 	}
 

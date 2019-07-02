@@ -11,12 +11,12 @@ public enum PetState
 public class PetMovement : MonoBehaviour {
 
 	//public Transform target;
-	public BoolValue EnemyExists, CanFollowPath, EnemyFound, PetIsAttacking;
-	public bool CanFollowPlayer, FollowPath, Attacking, CanAttack, AttackMode, Jumping, CanGetTargetDir;
-	public Vector3Value enemyPos, PlayerTransform, TargetTransform;
-	public Vector3 position, difference;
+	public BoolValue EnemyExists, CanFollowPath, EnemyIsInLOS, PetIsAttacking;
+	public bool CanFollowPlayer, FollowPath, Attacking, CanAttack, AttackMode, Jumping, CanGetTargetDir, EnemyLOS, CanGetReposDir;
+	public Vector3Value enemyPos, PlayerTransform, TargetTransform, PetTransform;
+	public Vector3 position, difference, RepositionDir;
 	
-	public float ChaseRadius, WalkRadius, StopRadius, WarpRadius, MoveSpeed, JumpMomentum, JumpMomentumScale;
+	public float MoveSpeed, JumpMomentum, JumpMomentumScale, rand;
 	public Rigidbody2D rb;
 
 	public PetState CurrentState;
@@ -34,14 +34,14 @@ public class PetMovement : MonoBehaviour {
 		//CanReachEnemy.initialBool = false;
 		CanFollowPath.initialBool = true;
 		PetIsAttacking.initialBool = false;
+		EnemyIsInLOS.initialBool = false;
+		CanGetTargetDir = true;
+		CanGetReposDir = true;
 	}
 
 	void FixedUpdate()
 	{
-		if (!FollowPath)
-		{
-			CheckDistance();
-		}
+		CheckDistance();
 
 		if (Attacking)
 		{
@@ -49,8 +49,13 @@ public class PetMovement : MonoBehaviour {
 		}
 	}
 	
-	void Update () 
+	void Update ()
 	{
+		if (!PetIsAttacking.initialBool)
+		{
+			EnemyLOS = EnemyIsInLOS.initialBool; //Only updates if pet stops attacking
+		}
+		PetTransform.initialPos = transform.position;
 		//Temporary way to set pet to attack state
 		if (Input.GetKeyDown(KeyCode.LeftShift))
 		{
@@ -82,6 +87,7 @@ public class PetMovement : MonoBehaviour {
 		CheckPath();
 		
 		//If pet is too far, teleport
+		float WarpRadius = 12f;
 		if (Vector3.Distance(PlayerTransform.initialPos, transform.position) > WarpRadius)
 		{
 			OutOfRange();
@@ -139,7 +145,7 @@ public class PetMovement : MonoBehaviour {
 
 		//ENEMY LINECAST CHECK
 		int wallLayerMask = 1 << 9;
-		if (AttackMode && EnemyExists.initialBool && EnemyFound) //EnemyFound means there's one in LOS of the PLAYER, not pet
+		if (AttackMode && EnemyExists.initialBool && EnemyLOS) //EnemyFound means there's one in LOS of the PLAYER, not pet
 		{
 			if (Physics2D.Linecast(transform.position, enemyPos.initialPos, wallLayerMask))
 			{
@@ -168,7 +174,7 @@ public class PetMovement : MonoBehaviour {
 		
 	void CheckDistance()
 	{
-		if (AttackMode && EnemyExists.initialBool) //If attackmode is enabled and an enemy target exists...
+		if (AttackMode && EnemyExists.initialBool && EnemyLOS) //If attackmode is enabled and an enemy target exists...
 		{
 			//Attack check
 			PetIsAttacking.initialBool = true;
@@ -176,23 +182,73 @@ public class PetMovement : MonoBehaviour {
 			CurrentState = PetState.Attack;
 			if (Attacking)
 			{
-				Attack();
+				JumpAttackMovement();
 			}
 			else
 			{
-				if (Vector3.Distance(enemyPos.initialPos, transform.position) <= WalkRadius)
+				//---------------------------------
+				float AttackRadius = 1.5f;
+				float RepositionRadius = 1.25f;
+				float PlayerRadius = 2f;
+				if (CanAttack)
 				{
-					if (CanAttack)
+					if (Vector3.Distance(enemyPos.initialPos, transform.position) <= AttackRadius && 
+					    Vector3.Distance(enemyPos.initialPos, transform.position) > RepositionRadius)
 					{
 						AttackCoroutine = StartCoroutine(AttackEnemy());
 						CanAttack = false;
 					}
+					else
+					{
+						if (Vector3.Distance(enemyPos.initialPos, transform.position) <= RepositionRadius)
+						{
+							if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= PlayerRadius)
+							{
+								if (CanGetReposDir)
+								{
+									Debug.Log("Inside the player radius! Random");
+									CanGetReposDir = false;
+									rand = Random.Range(-1, 1);
+									if (rand == 0)
+									{
+										rand = 1f;
+									}
+									RepositionDir = new Vector3(transform.position.x + rand, transform.position.y + rand);
+									//If the enemy is still inside the player radius (here) OR Reposition Radius after
+									//moving, CanGetReposDir never gets reset. 
+								}
+								else
+								{
+									//No change to direction
+								}
+							}
+							else
+							{
+								if (CanGetReposDir)
+								{
+									Debug.Log("Moving towards the player");
+									CanGetReposDir = false;
+									RepositionDir = PlayerTransform.initialPos;
+								}
+								else
+								{
+									//No change to direction
+								}
+							}
+						}
+						else
+						{
+							CanGetReposDir = true;
+							Debug.Log("Moving towards the ENEMY REE");
+							RepositionDir = enemyPos.initialPos;
+						}
+				
+						Vector3 pos = Vector3.MoveTowards(transform.position, RepositionDir, MoveSpeed * Time.deltaTime);
+						rb.MovePosition(pos);
+					}
 				}
-				else
-				{
-					Vector3 pos = Vector3.MoveTowards(transform.position, enemyPos.initialPos, MoveSpeed * Time.deltaTime);
-					rb.MovePosition(pos);
-				}
+				//---------------------------------
+				//*Currently it works okay, but an error occurs where the pet continues moving towards the enemy, even if on top.
 			}
 		}
 		else
@@ -203,42 +259,49 @@ public class PetMovement : MonoBehaviour {
 				ResetAttack();
 				StopCoroutine(AttackCoroutine);
 			}
-			if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= ChaseRadius
-			    && Vector3.Distance(PlayerTransform.initialPos, transform.position) > WalkRadius)
+			if (!FollowPath)
 			{
-				CanFollowPlayer = true;
-				CurrentState = PetState.Run;
-			}
-
-			if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= WalkRadius
-			    && Vector3.Distance(PlayerTransform.initialPos, transform.position) > StopRadius)
-			{
-				if (CurrentState == PetState.Idle)
-				{
-					StartCoroutine(IdleWaitTime());
-				}
-				else
+				float ChaseRadius = 12f;
+				float WalkRadius = 1.5f;
+				float StopRadius = .6f;
+				if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= ChaseRadius
+				    && Vector3.Distance(PlayerTransform.initialPos, transform.position) > WalkRadius)
 				{
 					CanFollowPlayer = true;
-					CurrentState = PetState.Walk;
+					CurrentState = PetState.Run;
 				}
-			}
 
-			if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= StopRadius)
-			{
-				CanFollowPlayer = false;
-				CurrentState = PetState.Idle;
-			}
+				if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= WalkRadius
+				    && Vector3.Distance(PlayerTransform.initialPos, transform.position) > StopRadius)
+				{
+					if (CurrentState == PetState.Idle)
+					{
+						StartCoroutine(IdleWaitTime());
+					}
+					else
+					{
+						CanFollowPlayer = true;
+						CurrentState = PetState.Walk;
+					}
+				}
 
-			if (CanFollowPlayer)
-			{
-				Vector3 temp = Vector3.MoveTowards(transform.position, PlayerTransform.initialPos, MoveSpeed * Time.deltaTime);
-				rb.MovePosition(temp);
+				if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= StopRadius)
+				{
+					CanFollowPlayer = false;
+					CurrentState = PetState.Idle;
+				}
+
+				if (CanFollowPlayer)
+				{
+					Vector3 temp = Vector3.MoveTowards(transform.position, PlayerTransform.initialPos,
+						MoveSpeed * Time.deltaTime);
+					rb.MovePosition(temp);
+				}
 			}
 		}
 	}
 
-	void Attack()
+	void JumpAttackMovement()
 	{
 		if (CanGetTargetDir)
 		{
@@ -262,7 +325,7 @@ public class PetMovement : MonoBehaviour {
 	
 	void OutOfRange()
 	{
-		Debug.Log("OutOfRange");
+		Debug.Log("Pet OutOfRange");
 		transform.position = PlayerTransform.initialPos;
 		//CanFollowPath = true;
 		CurrentState = PetState.Idle;
@@ -270,10 +333,10 @@ public class PetMovement : MonoBehaviour {
 
 	private IEnumerator AttackEnemy()
 	{
-		yield return CustomTimer.Timer(.5f);
+		yield return CustomTimer.Timer(.5f); //Leap forward
 		Attacking = true;
 		Jumping = true;
-		yield return CustomTimer.Timer(.5f);
+		yield return CustomTimer.Timer(.5f); //Leap back
 		JumpMomentum = 0;
 		JumpMomentumScale = 0;
 		Jumping = false;
@@ -283,6 +346,7 @@ public class PetMovement : MonoBehaviour {
 
 	void ResetAttack()
 	{
+		CanGetReposDir = true;
 		CanAttack = true;
 		Attacking = false;
 		Jumping = false;

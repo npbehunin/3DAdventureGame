@@ -14,17 +14,17 @@ public enum EnemyState
 public class Enemy : MonoBehaviour
 {
 	public Signal CamShakeSignal;
-	public Vector3Value CamShakeDir, PlayerTransform;
+	public Vector3Value CamShakeDir, PlayerTransform, PetTransform;
 	public int Health, Damage;
 	public IntValue WeaponDamage;
-	public bool CanCollide, EnemyLOS;
-	//public BoolValue ;
+	public bool CanCollide, EnemyLOS, IsTarget;
+	public BoolValue PetIsAttacking;
 	public Rigidbody2D rb;
-	public Transform target, home;
+	//public Transform , pet;
 
 	public EnemyState currentState;
 	protected EnemyState laststate;
-	protected Vector3 position, JumpPosition, colPos;
+	protected Vector3 position, JumpPosition, target;
 	protected bool CanAttack;
 	protected Coroutine JumpCoroutine, KnockedCoroutine;
 	protected float MoveSpeed, chaseRadius, attackRadius, knockMomentumScale, knockMomentum;
@@ -41,6 +41,7 @@ public class Enemy : MonoBehaviour
 	{
 		CanSetState = true;
 		CanCollide = true;
+		IsTarget = false;
 	}
 
 	protected virtual void FixedUpdate()
@@ -58,9 +59,11 @@ public class Enemy : MonoBehaviour
 
 		//*Fix obviously
 		//Check if this enemy is in LOS (of player).
-		float chaseRadius = 6f;
+		float chaseRadiusX = 8f;
+		float chaseRadiusY = 4.5f;
 		int wallLayerMask = 1 << 9;
-		if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= chaseRadius)
+		if (Math.Abs(PlayerTransform.initialPos.x - transform.position.x) <= chaseRadiusX && 
+		    Math.Abs(PlayerTransform.initialPos.y - transform.position.y) <= chaseRadiusY)
 		{
 			if (Physics2D.Linecast(PlayerTransform.initialPos, transform.position, wallLayerMask))//, 15, wallLayerMask))
 			{
@@ -71,6 +74,10 @@ public class Enemy : MonoBehaviour
 				Debug.DrawLine(PlayerTransform.initialPos, transform.position, Color.yellow);
 				EnemyLOS = true;
 			}
+		}
+		else
+		{
+			EnemyLOS = false;
 		}
 	}
 
@@ -150,7 +157,7 @@ public class Enemy : MonoBehaviour
 		CamShakeSignal.Raise();
 		CamShakeDir.initialPos = transform.position - pos;
 		KnockedEvent();
-		colPos = pos;
+		//colPos = pos;
 	}
 
 	//Take damage
@@ -163,16 +170,35 @@ public class Enemy : MonoBehaviour
 	{
 		if (currentState == EnemyState.Idle || currentState == EnemyState.Target)
 		{
-			if (Vector3.Distance(target.position, transform.position) <= chaseRadius
-			    && Vector3.Distance(target.position, transform.position) > attackRadius)
+			if (Vector3.Distance(target, transform.position) <= chaseRadius
+			    && Vector3.Distance(target, transform.position) > attackRadius)
 			{
 				InRadiusEvent();
 			}
 
-			if (Vector3.Distance(target.position, transform.position) <= attackRadius)
+			if (Vector3.Distance(target, transform.position) <= attackRadius)
 			{
 				AttackEvent();
 			}
+		}
+
+		float detectionRadius = 1.5f;
+		if (IsTarget && PetIsAttacking.initialBool)
+		{
+			if (Vector3.Distance(transform.position, PetTransform.initialPos) <= detectionRadius)
+			{
+				target = PetTransform.initialPos;
+			}
+		}
+		else
+		{
+			target = PlayerTransform.initialPos;
+		}
+
+		if (!PetIsAttacking.initialBool)
+		{
+			IsTarget = false; //Keep this in mind in case enemies have trouble moving correctly
+			target = PlayerTransform.initialPos;
 		}
 	}
 	

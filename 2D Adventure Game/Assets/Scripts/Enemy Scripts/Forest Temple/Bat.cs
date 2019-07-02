@@ -24,7 +24,7 @@ public class Bat : Enemy {
 		base.StartValues();
 		currentState = EnemyState.Idle;
 		rb = GetComponent<Rigidbody2D>();
-		target = GameObject.FindWithTag("Player").transform;
+		//target = GameObject.FindWithTag("Player").transform;
 		Health = 50000;
 		Damage = 1;
 		MoveSpeed = 3;
@@ -42,7 +42,7 @@ public class Bat : Enemy {
 			base.FixedUpdate();
 			if (currentState == EnemyState.Delay)
 			{
-				position = Vector3.MoveTowards(transform.position, target.position, -(MoveSpeed * Time.deltaTime));
+				position = Vector3.MoveTowards(transform.position, target, -(MoveSpeed * Time.deltaTime));
 				rb.MovePosition(position);
 			}
 
@@ -112,7 +112,7 @@ public class Bat : Enemy {
 	{
 		if (randompos.x > 0)
 		{
-			if (transform.position.x < target.position.x)
+			if (transform.position.x < target.x)
 			{
 				randompos.x *= -1;
 			}
@@ -120,7 +120,7 @@ public class Bat : Enemy {
 
 		if (randompos.x < 0)
 		{
-			if (transform.position.x > target.position.x)
+			if (transform.position.x > target.x)
 			{
 				randompos.x *= -1;
 			}
@@ -128,7 +128,7 @@ public class Bat : Enemy {
 		
 		if (randompos.y > 0)
 		{
-			if (transform.position.y < target.position.y)
+			if (transform.position.y < target.y)
 			{
 				randompos.y *= -1;
 			}
@@ -136,12 +136,12 @@ public class Bat : Enemy {
 
 		if (randompos.y < 0)
 		{
-			if (transform.position.y > target.position.y)
+			if (transform.position.y > target.y)
 			{
 				randompos.y *= -1;
 			}
 		}
-		randompos += new Vector2(target.position.x, target.position.y);
+		randompos += new Vector2(target.x, target.y);
 		RandomPos = randompos;
 		Debug.DrawLine(transform.position, randompos, Color.yellow, 5f);
 	}
@@ -151,7 +151,7 @@ public class Bat : Enemy {
 	{
 		if (currentState!=EnemyState.Delay)
 		{
-			Vector3 dir = (target.position - transform.position).normalized;
+			Vector3 dir = (target - transform.position).normalized;
 			ChangeDirection(dir);
 		}
 	}
@@ -168,7 +168,7 @@ public class Bat : Enemy {
 	{
 		yield return CustomTimer.Timer(1f);
 		currentState = EnemyState.Random;
-		lastdir = -(target.position - transform.position).normalized;
+		lastdir = -(target - transform.position).normalized;
 		yield return null;
 	}
 
@@ -176,7 +176,7 @@ public class Bat : Enemy {
 	{
 		currentState = EnemyState.Idle;
 		rb = GetComponent<Rigidbody2D>();
-		target = GameObject.FindWithTag("Player").transform;
+		//target = GameObject.FindWithTag("Player").transform;
 		Health = 2;
 		Damage = 1;
 		MoveSpeed = 3;
