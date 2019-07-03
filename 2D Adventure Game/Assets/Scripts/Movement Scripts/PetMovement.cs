@@ -5,18 +5,19 @@ using UnityEngine;
 
 public enum PetState
 {
-	Attack, Heel, Idle, Run, Walk
+	Attack, Heel, Idle, Run, Walk, Wait
 }
 
 public class PetMovement : MonoBehaviour {
 
 	//public Transform target;
 	public BoolValue EnemyExists, CanFollowPath, EnemyIsInLOS, PetIsAttacking;
-	public bool CanFollowPlayer, FollowPath, Attacking, CanAttack, AttackMode, Jumping, CanGetTargetDir, EnemyLOS, CanGetReposDir;
+	public bool CanFollowPlayer, FollowPath, Attacking, CanAttack, AttackMode, Jumping, 
+		CanReachEnemy, EnemyLOS, CanGetReposDir, AttackAnyways, CanCheckDist, EnemyIsInRadius;
 	public Vector3Value enemyPos, PlayerTransform, TargetTransform, PetTransform;
 	public Vector3 position, difference, RepositionDir;
 	
-	public float MoveSpeed, JumpMomentum, JumpMomentumScale, rand;
+	public float MoveSpeed, JumpMomentum, JumpMomentumScale, randX, randY;
 	public Rigidbody2D rb;
 
 	public PetState CurrentState;
@@ -24,7 +25,7 @@ public class PetMovement : MonoBehaviour {
 	public FloatValue playerMoveSpeed;
 	public UnitFollow path;
 
-	public Coroutine AttackCoroutine;
+	public Coroutine AttackCoroutine, AttackDelay;
 	
 	void Start ()
 	{
@@ -35,8 +36,10 @@ public class PetMovement : MonoBehaviour {
 		CanFollowPath.initialBool = true;
 		PetIsAttacking.initialBool = false;
 		EnemyIsInLOS.initialBool = false;
-		CanGetTargetDir = true;
+		//CanGetTargetDir = true;
 		CanGetReposDir = true;
+		CanReachEnemy = true;
+		CanCheckDist = true;
 	}
 
 	void FixedUpdate()
@@ -71,9 +74,6 @@ public class PetMovement : MonoBehaviour {
 				CurrentState = PetState.Idle;
 			}
 		}
-		
-		//***Need a way to send a signal to the pet to let it know its target is dead. Then...
-		//EnemyLOS.initialBool = false;
 
 		if (CurrentState != PetState.Attack)
 		{
@@ -105,6 +105,9 @@ public class PetMovement : MonoBehaviour {
 			case PetState.Idle:
 				MoveSpeed = 0;
 				break;
+			case PetState.Wait:
+				MoveSpeed = 0;
+				break;
 			case PetState.Attack:
 				MoveSpeed = 4;
 				break;
@@ -132,49 +135,53 @@ public class PetMovement : MonoBehaviour {
 		if (path.CannotReachPlayer) //Runs once
 		{
 			path.CannotReachPlayer = false;
-			if (CurrentState != PetState.Attack)
+			if (CurrentState != PetState.Attack && CurrentState != PetState.Wait)
 			{
 				OutOfRange();
 			}
 			else
 			{
 				//DO SOMETHING WHEN IT CAN'T REACH THE ENEMY
-				transform.position = enemyPos.initialPos;
+				StartCoroutine(CantReachEnemyDelay());
 			}
 		}
 
 		//ENEMY LINECAST CHECK
-		int wallLayerMask = 1 << 9;
-		if (AttackMode && EnemyExists.initialBool && EnemyLOS) //EnemyFound means there's one in LOS of the PLAYER, not pet
+		if (CanCheckDist)
 		{
-			if (Physics2D.Linecast(transform.position, enemyPos.initialPos, wallLayerMask))
+			int wallLayerMask = 1 << 9;
+			if (AttackMode && EnemyExists.initialBool && EnemyLOS) //EnemyFound means there's one in LOS of the PLAYER, not pet
 			{
-				FollowPath = true;
-				Debug.DrawLine(transform.position, enemyPos.initialPos, Color.yellow);
+				if (Physics2D.Linecast(transform.position, enemyPos.initialPos, wallLayerMask))
+				{
+					FollowPath = true;
+					Debug.DrawLine(transform.position, enemyPos.initialPos, Color.yellow);
+				}
+				else
+				{
+					CanReachEnemy = true;
+					FollowPath = false; //*Prone to getting stuck in thin sections where it can see it, but can't reach
+				}
 			}
 			else
 			{
-				FollowPath = false;
-			}
-		}
-		else
-		{
-			//Player check if the above condition isn't met
-			if (Physics2D.Linecast(transform.position, PlayerTransform.initialPos, wallLayerMask))
-			{
-				FollowPath = true;
-				Debug.DrawLine(transform.position, PlayerTransform.initialPos, Color.yellow);
-			}
-			else
-			{
-				FollowPath = false;
+				//Player check if the above condition isn't met
+				if (Physics2D.Linecast(transform.position, PlayerTransform.initialPos, wallLayerMask))
+				{
+					FollowPath = true;
+					Debug.DrawLine(transform.position, PlayerTransform.initialPos, Color.yellow);
+				}
+				else
+				{
+					FollowPath = false;
+				}
 			}
 		}
 	}
 		
 	void CheckDistance()
 	{
-		if (AttackMode && EnemyExists.initialBool && EnemyLOS) //If attackmode is enabled and an enemy target exists...
+		if (AttackMode && EnemyExists.initialBool && EnemyLOS && CanReachEnemy && EnemyIsInRadius) //If attackmode is enabled and an enemy target exists...
 		{
 			//Attack check
 			PetIsAttacking.initialBool = true;
@@ -184,18 +191,18 @@ public class PetMovement : MonoBehaviour {
 			{
 				JumpAttackMovement();
 			}
-			else
+			else //ATTACK CHECKS
 			{
-				//---------------------------------
-				float AttackRadius = 1.5f;
-				float RepositionRadius = 1.25f;
-				float PlayerRadius = 2f;
+				float AttackRadius = 2f;
+				float RepositionRadius = 1.75f;
+				float PlayerRadius = 4f;
 				if (CanAttack)
 				{
 					if (Vector3.Distance(enemyPos.initialPos, transform.position) <= AttackRadius && 
 					    Vector3.Distance(enemyPos.initialPos, transform.position) > RepositionRadius)
 					{
 						AttackCoroutine = StartCoroutine(AttackEnemy());
+						Debug.Log("Attack");
 						CanAttack = false;
 					}
 					else
@@ -206,58 +213,67 @@ public class PetMovement : MonoBehaviour {
 							{
 								if (CanGetReposDir)
 								{
-									Debug.Log("Inside the player radius! Random");
 									CanGetReposDir = false;
-									rand = Random.Range(-1, 1);
-									if (rand == 0)
+									AttackDelay = StartCoroutine(AttackEnemyDelay());
+									randX = Random.Range(-1, 1);
+									randY = Random.Range(-1, 1);
+									if (randX == 0)
 									{
-										rand = 1f;
+										randX = 1f;
 									}
-									RepositionDir = new Vector3(transform.position.x + rand, transform.position.y + rand);
-									//If the enemy is still inside the player radius (here) OR Reposition Radius after
-									//moving, CanGetReposDir never gets reset. 
-								}
-								else
-								{
-									//No change to direction
+
+									if (randY == 0)
+									{
+										randY = 1f;
+									}
+									RepositionDir = new Vector3(transform.position.x + randX, transform.position.y + randY);
 								}
 							}
 							else
 							{
 								if (CanGetReposDir)
 								{
-									Debug.Log("Moving towards the player");
 									CanGetReposDir = false;
-									RepositionDir = PlayerTransform.initialPos;
-								}
-								else
-								{
-									//No change to direction
+									RepositionDir = PlayerTransform.initialPos; //Player
 								}
 							}
 						}
 						else
 						{
 							CanGetReposDir = true;
-							Debug.Log("Moving towards the ENEMY REE");
-							RepositionDir = enemyPos.initialPos;
+							RepositionDir = enemyPos.initialPos; //Enemy
 						}
-				
+
+						if (AttackAnyways)
+						{
+							AttackAnyways = false;
+							AttackCoroutine = StartCoroutine(AttackEnemy());
+							CanAttack = false;
+						}
 						Vector3 pos = Vector3.MoveTowards(transform.position, RepositionDir, MoveSpeed * Time.deltaTime);
 						rb.MovePosition(pos);
 					}
 				}
-				//---------------------------------
-				//*Currently it works okay, but an error occurs where the pet continues moving towards the enemy, even if on top.
+				else
+				{
+					if (AttackDelay != null)
+					{
+						StopCoroutine(AttackDelay);
+					}
+				}
 			}
 		}
-		else
+		else //FOLLOW PLAYER CHECKS
 		{
 			PetIsAttacking.initialBool = false;
 			if (AttackCoroutine != null)
 			{
 				ResetAttack();
 				StopCoroutine(AttackCoroutine);
+			}
+			if (AttackDelay != null)
+			{
+				StopCoroutine(AttackDelay);
 			}
 			if (!FollowPath)
 			{
@@ -299,14 +315,34 @@ public class PetMovement : MonoBehaviour {
 				}
 			}
 		}
+
+		//How far the pet can keep attacking before returning to the player
+		float DetectionRadiusX = 10f;
+		float DetectionRadiusY = 6f;
+		if (Mathf.Abs(enemyPos.initialPos.x - PlayerTransform.initialPos.x) <= DetectionRadiusX &&
+		    Mathf.Abs(enemyPos.initialPos.y - PlayerTransform.initialPos.y) <= DetectionRadiusY)
+		{
+			EnemyIsInRadius = true;
+		}
+		else
+		{
+			Debug.Log("Not within radius");
+			EnemyIsInRadius = false;
+		}
+	}
+
+	private IEnumerator AttackEnemyDelay()
+	{
+		//Sets a delay to attack even if the pet isn't outside the reposition radius
+		yield return CustomTimer.Timer(.75f);
+		AttackAnyways = true;
 	}
 
 	void JumpAttackMovement()
 	{
-		if (CanGetTargetDir)
+		if (difference.magnitude > 1f)
 		{
-			CanGetTargetDir = false;
-			difference = enemyPos.initialPos - transform.position;
+			difference = difference.normalized; //Prevents long jumps
 		}
 		float smooth = 4f;
 		float power = 2.5f;
@@ -327,13 +363,23 @@ public class PetMovement : MonoBehaviour {
 	{
 		Debug.Log("Pet OutOfRange");
 		transform.position = PlayerTransform.initialPos;
-		//CanFollowPath = true;
 		CurrentState = PetState.Idle;
+	}
+
+	private IEnumerator CantReachEnemyDelay()
+	{
+		CanReachEnemy = false;
+		CurrentState = PetState.Wait;
+		Debug.Log("Entered wait state");
+		CanCheckDist = false;
+		yield return CustomTimer.Timer(.75f);
+		CanCheckDist = true;
 	}
 
 	private IEnumerator AttackEnemy()
 	{
 		yield return CustomTimer.Timer(.5f); //Leap forward
+		difference = enemyPos.initialPos - transform.position;
 		Attacking = true;
 		Jumping = true;
 		yield return CustomTimer.Timer(.5f); //Leap back
@@ -346,13 +392,13 @@ public class PetMovement : MonoBehaviour {
 
 	void ResetAttack()
 	{
+		//Debug.Log("True here too");
 		CanGetReposDir = true;
 		CanAttack = true;
 		Attacking = false;
 		Jumping = false;
 		JumpMomentum = 0;
 		JumpMomentumScale = 0;
-		CanGetTargetDir = true;
 	}
 
 	private IEnumerator IdleWaitTime() //*Fix this to only run once
@@ -365,15 +411,6 @@ public class PetMovement : MonoBehaviour {
 
 //TO DO
 
-//1: Prevent the array out of index error when the player toggles Attackmode over and over rapidly.
-
-//2: Tell the pet to do something when it can't reach the enemy instead of just teleporting to it. (6/24/19)
-
-//3: Do a radius check on the player before telling the pet to attack something. Right now the pet just attacks the
-//closest enemy on the list, but it should also check to make sure it's within the player's radius. (6/22/19)
-
 //Known issues:
 
-//1: Range exception error is caused when a path is requested too many times in a row...
-
-//2: THE DUMB IDLEWAITTIME COROUTINE CAUSES THE ATTACK STATE TO FIGHT WITH THE RUN STATE AND CAUSED ALL THE PROBLEMS
+//1: Pet will often move directly towards the enemy and stop in it's place. Frozen.

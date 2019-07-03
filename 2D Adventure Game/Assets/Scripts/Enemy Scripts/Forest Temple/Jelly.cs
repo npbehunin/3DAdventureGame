@@ -5,7 +5,6 @@ using UnityEngine;
 public class Jelly : Enemy
 {
 	private float JumpMomentum, JumpMomentumPower, JumpMomentumScale, JumpMomentumSmooth;
-	private bool CanSetDifference;
 	private Vector3 difference;//playerDirection;
 	private Coroutine knockCo;
 	
@@ -21,7 +20,6 @@ public class Jelly : Enemy
 		MoveSpeed = 1.75f;
 		chaseRadius = 3.5f;
 		attackRadius = 1;
-		CanSetDifference = false;
 		CanAttack = true;
 	}
 
@@ -38,18 +36,11 @@ public class Jelly : Enemy
 
 		if (currentState == EnemyState.Knocked)
 		{
-			if (CanSetDifference)
-			{
-				CanSetDifference = false;
-				difference = (transform.position - target).normalized;
-				//playerDirection = PlayerMovement.test;
-			}
-
 			float smooth = 4f;
 			float power = 2.5f;
 			knockMomentumScale += smooth * Time.deltaTime;
 			knockMomentum = Mathf.Lerp(power, 0, knockMomentumScale);
-			position = (knockMomentum * difference);
+			position = (knockMomentum * knockDirection);
 		}
 		else
 		{
@@ -120,7 +111,6 @@ public class Jelly : Enemy
 	{
 		currentState = EnemyState.Hitstun;
 		yield return Hitstun.StartHitstun();
-		CanSetDifference = true;
 		knockCo = StartCoroutine(SetKnockedState());
 	}
 	

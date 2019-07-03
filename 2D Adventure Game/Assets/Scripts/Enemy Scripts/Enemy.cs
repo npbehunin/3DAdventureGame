@@ -17,14 +17,14 @@ public class Enemy : MonoBehaviour
 	public Vector3Value CamShakeDir, PlayerTransform, PetTransform;
 	public int Health, Damage;
 	public IntValue WeaponDamage;
-	public bool CanCollide, EnemyLOS, IsTarget;
-	public BoolValue PetIsAttacking;
+	public bool CanCollide, EnemyLOS, IsTarget, PlayerIsTarget;
+	public BoolValue PetIsAttacking, EnemyIsInRadius;
 	public Rigidbody2D rb;
 	//public Transform , pet;
 
 	public EnemyState currentState;
 	protected EnemyState laststate;
-	protected Vector3 position, JumpPosition, target;
+	protected Vector3 position, JumpPosition, target, knockDirection;
 	protected bool CanAttack;
 	protected Coroutine JumpCoroutine, KnockedCoroutine;
 	protected float MoveSpeed, chaseRadius, attackRadius, knockMomentumScale, knockMomentum;
@@ -51,6 +51,15 @@ public class Enemy : MonoBehaviour
 	
 	protected virtual void Update () 
 	{
+		if (PlayerIsTarget)
+		{
+			target = PlayerTransform.initialPos;
+		}
+		else
+		{
+			target = PetTransform.initialPos;
+		}
+		
 		if (Health <= 0 && !Hitstun.HitStunEnabled)
 		{
 			gameObject.SetActive(false);
@@ -122,6 +131,7 @@ public class Enemy : MonoBehaviour
 	//Check triggers
 	protected void OnTriggerEnter2D(Collider2D col)
 	{
+		knockDirection = (transform.position - col.transform.position).normalized;
 		if (CanCollide)
 		{
 			if (col.gameObject.CompareTag("WeaponHitbox")) //Change to sword hitbox? Would need a seperate "CanCollide" for each weapon type it checks for.
@@ -130,6 +140,11 @@ public class Enemy : MonoBehaviour
 				RunEventKnocked(col.transform.position);
 			}
 
+			if (col.gameObject.CompareTag("Pet") && IsTarget && PetIsAttacking.initialBool)
+			{
+				CollisionEvent();
+			}
+			
 			if (col.gameObject.CompareTag("Player"))
 			{
 				CollisionEvent();
@@ -185,14 +200,15 @@ public class Enemy : MonoBehaviour
 		float detectionRadius = 1.5f;
 		if (IsTarget && PetIsAttacking.initialBool)
 		{
+			//Seperating these 'if' statements prevents this from always running
 			if (Vector3.Distance(transform.position, PetTransform.initialPos) <= detectionRadius)
 			{
-				target = PetTransform.initialPos;
+				PlayerIsTarget = false;
 			}
 		}
 		else
 		{
-			target = PlayerTransform.initialPos;
+			PlayerIsTarget = true;
 		}
 
 		if (!PetIsAttacking.initialBool)

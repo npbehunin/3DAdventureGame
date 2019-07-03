@@ -67,6 +67,7 @@ public class UnitFollow : MonoBehaviour {
 		{
 			Debug.Log("Can't reach target");
 			CannotReachPlayer = true;
+			StopFollowPath();
 		}
 	}
 

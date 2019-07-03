@@ -264,7 +264,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 20902911}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.88, y: 5.63, z: 0.01171875}
+  m_LocalPosition: {x: 5.12, y: 9.95, z: 0.01171875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 837465280}
@@ -291,7 +291,9 @@ MonoBehaviour:
   CanCollide: 0
   EnemyLOS: 0
   IsTarget: 0
+  PlayerIsTarget: 0
   PetIsAttacking: {fileID: 11400000, guid: 9a52260159436524bb6f72b68ad65e2b, type: 2}
+  EnemyIsInRadius: {fileID: 11400000, guid: 1157194aed370e6489c42b1d2df7f59f, type: 2}
   rb: {fileID: 0}
   currentState: 0
 --- !u!58 &20902914
@@ -560,7 +562,9 @@ MonoBehaviour:
   CanCollide: 0
   EnemyLOS: 0
   IsTarget: 0
+  PlayerIsTarget: 0
   PetIsAttacking: {fileID: 11400000, guid: 9a52260159436524bb6f72b68ad65e2b, type: 2}
+  EnemyIsInRadius: {fileID: 11400000, guid: 1157194aed370e6489c42b1d2df7f59f, type: 2}
   rb: {fileID: 0}
   currentState: 0
   CanThrow: 0
@@ -881,7 +885,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 376838245}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.36, y: 5.32, z: 0.01171875}
+  m_LocalPosition: {x: -1.76, y: 10.97, z: 0.01171875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 837465280}
@@ -923,7 +927,9 @@ MonoBehaviour:
   CanCollide: 0
   EnemyLOS: 0
   IsTarget: 0
+  PlayerIsTarget: 0
   PetIsAttacking: {fileID: 11400000, guid: 9a52260159436524bb6f72b68ad65e2b, type: 2}
+  EnemyIsInRadius: {fileID: 11400000, guid: 1157194aed370e6489c42b1d2df7f59f, type: 2}
   rb: {fileID: 0}
   currentState: 0
   CanSetRandomPos: 0
@@ -3759,7 +3765,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1282365204}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.04, y: 9.88, z: 0.01171875}
+  m_LocalPosition: {x: -3.28, y: 4.09, z: 0.01171875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 837465280}
@@ -3806,7 +3812,9 @@ MonoBehaviour:
   CanCollide: 0
   EnemyLOS: 0
   IsTarget: 0
+  PlayerIsTarget: 0
   PetIsAttacking: {fileID: 11400000, guid: 9a52260159436524bb6f72b68ad65e2b, type: 2}
+  EnemyIsInRadius: {fileID: 11400000, guid: 1157194aed370e6489c42b1d2df7f59f, type: 2}
   rb: {fileID: 0}
   currentState: 0
 --- !u!1 &1294750320
@@ -4001,21 +4009,24 @@ MonoBehaviour:
   CanAttack: 0
   AttackMode: 0
   Jumping: 0
-  CanGetTargetDir: 0
+  CanReachEnemy: 0
   EnemyLOS: 0
+  CanGetReposDir: 0
+  AttackAnyways: 0
+  CanCheckDist: 0
+  EnemyIsInRadius: 0
   enemyPos: {fileID: 11400000, guid: 70d5766d06c434048a03d78d1699577c, type: 2}
   PlayerTransform: {fileID: 11400000, guid: a2ad014b0bcb86145b9eae1a794bea2d, type: 2}
   TargetTransform: {fileID: 11400000, guid: a6393f11d867dd244ad91ae63fc6ae2a, type: 2}
   PetTransform: {fileID: 11400000, guid: 7b3aaf022a718fd48b2b794693ade79c, type: 2}
   position: {x: 0, y: 0, z: 0}
   difference: {x: 0, y: 0, z: 0}
-  ChaseRadius: 12
-  WalkRadius: 1.5
-  StopRadius: 0.6
-  WarpRadius: 12
+  RepositionDir: {x: 0, y: 0, z: 0}
   MoveSpeed: 4
   JumpMomentum: 0
   JumpMomentumScale: 0
+  randX: 0
+  randY: 0
   rb: {fileID: 1468615832}
   CurrentState: 0
   playerMoveSpeed: {fileID: 11400000, guid: 8315aec1680244b49a520f9f11120688, type: 2}
