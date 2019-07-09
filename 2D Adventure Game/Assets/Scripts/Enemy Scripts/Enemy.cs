@@ -25,7 +25,7 @@ public class Enemy : MonoBehaviour
 	public EnemyState currentState;
 	protected EnemyState laststate;
 	protected Vector3 position, JumpPosition, target, knockDirection;
-	protected bool CanAttack;
+	public bool CanAttack;
 	protected Coroutine JumpCoroutine, KnockedCoroutine;
 	protected float MoveSpeed, chaseRadius, attackRadius, knockMomentumScale, knockMomentum;
 	
@@ -134,14 +134,16 @@ public class Enemy : MonoBehaviour
 		knockDirection = (transform.position - col.transform.position).normalized;
 		if (CanCollide)
 		{
-			if (col.gameObject.CompareTag("WeaponHitbox")) //Change to sword hitbox? Would need a seperate "CanCollide" for each weapon type it checks for.
+			if (col.gameObject.CompareTag("WeaponHitbox") || col.gameObject.CompareTag("PetAttackHitbox")) //Change to sword hitbox? Would need a seperate "CanCollide" for each weapon type it checks for.
 			{
+				Debug.Log("Collision");
 				CanCollide = false;
 				RunEventKnocked(col.transform.position);
 			}
 
 			if (col.gameObject.CompareTag("Pet") && IsTarget && PetIsAttacking.initialBool)
 			{
+				Debug.Log("Collision directly");
 				CollisionEvent();
 			}
 			
@@ -154,7 +156,7 @@ public class Enemy : MonoBehaviour
 	
 	protected void OnTriggerExit2D(Collider2D col) //If the sword swings too fast, the sword hitbox might never disappear. Be sure to adjust the sword hitbox in its anim.
 	{
-		if (col.gameObject.CompareTag("WeaponHitbox"))
+		if (col.gameObject.CompareTag("WeaponHitbox") || col.gameObject.CompareTag("PetAttackHitbox"))
 		{
 			CanCollide = true;
 		}
@@ -251,7 +253,9 @@ public class Enemy : MonoBehaviour
 	}
 }
 
-//TO DO
+//TO DO:
+
+//Notes:
 //The reason why the enemy was registering multiple collisions from ontriggerenter was because THE PLAYER WAS ENTERING
 //THE STATIC STATE. Entering the static state disabled the player's hitboxes (sword hitbox), and caused the sword
 //hitbox to blink in and out when static was enabled.

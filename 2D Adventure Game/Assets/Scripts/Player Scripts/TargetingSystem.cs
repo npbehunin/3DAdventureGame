@@ -85,13 +85,9 @@ public class TargetingSystem : MonoBehaviour
 }
 
 //TO DO:
-//Check if there is line of sight with the enemy before registering it on the list, that way the pet will target the
-//closest enemy THAT IS WITHIN LOS.
 
 //Ways to handle it:
-//1: Change GetClosestTarget to get the enemy component from the object and check a bool to see if it's in LOS.
-//2: Create a second new list that adds enemies in LOS and removes them if they're not.
-//3: Run a check after GetClosestTarget and remove the target from the new list if it's not in LOS.
+
 
 //Known issues:
 //1: No target is being found.

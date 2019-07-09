@@ -52,15 +52,20 @@ public class Jelly : Enemy
 	protected override void FixedUpdate()
 	{
 		base.FixedUpdate();
-		if (!CanAttack && currentState == EnemyState.Attack)
+		if (currentState == EnemyState.Attack)
 		{
-			rb.MovePosition(transform.position + position * MoveSpeed * Time.deltaTime);
+			if (!CanAttack)
+			{
+				Debug.Log("Moving jump attack");
+				rb.MovePosition(transform.position + position * MoveSpeed * Time.deltaTime);
+			}
 		}
 
 		if (currentState == EnemyState.Knocked)
 		{
 			if (rb.bodyType != RigidbodyType2D.Static)
 			{
+				Debug.Log("Moving knocked");
 				rb.MovePosition(transform.position + position * MoveSpeed * Time.deltaTime);
 			}
 		}
@@ -71,6 +76,7 @@ public class Jelly : Enemy
 	{
 		base.InRadiusEvent();
 		ChangeState(EnemyState.Target);
+		Debug.Log("Moving target");
 		position = Vector3.MoveTowards(transform.position, target, MoveSpeed * Time.deltaTime);
 		rb.MovePosition(position);
 	}
@@ -130,6 +136,7 @@ public class Jelly : Enemy
 	
 	private IEnumerator JumpAtTarget()
 	{
+		Debug.Log("Jump coroutine");
 		//Animation for winding up attack
 		JumpPosition = (transform.position - target) * -1;
 		yield return CustomTimer.Timer(.5f);
@@ -140,10 +147,11 @@ public class Jelly : Enemy
 		ResetJump();
 	}
 }
+//Known issues:
+//For some reason, the jelly would recieve an extra small jump after leaving the knocked state. The problem seems to be
+//fixed after removing collision detection between the pet and enemy, and putting the pet's attack hitbox on a different
+//layer.
 
 //TO DO
 //During the first half of the prep jump, enemy can be knocked away.
 //During the second half, the enemy won't be knocked and will continue its jump.
-
-//The jelly knocked state should end when the sword swing ends.
-//Jelly can be hit even if knocked. Set CanCollide to true a bit before it exits the knocked state.

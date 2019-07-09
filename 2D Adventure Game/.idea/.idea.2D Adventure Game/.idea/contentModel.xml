@@ -56,11 +56,13 @@
               <e p="PathRequestManager.cs" t="Include" />
               <e p="UnitFollow.cs" t="Include" />
             </e>
-            <e p="PetMovement.cs" t="Include" />
           </e>
           <e p="Pet Scripts" t="Include">
             <e p="Fox.cs" t="Include" />
             <e p="Pet.cs" t="Include" />
+            <e p="PetAnimation.cs" t="Include" />
+            <e p="PetMovement.cs" t="Include" />
+            <e p="PetMovementNew.cs" t="Include" />
           </e>
           <e p="Player Scripts" t="Include">
             <e p="CameraFollowPlayer.cs" t="Include" />

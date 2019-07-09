@@ -90,9 +90,11 @@
     <Compile Include="Assets\Scripts\Movement Scripts\Pathfinding\Pathfinding.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\Pathfinding\PathRequestManager.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\Pathfinding\UnitFollow.cs" />
-    <Compile Include="Assets\Scripts\Movement Scripts\PetMovement.cs" />
     <Compile Include="Assets\Scripts\Pet Scripts\Fox.cs" />
     <Compile Include="Assets\Scripts\Pet Scripts\Pet.cs" />
+    <Compile Include="Assets\Scripts\Pet Scripts\PetAnimation.cs" />
+    <Compile Include="Assets\Scripts\Pet Scripts\PetMovement.cs" />
+    <Compile Include="Assets\Scripts\Pet Scripts\PetMovementNew.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\CameraFollowPlayer.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\Clothes.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\InteractableCollision.cs" />

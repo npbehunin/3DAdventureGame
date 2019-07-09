@@ -9,6 +9,7 @@ TagManager:
   - EnemyWeaponHitbox
   - InteractableObject
   - Pet
+  - PetAttackHitbox
   layers:
   - Default
   - TransparentFX
