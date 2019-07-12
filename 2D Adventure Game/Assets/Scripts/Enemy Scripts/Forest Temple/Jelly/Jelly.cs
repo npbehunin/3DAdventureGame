@@ -7,6 +7,10 @@ public class Jelly : Enemy
 	private float JumpMomentum, JumpMomentumPower, JumpMomentumScale, JumpMomentumSmooth;
 	private Vector3 difference;//playerDirection;
 	private Coroutine knockCo;
+
+	public JellyAnimation JellyAnim;
+
+	public BoolValue PlayerCollision;
 	
 	protected override void StartValues()
 	{
@@ -14,7 +18,7 @@ public class Jelly : Enemy
 		currentState = EnemyState.Idle;
 		rb = GetComponent<Rigidbody2D>();
 		Health = 10;
-		Damage = 1;
+		//Damage = 1;
 		JumpMomentumSmooth = 4f;
 		JumpMomentumPower = 4f;
 		MoveSpeed = 1.75f;
@@ -32,6 +36,7 @@ public class Jelly : Enemy
 			JumpMomentumScale += JumpMomentumSmooth * Time.deltaTime;
 			JumpMomentum = Mathf.Lerp(JumpMomentumPower, 0, JumpMomentumScale);
 			position = (JumpMomentum * JumpPosition);
+			//Bounce direction check put here!
 		}
 
 		if (currentState == EnemyState.Knocked)
@@ -49,6 +54,11 @@ public class Jelly : Enemy
 		}
 	}
 
+	void JumpAttack()
+	{
+		
+	}
+
 	protected override void FixedUpdate()
 	{
 		base.FixedUpdate();
@@ -56,7 +66,7 @@ public class Jelly : Enemy
 		{
 			if (!CanAttack)
 			{
-				Debug.Log("Moving jump attack");
+				//Debug.Log("Moving jump attack");
 				rb.MovePosition(transform.position + position * MoveSpeed * Time.deltaTime);
 			}
 		}
@@ -65,7 +75,7 @@ public class Jelly : Enemy
 		{
 			if (rb.bodyType != RigidbodyType2D.Static)
 			{
-				Debug.Log("Moving knocked");
+				//Debug.Log("Moving knocked");
 				rb.MovePosition(transform.position + position * MoveSpeed * Time.deltaTime);
 			}
 		}
@@ -76,7 +86,7 @@ public class Jelly : Enemy
 	{
 		base.InRadiusEvent();
 		ChangeState(EnemyState.Target);
-		Debug.Log("Moving target");
+		//Debug.Log("Moving target");
 		position = Vector3.MoveTowards(transform.position, target, MoveSpeed * Time.deltaTime);
 		rb.MovePosition(position);
 	}
@@ -95,12 +105,17 @@ public class Jelly : Enemy
 			ChangeState(EnemyState.Target);
 		}
 	}
+
+	protected override void CollisionEvent()
+	{
+		base.CollisionEvent();
+		//BounceOffTarget = true;
+	}
 	
 	//Knocked event
-	protected override void KnockedEvent()
+	protected override void KnockedEvent() //Move this and hitstunco to enemy script
 	{
 		base.KnockedEvent();
-		StartCoroutine(Knocked());
 		if (knockCo != null)
 		{
 			StopCoroutine(knockCo);
@@ -113,10 +128,9 @@ public class Jelly : Enemy
 	}
 	
 	//Knocked coroutine
-	private IEnumerator Knocked()
+	protected override IEnumerator HitstunCo()
 	{
-		currentState = EnemyState.Hitstun;
-		yield return Hitstun.StartHitstun();
+		yield return base.HitstunCo();
 		knockCo = StartCoroutine(SetKnockedState());
 	}
 	
@@ -132,6 +146,7 @@ public class Jelly : Enemy
 		JumpMomentum = 0;
 		JumpMomentumScale = 0;
 		CanAttack = true;
+		//BounceOffTarget = false;
 	}
 	
 	private IEnumerator JumpAtTarget()
@@ -141,8 +156,10 @@ public class Jelly : Enemy
 		JumpPosition = (transform.position - target) * -1;
 		yield return CustomTimer.Timer(.5f);
 		CanAttack = false;
+		JellyAnim.Attacking = true; //Jump anim
 		yield return CustomTimer.Timer(.5f);
 		currentState = EnemyState.Idle;
+		JellyAnim.Attacking = false; //Idle anim
 		yield return CustomTimer.Timer(1f);
 		ResetJump();
 	}
@@ -153,5 +170,7 @@ public class Jelly : Enemy
 //layer.
 
 //TO DO
+//Make the jelly bounce back after colliding with the player. (Check the JellyAttackHitbox script).
+
 //During the first half of the prep jump, enemy can be knocked away.
 //During the second half, the enemy won't be knocked and will continue its jump.

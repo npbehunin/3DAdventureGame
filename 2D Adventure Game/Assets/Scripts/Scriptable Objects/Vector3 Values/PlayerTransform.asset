@@ -11,4 +11,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c47bf7cda3c5d5409fda64b4fd42782, type: 3}
   m_Name: PlayerTransform
   m_EditorClassIdentifier: 
-  initialPos: {x: 0, y: 0, z: 0}
+  initialPos: {x: 11.776006, y: 5.74627, z: 0}

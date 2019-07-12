@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Hitstun : MonoBehaviour
 {
+	//Currently not using this script! Right now everything is handled with signals. (7/10/19)
+	
 	public static bool HitStunEnabled;
 
 	public static IEnumerator StartHitstun()

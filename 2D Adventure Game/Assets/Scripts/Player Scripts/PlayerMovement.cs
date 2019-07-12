@@ -14,8 +14,10 @@ public class PlayerMovement : MonoBehaviour
 	public Rigidbody2D rb;
 	public PlayerAnimation playerAnim;
 	public LookTowardsTarget targetMode;
-	private bool CanSetState;
-	//public BoolValue EnemyLOS;
+	public bool CanSetState, Invincible;
+	public IntValue Health;
+	public int CurrentHealth;
+	public BoolValue EnemyCollision;
 
 	private float horizontalspeed, verticalspeed;
 	private float SwordMomentum, SwordMomentumSmooth, SwordMomentumPower;
@@ -33,6 +35,7 @@ public class PlayerMovement : MonoBehaviour
 		SwordMomentumPower = 1f;
 		CanSetState = true;
 		direction.initialPos = new Vector3(1, 0, 0); //Set to the dir the player spawns in
+		PlayerTransform.initialPos = transform.position;
 	}
 
 	void FixedUpdate()
@@ -50,6 +53,7 @@ public class PlayerMovement : MonoBehaviour
 		CheckForPause();
 		CheckStates();
 		GetDirection();
+		CheckHealth();
 		
 		if (currentState == PlayerState.Idle || currentState == PlayerState.Walk || currentState == PlayerState.Run)
 		{
@@ -68,6 +72,24 @@ public class PlayerMovement : MonoBehaviour
 			{
 				currentState = PlayerState.Run;
 			}
+		}
+	}
+
+	//Take damage!
+	void TakeDamage()
+	{
+		CurrentHealth -= 1; //1 damage for now
+		StartCoroutine(Invincibility());
+	}
+
+	//Health
+	void CheckHealth()
+	{
+		Health.initialValue = CurrentHealth;
+		if (CurrentHealth <= 0)
+		{
+			currentState = PlayerState.Dead;
+			Debug.Log("Player has died");
 		}
 	}
 
@@ -147,7 +169,7 @@ public class PlayerMovement : MonoBehaviour
 	}
 
 	//Check if game is paused or if player is hitstunned
-	public void CheckForPause()
+	public void CheckForPause() //Change this to a signal too!
 	{
 		if (PauseGame.IsPaused)
 		{
@@ -158,23 +180,23 @@ public class PlayerMovement : MonoBehaviour
 			}
 			currentState = PlayerState.Paused;
 		}
-		else if (Hitstun.HitStunEnabled)
-		{
-			if (CanSetState)
-			{
-				CanSetState = false;
-				laststate = currentState;
-			}
-			currentState = PlayerState.Hitstun;
-		}
-		else
-		{
-			if (!CanSetState)
-			{
-				CanSetState = true;
-				currentState = laststate; //*if last state was attack, player COULD end up being stuck.
-			}
-		}
+		//else if (Hitstun.HitStunEnabled)
+		//{
+		//	if (CanSetState)
+		//	{
+		//		CanSetState = false;
+		//		laststate = currentState;
+		//	}
+		//	currentState = PlayerState.Hitstun;
+		//}
+		//else
+		//{
+		//	if (!CanSetState)
+		//	{
+		//		CanSetState = true;
+		//		currentState = laststate; //*if last state was attack, player COULD end up being stuck.
+		//	}
+		//}
 	}
 
 	//Returns the direction the player's animation is facing.
@@ -221,6 +243,30 @@ public class PlayerMovement : MonoBehaviour
 				}
 			}
 		}
+	}
+
+	//Hitstun signal
+	public void StartHitstun()
+	{
+		StartCoroutine(HitstunCo());
+	}
+	
+	//Invincibility coroutine
+	private IEnumerator Invincibility()
+	{
+		Invincible = true;
+		yield return CustomTimer.Timer(2f);
+		Invincible = false;
+	}
+
+	//Hitstun coroutine
+	public IEnumerator HitstunCo()
+	{
+		PlayerState lastState = currentState;
+		currentState = PlayerState.Hitstun;
+		yield return CustomTimer.Timer(.075f);
+		currentState = lastState;
+		Debug.Log("Hitstun ended");
 	}
 
 	//Get sword swing direction, not called through update.

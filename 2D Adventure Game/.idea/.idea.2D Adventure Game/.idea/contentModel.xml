@@ -21,7 +21,11 @@
               <e p="Bat.cs" t="Include" />
               <e p="ForestBoss.cs" t="Include" />
               <e p="ForestGuardian.cs" t="Include" />
-              <e p="Jelly.cs" t="Include" />
+              <e p="Jelly" t="Include">
+                <e p="Jelly.cs" t="Include" />
+                <e p="JellyAnimation.cs" t="Include" />
+                <e p="JellyAttackHitbox.cs" t="Include" />
+              </e>
               <e p="Sentry.cs" t="Include" />
               <e p="Trap.cs" t="Include" />
               <e p="Turtle.cs" t="Include" />

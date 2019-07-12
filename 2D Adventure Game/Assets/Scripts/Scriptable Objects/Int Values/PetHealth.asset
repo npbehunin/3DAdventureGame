@@ -8,7 +8,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 226fdf922d1d9cf48a77b1dbf6f7f12d, type: 3}
-  m_Name: PetCanReachEnemy
+  m_Script: {fileID: 11500000, guid: 39f9e705f625e9e42bd4947f8bc988bc, type: 3}
+  m_Name: PetHealth
   m_EditorClassIdentifier: 
-  initialBool: 0
+  initialValue: 0

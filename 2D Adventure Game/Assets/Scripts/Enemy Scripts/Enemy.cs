@@ -13,9 +13,9 @@ public enum EnemyState
 
 public class Enemy : MonoBehaviour
 {
-	public Signal CamShakeSignal;
+	public Signal CamShakeSignal, PlayerHitstun, PetHitstun;
 	public Vector3Value CamShakeDir, PlayerTransform, PetTransform;
-	public int Health, Damage;
+	public int Health;//, Damage;
 	public IntValue WeaponDamage;
 	public bool CanCollide, EnemyLOS, IsTarget, PlayerIsTarget;
 	public BoolValue PetIsAttacking, EnemyIsInRadius;
@@ -134,23 +134,35 @@ public class Enemy : MonoBehaviour
 		knockDirection = (transform.position - col.transform.position).normalized;
 		if (CanCollide)
 		{
-			if (col.gameObject.CompareTag("WeaponHitbox") || col.gameObject.CompareTag("PetAttackHitbox")) //Change to sword hitbox? Would need a seperate "CanCollide" for each weapon type it checks for.
+			if (col.gameObject.CompareTag("WeaponHitbox")) //Change to sword hitbox? Would need a seperate "CanCollide" for each weapon type it checks for.
 			{
-				Debug.Log("Collision");
+				PlayerHitstun.Raise(); //Player hitstun
 				CanCollide = false;
 				RunEventKnocked(col.transform.position);
+				TakeDamage();
 			}
 
-			if (col.gameObject.CompareTag("Pet") && IsTarget && PetIsAttacking.initialBool)
+			if (col.gameObject.CompareTag("PetAttackHitbox"))
 			{
-				Debug.Log("Collision directly");
-				CollisionEvent();
+				PetHitstun.Raise(); //Pet histun
+				CanCollide = false;
+				RunEventKnocked(col.transform.position);
+				TakeDamage();
 			}
+
+			//if (col.gameObject.CompareTag("Pet") && IsTarget && PetIsAttacking.initialBool)
+			//{
+			//	Debug.Log("Collision directly");
+			//	CollisionEvent();
+			//}
+			//
+			//if (col.gameObject.CompareTag("Player"))
+			//{
+			//	CollisionEvent();
+			//}
 			
-			if (col.gameObject.CompareTag("Player"))
-			{
-				CollisionEvent();
-			}
+			//These won't run because detection is turned off between the enemy, player, and pet.
+			//Instead, run collision event if player detects a collision from enemyattackhitbox.
 		}
 	}
 	
@@ -168,13 +180,11 @@ public class Enemy : MonoBehaviour
 		if (KnockedCoroutine != null)
 		{
 			StopCoroutine(KnockedCoroutine);
-		}
-		//KnockedCoroutine = StartCoroutine(Invincibility());	
-		TakeDamage();
+		}	
+		
 		CamShakeSignal.Raise();
 		CamShakeDir.initialPos = transform.position - pos;
 		KnockedEvent();
-		//colPos = pos;
 	}
 
 	//Take damage
@@ -227,13 +237,12 @@ public class Enemy : MonoBehaviour
 			currentState = newState;
 		}
 	}
-
-	//private IEnumerator Invincibility()
-	//{
-	//	CanCollide = false;
-	//	yield return CustomTimer.Timer(.15f);
-	//	CanCollide = true;
-	//}
+	protected virtual IEnumerator HitstunCo()
+	{
+		currentState = EnemyState.Hitstun;
+		yield return CustomTimer.Timer(.075f); //.075f
+		//New state goes here!
+	}
 
 	protected virtual void InRadiusEvent()
 	{
@@ -249,7 +258,7 @@ public class Enemy : MonoBehaviour
 	}
 	protected virtual void KnockedEvent()
 	{
-		//Do something
+		StartCoroutine(HitstunCo());
 	}
 }
 

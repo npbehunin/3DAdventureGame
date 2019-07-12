@@ -34,7 +34,7 @@ public class PlayerHealth : MonoBehaviour
 		{
 			if (IsInvincible == false)
 			{
-				EnemyDamage = col.gameObject.GetComponent<Enemy>().Damage;
+				//EnemyDamage = col.gameObject.GetComponent<Enemy>().Damage;
 				TakeDamage();
 			}
 		}

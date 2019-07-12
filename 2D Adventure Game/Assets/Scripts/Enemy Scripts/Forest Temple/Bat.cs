@@ -26,7 +26,7 @@ public class Bat : Enemy {
 		rb = GetComponent<Rigidbody2D>();
 		//target = GameObject.FindWithTag("Player").transform;
 		Health = 50000;
-		Damage = 1;
+		//Damage = 1;
 		MoveSpeed = 3;
 		chaseRadius = 6;
 		attackRadius = 0;
@@ -162,6 +162,13 @@ public class Bat : Enemy {
 		currentState = EnemyState.Delay;
 		StartCoroutine(TargetPlayerDelay());
 	}
+	
+	protected override IEnumerator HitstunCo()
+	{
+		yield return base.HitstunCo();
+		CollisionEvent();
+		//New state goes here!
+	}
 
 	//Stop this coroutine if knocked.
 	IEnumerator TargetPlayerDelay()
@@ -178,7 +185,7 @@ public class Bat : Enemy {
 		rb = GetComponent<Rigidbody2D>();
 		//target = GameObject.FindWithTag("Player").transform;
 		Health = 2;
-		Damage = 1;
+		//Damage = 1;
 		MoveSpeed = 3;
 		chaseRadius = 6;
 		attackRadius = 0;

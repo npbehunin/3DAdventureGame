@@ -66,7 +66,9 @@
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Bat.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\ForestBoss.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\ForestGuardian.cs" />
-    <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Jelly.cs" />
+    <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Jelly\Jelly.cs" />
+    <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Jelly\JellyAnimation.cs" />
+    <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Jelly\JellyAttackHitbox.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Sentry.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Trap.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Turtle.cs" />

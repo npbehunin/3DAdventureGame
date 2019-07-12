@@ -23,7 +23,7 @@ public class Sentry : Enemy
 		rb = GetComponent<Rigidbody2D>();
 		//target = GameObject.FindWithTag("Player").transform;
 		Health = 3;
-		Damage = 1;
+		//Damage = 1;
 		MoveSpeed = 0;
 		chaseRadius = 5;
 		attackRadius = 5;
