@@ -252,7 +252,7 @@ public class Enemy : MonoBehaviour
 	{
 		//Do something
 	}
-	protected virtual void CollisionEvent()
+	public virtual void CollisionEvent()
 	{
 		//Do something
 	}

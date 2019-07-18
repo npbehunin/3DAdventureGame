@@ -10,7 +10,7 @@ public class Jelly : Enemy
 
 	public JellyAnimation JellyAnim;
 
-	public BoolValue PlayerCollision;
+	public bool CollisionBounce;
 	
 	protected override void StartValues()
 	{
@@ -32,11 +32,18 @@ public class Jelly : Enemy
 		base.Update();
 		if (!CanAttack)
 		{
-			//Run this through a while loop to work better with pause system
 			JumpMomentumScale += JumpMomentumSmooth * Time.deltaTime;
 			JumpMomentum = Mathf.Lerp(JumpMomentumPower, 0, JumpMomentumScale);
-			position = (JumpMomentum * JumpPosition);
-			//Bounce direction check put here!
+			
+			//Bounces back if it "collides" with the player.
+			if (CollisionBounce)
+			{
+				position = (JumpMomentum * -JumpPosition);
+			}
+			else
+			{
+		position = (JumpMomentum * JumpPosition);
+			}
 		}
 
 		if (currentState == EnemyState.Knocked)
@@ -54,19 +61,19 @@ public class Jelly : Enemy
 		}
 	}
 
-	void JumpAttack()
-	{
-		
-	}
-
 	protected override void FixedUpdate()
 	{
 		base.FixedUpdate();
 		if (currentState == EnemyState.Attack)
 		{
-			if (!CanAttack)
+			float BounceRadius = .5f;
+			if (Vector3.Distance(transform.position, target) <= BounceRadius)
 			{
-				//Debug.Log("Moving jump attack");
+				CollisionBounce = true; //This is set to false in ResetAttack.
+			}
+			
+			if (!CanAttack)
+			{	
 				rb.MovePosition(transform.position + position * MoveSpeed * Time.deltaTime);
 			}
 		}
@@ -106,12 +113,6 @@ public class Jelly : Enemy
 		}
 	}
 
-	protected override void CollisionEvent()
-	{
-		base.CollisionEvent();
-		//BounceOffTarget = true;
-	}
-	
 	//Knocked event
 	protected override void KnockedEvent() //Move this and hitstunco to enemy script
 	{
@@ -146,18 +147,19 @@ public class Jelly : Enemy
 		JumpMomentum = 0;
 		JumpMomentumScale = 0;
 		CanAttack = true;
-		//BounceOffTarget = false;
+		CollisionBounce = false;
 	}
 	
 	private IEnumerator JumpAtTarget()
 	{
 		Debug.Log("Jump coroutine");
 		//Animation for winding up attack
-		JumpPosition = (transform.position - target) * -1;
+		JumpPosition = (transform.position - target).normalized * -1;
 		yield return CustomTimer.Timer(.5f);
 		CanAttack = false;
 		JellyAnim.Attacking = true; //Jump anim
 		yield return CustomTimer.Timer(.5f);
+		
 		currentState = EnemyState.Idle;
 		JellyAnim.Attacking = false; //Idle anim
 		yield return CustomTimer.Timer(1f);
@@ -165,12 +167,13 @@ public class Jelly : Enemy
 	}
 }
 //Known issues:
+//The enemy will sometimes teleport back before first jumping towards the player.
+
+//TO DO
+//During the first half of the prep jump, enemy can be knocked away.
+//During the second half, the enemy won't be knocked and will continue its jump.
+
+//NOTES:
 //For some reason, the jelly would recieve an extra small jump after leaving the knocked state. The problem seems to be
 //fixed after removing collision detection between the pet and enemy, and putting the pet's attack hitbox on a different
 //layer.
-
-//TO DO
-//Make the jelly bounce back after colliding with the player. (Check the JellyAttackHitbox script).
-
-//During the first half of the prep jump, enemy can be knocked away.
-//During the second half, the enemy won't be knocked and will continue its jump.

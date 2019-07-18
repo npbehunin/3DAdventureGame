@@ -24,7 +24,6 @@
               <e p="Jelly" t="Include">
                 <e p="Jelly.cs" t="Include" />
                 <e p="JellyAnimation.cs" t="Include" />
-                <e p="JellyAttackHitbox.cs" t="Include" />
               </e>
               <e p="Sentry.cs" t="Include" />
               <e p="Trap.cs" t="Include" />
@@ -61,6 +60,11 @@
               <e p="UnitFollow.cs" t="Include" />
             </e>
           </e>
+          <e p="NPC" t="Include">
+            <e p="Todoroki" t="Include">
+              <e p="TodorokiNPC.cs" t="Include" />
+            </e>
+          </e>
           <e p="Pet Scripts" t="Include">
             <e p="Fox.cs" t="Include" />
             <e p="Pet.cs" t="Include" />
@@ -84,6 +88,9 @@
             <e p="Bool Values" t="Include">
               <e p="BoolValue.cs" t="Include" />
             </e>
+            <e p="Dialogue Info" t="Include">
+              <e p="DialogueInfo.cs" t="Include" />
+            </e>
             <e p="Float Values" t="Include">
               <e p="FloatValue.cs" t="Include" />
             </e>
@@ -106,6 +113,11 @@
             <e p="LerpExample.cs" t="Include" />
           </e>
           <e p="UI Scripts" t="Include">
+            <e p="Dialog Scripts" t="Include">
+              <e p="Dialogue.cs" t="Include" />
+              <e p="DialogueManager.cs" t="Include" />
+              <e p="DialogueNPCIcon.cs" t="Include" />
+            </e>
             <e p="InteractionSymbol.cs" t="Include" />
           </e>
           <e p="Weapon Scripts" t="Include">

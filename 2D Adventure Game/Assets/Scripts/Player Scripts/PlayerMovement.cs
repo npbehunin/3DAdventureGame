@@ -74,6 +74,15 @@ public class PlayerMovement : MonoBehaviour
 			}
 		}
 	}
+	
+	//On collision with enemy attack hitbox...
+	void OnTriggerStay2D(Collider2D col)
+	{
+		if (!Invincible && col.gameObject.CompareTag("EnemyAttackHitbox"))
+		{
+			TakeDamage();
+		}
+	}
 
 	//Take damage!
 	void TakeDamage()
@@ -128,6 +137,7 @@ public class PlayerMovement : MonoBehaviour
 			case PlayerState.Paused:
 				rb.bodyType = RigidbodyType2D.Static;
 				playerAnim.AnimPause(true);
+				Invincible = true; //Invincible while paused
 				break;
 			case PlayerState.Hitstun:
 				position = Vector3.zero;
@@ -180,23 +190,6 @@ public class PlayerMovement : MonoBehaviour
 			}
 			currentState = PlayerState.Paused;
 		}
-		//else if (Hitstun.HitStunEnabled)
-		//{
-		//	if (CanSetState)
-		//	{
-		//		CanSetState = false;
-		//		laststate = currentState;
-		//	}
-		//	currentState = PlayerState.Hitstun;
-		//}
-		//else
-		//{
-		//	if (!CanSetState)
-		//	{
-		//		CanSetState = true;
-		//		currentState = laststate; //*if last state was attack, player COULD end up being stuck.
-		//	}
-		//}
 	}
 
 	//Returns the direction the player's animation is facing.

@@ -68,7 +68,6 @@
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\ForestGuardian.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Jelly\Jelly.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Jelly\JellyAnimation.cs" />
-    <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Jelly\JellyAttackHitbox.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Sentry.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Trap.cs" />
     <Compile Include="Assets\Scripts\Enemy Scripts\Forest Temple\Turtle.cs" />
@@ -92,6 +91,7 @@
     <Compile Include="Assets\Scripts\Movement Scripts\Pathfinding\Pathfinding.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\Pathfinding\PathRequestManager.cs" />
     <Compile Include="Assets\Scripts\Movement Scripts\Pathfinding\UnitFollow.cs" />
+    <Compile Include="Assets\Scripts\NPC\Todoroki\TodorokiNPC.cs" />
     <Compile Include="Assets\Scripts\Pet Scripts\Fox.cs" />
     <Compile Include="Assets\Scripts\Pet Scripts\Pet.cs" />
     <Compile Include="Assets\Scripts\Pet Scripts\PetAnimation.cs" />
@@ -106,6 +106,7 @@
     <Compile Include="Assets\Scripts\Player Scripts\TargetingSystem.cs" />
     <Compile Include="Assets\Scripts\Scene Scripts\SceneManage.cs" />
     <Compile Include="Assets\Scripts\Scriptable Objects\Bool Values\BoolValue.cs" />
+    <Compile Include="Assets\Scripts\Scriptable Objects\Dialogue Info\DialogueInfo.cs" />
     <Compile Include="Assets\Scripts\Scriptable Objects\Float Values\FloatValue.cs" />
     <Compile Include="Assets\Scripts\Scriptable Objects\Int Values\IntValue.cs" />
     <Compile Include="Assets\Scripts\Scriptable Objects\Lists\ListVector3.cs" />
@@ -114,6 +115,9 @@
     <Compile Include="Assets\Scripts\Testing Scripts\DirectionTest.cs" />
     <Compile Include="Assets\Scripts\Testing Scripts\FollowTargetTest.cs" />
     <Compile Include="Assets\Scripts\Testing Scripts\LerpExample.cs" />
+    <Compile Include="Assets\Scripts\UI Scripts\Dialog Scripts\Dialogue.cs" />
+    <Compile Include="Assets\Scripts\UI Scripts\Dialog Scripts\DialogueManager.cs" />
+    <Compile Include="Assets\Scripts\UI Scripts\Dialog Scripts\DialogueNPCIcon.cs" />
     <Compile Include="Assets\Scripts\UI Scripts\InteractionSymbol.cs" />
     <Compile Include="Assets\Scripts\Weapon Scripts\EquipWeapon.cs" />
     <Compile Include="Assets\Scripts\Weapon Scripts\Projectile Scripts\FastBow.cs" />

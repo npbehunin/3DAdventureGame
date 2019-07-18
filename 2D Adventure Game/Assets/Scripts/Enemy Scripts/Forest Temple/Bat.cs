@@ -51,6 +51,13 @@ public class Bat : Enemy {
 				MoveTowardsRandomPos();
 			}
 		}
+		
+		//Prevents jittering if it somehow goes inside target. No damage.
+		float BounceRadius = .5f;
+		if (Vector3.Distance(transform.position, target) <= BounceRadius)
+		{
+			CollisionEvent(); //This is set to false in ResetAttack.
+		}
 	}
 	
 	void MoveTowardsRandomPos()
@@ -151,13 +158,14 @@ public class Bat : Enemy {
 	{
 		if (currentState!=EnemyState.Delay)
 		{
+			//currentState = EnemyState.Target;
 			Vector3 dir = (target - transform.position).normalized;
 			ChangeDirection(dir);
 		}
 	}
 
 	//Collision event
-	protected override void CollisionEvent()
+	public override void CollisionEvent()
 	{
 		currentState = EnemyState.Delay;
 		StartCoroutine(TargetPlayerDelay());
@@ -193,3 +201,10 @@ public class Bat : Enemy {
 		FlyPhase = 1;
 	}
 }
+
+//TO DO:
+//Add an attack state and keep it seperate from idle state.
+//Add an attack hitbox anim.
+
+//Known issues:
+//Bat doesn't have an attack state or an attack hitbox to collide off the player or pet with yet.

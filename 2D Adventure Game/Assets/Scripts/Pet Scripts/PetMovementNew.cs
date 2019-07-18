@@ -5,12 +5,13 @@ using UnityEngine;
 public enum PetStatev2
 {
 	Idle, Walk, Run, Sit, Wait, PathFollow, EnemyFollow, EnemyRepos, AttackAnticipation, 
-	AttackJump, AttackJumpBack, Knocked, Hitstun, Dead
+	AttackJump, AttackJumpBack, Knocked, Paused, Hitstun, Dead
 }
 public class PetMovementNew : MonoBehaviour
 {
 	public BoolValue EnemyExists, CanFollowPath, EnemyIsInLOS, PetIsAttacking;
-	public bool FollowPath, AttackMode, Attacking, CanReachEnemy, EnemyLOS, EnemyIsInRadius, CanAttackDelay, Invincible;
+	public bool FollowPath, AttackMode, Attacking, CanReachEnemy, EnemyLOS, EnemyIsInRadius, CanAttackDelay, 
+		Invincible, CanSetRandPos;
 	public Vector3Value enemyPos, PlayerTransform, TargetTransform, PetTransform;
 	public Vector3 position, difference, RepositionDir;
 	
@@ -38,6 +39,7 @@ public class PetMovementNew : MonoBehaviour
 		Attacking = false;
 		PetTransform.initialPos = transform.position;
 		CanAttackDelay = true;
+		CanSetRandPos = true;
 	}
 	
 	void Update () 
@@ -59,8 +61,9 @@ public class PetMovementNew : MonoBehaviour
 			case PetStatev2.Hitstun:
 				MoveSpeed = 0;
 				break;
+			case PetStatev2.Paused:
 			case PetStatev2.Dead:
-				Invincible = true; //Dead
+				Invincible = true; //Always invincible in these states
 				MoveSpeed = 0;
 				break;
 			default:
@@ -120,7 +123,7 @@ public class PetMovementNew : MonoBehaviour
 	//Collision detection
 	void OnTriggerStay2D(Collider2D col)
 	{
-		if (!Invincible && col.gameObject.CompareTag("EnemyAttackHitbox"))
+		if (!Invincible && AttackMode && col.gameObject.CompareTag("EnemyAttackHitbox")) //Can only get hurt in attackmode
 		{
 			TakeDamage();
 		}
@@ -201,8 +204,9 @@ public class PetMovementNew : MonoBehaviour
 				{
 					if (Vector3.Distance(enemyPos.initialPos, transform.position) <= RepositionRadius)
 					{
-						if (currentState == PetStatev2.EnemyFollow)
+						if (CanSetRandPos)
 						{
+							CanSetRandPos = false;
 							currentState = PetStatev2.EnemyRepos; //Runs once from here
 							if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= PlayerRadius)
 							{
@@ -222,6 +226,10 @@ public class PetMovementNew : MonoBehaviour
 							{
 								RepositionDir = PlayerTransform.initialPos; //Reposition towards the player
 							}
+						}
+						else
+						{
+							//Do nothing until an attack
 						}
 						
 						if (CanAttackDelay) //Keeping for now
@@ -247,44 +255,49 @@ public class PetMovementNew : MonoBehaviour
 		}
 		else //FOLLOW PLAYER CHECKS
 		{
-			TargetTransform.initialPos = PlayerTransform.initialPos;
-			PetIsAttacking.initialBool = false;
-			if (AttackCoroutine != null)
+			if (!Attacking) //Lets the attack finish before switching back
 			{
-				ResetAttack();
-				StopCoroutine(AttackCoroutine);
-			}
-			if (AttackDelay != null)
-			{
-				StopCoroutine(AttackDelay);
-			}
-			if (!FollowPath)
-			{
-				float ChaseRadius = 12f;
-				float WalkRadius = 1.5f;
-				float StopRadius = .6f;
-				if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= ChaseRadius
-				    && Vector3.Distance(PlayerTransform.initialPos, transform.position) > WalkRadius)
+				TargetTransform.initialPos = PlayerTransform.initialPos;
+				PetIsAttacking.initialBool = false;
+				if (AttackCoroutine != null)
 				{
-					currentState = PetStatev2.Run;
+					ResetAttack();
+					StopCoroutine(AttackCoroutine);
 				}
 
-				if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= WalkRadius
-				    && Vector3.Distance(PlayerTransform.initialPos, transform.position) > StopRadius)
+				if (AttackDelay != null)
 				{
-					if (currentState == PetStatev2.Idle)
-					{
-						StartCoroutine(IdleWaitTime()); //Wait a bit before walking
-					}
-					else
-					{
-						currentState = PetStatev2.Walk;
-					}
+					StopCoroutine(AttackDelay);
 				}
 
-				if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= StopRadius)
+				if (!FollowPath)
 				{
-					currentState = PetStatev2.Idle;
+					float ChaseRadius = 12f;
+					float WalkRadius = 1.5f;
+					float StopRadius = .6f;
+					if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= ChaseRadius
+					    && Vector3.Distance(PlayerTransform.initialPos, transform.position) > WalkRadius)
+					{
+						currentState = PetStatev2.Run;
+					}
+
+					if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= WalkRadius
+					    && Vector3.Distance(PlayerTransform.initialPos, transform.position) > StopRadius)
+					{
+						if (currentState == PetStatev2.Idle)
+						{
+							StartCoroutine(IdleWaitTime()); //Wait a bit before walking
+						}
+						else
+						{
+							currentState = PetStatev2.Walk;
+						}
+					}
+
+					if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= StopRadius)
+					{
+						currentState = PetStatev2.Idle;
+					}
 				}
 			}
 		}
@@ -350,7 +363,7 @@ public class PetMovementNew : MonoBehaviour
 					FollowPath = false; //*Prone to getting stuck in thin sections where it can see it, but can't reach
 				}
 			}
-			else
+			else if (!Attacking)
 			{
 				//Player check if the above condition isn't met
 				if (Physics2D.Linecast(transform.position, PlayerTransform.initialPos, wallLayerMask))
@@ -380,6 +393,7 @@ public class PetMovementNew : MonoBehaviour
 		JumpMomentumScale = 0;
 		currentState = PetStatev2.EnemyFollow;
 		Attacking = false;
+		CanSetRandPos = true;
 	}
 	
 	//Hitstun signal
@@ -447,9 +461,8 @@ public class PetMovementNew : MonoBehaviour
 }
 
 //TO DO:
-//Test putting the pet into a followpath state.
-//Reverse the enemy direction when it collides with the player or pet.
 
 //KNOWN ISSUES:
+//At the beginning of execution the pet will run towards the player first instead of the enemy.
 
 //After killing an enemy the pet immediately stops its attack and goes back to idle.

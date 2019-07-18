@@ -85,6 +85,11 @@ public class Interactable : MonoBehaviour
 	{
 		//Do something
 	}
+
+	protected virtual void InteractionFinished()
+	{
+		CanInteract = true;
+	}
 }
 
 //Known issues:

@@ -29,9 +29,10 @@ public class CameraFollowPlayer : MonoBehaviour
 
 	public void StartSwordShake()
 	{
-		StartCoroutine(SwordShake(.12f, ShakeDir.initialPos));
+		StartCoroutine(SwordShake(.24f, ShakeDir.initialPos));
+		//StartCoroutine(SwordShake());
 	}
-
+	
 	public IEnumerator SwordShake(float amount, Vector3 direction)
 	{
 		offset.x = direction.x * amount;
@@ -42,10 +43,5 @@ public class CameraFollowPlayer : MonoBehaviour
 		offset.y = 0;
 		smoothSpeed = .15f;
 	}
-
-	//IEnumerator CameraShake(float amount)
-	//{
-		
-	//}
 }
 	
