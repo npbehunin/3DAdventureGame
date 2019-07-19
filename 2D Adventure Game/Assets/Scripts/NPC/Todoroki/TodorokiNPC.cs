@@ -5,22 +5,23 @@ using UnityEngine.Events;
 
 public class TodorokiNPC : Interactable
 {
-	public UnityEvent TriggerDialogue;
-	public Dialogue dialogue1;
+	public Dialogue[] dialogue1;
+	public DialogueSignal dialogueSignal;
 	
-	void Start () 
+	protected override void Start () 
 	{
-		
+		base.Start();
 	}
 	
-	void Update () 
+	protected override void Update () 
 	{
-		
+		base.Update();
 	}
 
 	protected override void Interact()
 	{
-		//Trigger the dialog here!
-		//Finish with InteractionFinished();
+		dialogueSignal.Raise(dialogue1);
+		Debug.Log("Interacted with Todoroki!");
+		//Remember to set CanInteract back to true once the conversation finishes!
 	}
 }

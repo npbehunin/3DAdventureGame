@@ -8,7 +8,7 @@ public enum InteractDirection
 }
 public class Interactable : MonoBehaviour
 {
-	protected bool CanInteract;
+	public bool CanInteract;
 	public bool PlayerDirChecked, IsTriggered;
 	public InteractDirection InteractDir;
 	public Vector3Value PlayerDir;

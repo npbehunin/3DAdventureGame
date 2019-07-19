@@ -88,9 +88,6 @@
             <e p="Bool Values" t="Include">
               <e p="BoolValue.cs" t="Include" />
             </e>
-            <e p="Dialogue Info" t="Include">
-              <e p="DialogueInfo.cs" t="Include" />
-            </e>
             <e p="Float Values" t="Include">
               <e p="FloatValue.cs" t="Include" />
             </e>
@@ -115,8 +112,11 @@
           <e p="UI Scripts" t="Include">
             <e p="Dialog Scripts" t="Include">
               <e p="Dialogue.cs" t="Include" />
+              <e p="DialogueEvent.cs" t="Include" />
               <e p="DialogueManager.cs" t="Include" />
-              <e p="DialogueNPCIcon.cs" t="Include" />
+              <e p="DialogueNPCInfo.cs" t="Include" />
+              <e p="DialogueSignal.cs" t="Include" />
+              <e p="DialogueSignalListener.cs" t="Include" />
             </e>
             <e p="InteractionSymbol.cs" t="Include" />
           </e>

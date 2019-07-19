@@ -106,7 +106,6 @@
     <Compile Include="Assets\Scripts\Player Scripts\TargetingSystem.cs" />
     <Compile Include="Assets\Scripts\Scene Scripts\SceneManage.cs" />
     <Compile Include="Assets\Scripts\Scriptable Objects\Bool Values\BoolValue.cs" />
-    <Compile Include="Assets\Scripts\Scriptable Objects\Dialogue Info\DialogueInfo.cs" />
     <Compile Include="Assets\Scripts\Scriptable Objects\Float Values\FloatValue.cs" />
     <Compile Include="Assets\Scripts\Scriptable Objects\Int Values\IntValue.cs" />
     <Compile Include="Assets\Scripts\Scriptable Objects\Lists\ListVector3.cs" />
@@ -116,8 +115,11 @@
     <Compile Include="Assets\Scripts\Testing Scripts\FollowTargetTest.cs" />
     <Compile Include="Assets\Scripts\Testing Scripts\LerpExample.cs" />
     <Compile Include="Assets\Scripts\UI Scripts\Dialog Scripts\Dialogue.cs" />
+    <Compile Include="Assets\Scripts\UI Scripts\Dialog Scripts\DialogueEvent.cs" />
     <Compile Include="Assets\Scripts\UI Scripts\Dialog Scripts\DialogueManager.cs" />
-    <Compile Include="Assets\Scripts\UI Scripts\Dialog Scripts\DialogueNPCIcon.cs" />
+    <Compile Include="Assets\Scripts\UI Scripts\Dialog Scripts\DialogueNPCInfo.cs" />
+    <Compile Include="Assets\Scripts\UI Scripts\Dialog Scripts\DialogueSignal.cs" />
+    <Compile Include="Assets\Scripts\UI Scripts\Dialog Scripts\DialogueSignalListener.cs" />
     <Compile Include="Assets\Scripts\UI Scripts\InteractionSymbol.cs" />
     <Compile Include="Assets\Scripts\Weapon Scripts\EquipWeapon.cs" />
     <Compile Include="Assets\Scripts\Weapon Scripts\Projectile Scripts\FastBow.cs" />

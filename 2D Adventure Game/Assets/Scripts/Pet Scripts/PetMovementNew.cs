@@ -312,7 +312,7 @@ public class PetMovementNew : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log("Not within radius");
+			//Debug.Log("Not within radius");
 			EnemyIsInRadius = false;
 		}
 	}
@@ -416,7 +416,7 @@ public class PetMovementNew : MonoBehaviour
 	{
 		CanReachEnemy = false;
 		currentState = PetStatev2.Wait;
-		Debug.Log("Entered wait state");
+		//Debug.Log("Entered wait state");
 		yield return CustomTimer.Timer(.75f);
 		currentState = PetStatev2.Idle;
 	}
@@ -431,7 +431,7 @@ public class PetMovementNew : MonoBehaviour
 	private IEnumerator AttackEnemyDelay()
 	{
 		yield return CustomTimer.Timer(.75f);
-		Debug.Log("Attacking anyways");
+		//Debug.Log("Attacking anyways");
 		AttackCoroutine = StartCoroutine(AttackEnemy());
 	}
 	

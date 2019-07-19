@@ -1,14 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 [System.Serializable]
 
-public class Dialogue
+public class Dialogue// : MonoBehaviour
 {
-    public DialogueNPCIcon npcIcon;
+    public DialogueNPCInfo npcInfo;
     
     [TextArea(3, 10)]
-    public string[] sentences;
+    public string sentence;
 }
-
-//The instantiated class of dialogue so we can type new text and establish which character's icon to use.

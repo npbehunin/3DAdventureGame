@@ -6,35 +6,49 @@ using UnityEngine.UI;
 
 public class DialogueManager : MonoBehaviour
 {
-	public DialogueInfo currentDialogue;
-	public Signal dialogueSignal;
-	public Sprite npcIcon;
-	
+	public Animator animator;
+	public Image currentSprite;
 	public Text nameText;
 	public Text dialogueText;
 	
 	private Queue<string> sentences;
+	private Queue<string> name;
+	private Queue<Sprite> icon;
+
+	public bool CanClick;
 	
 	// Use this for initialization
 	void Start ()
 	{
 		sentences = new Queue<string>();
+		name = new Queue<string>();
+		icon = new Queue<Sprite>();
 	}
 
-	public void StartDialogue(Dialogue dialogue) //This somehow needs to be called
+	void Update() //REPLACE THIS LATER IN THE INPUT SCRIPT!!
 	{
-		npcIcon = dialogue.npcIcon.npcSprite;
-		nameText.text = dialogue.npcIcon.npcName.ToString();
-		//npcIcon = currentDialogue.dialogue.npcIcon.npcSprite;
-		//nameText.text = currentDialogue.dialogue.npcIcon.npcName.ToString();
-		
+		if (CanClick && Input.GetKeyDown(KeyCode.E))
+		{
+			ShowNextSentence();
+		}
+	}
+
+	public void StartDialogue(Dialogue[] dialogue) //This somehow needs to be called
+	{
+		animator.SetBool("IsOpen", true);
+		CanClick = true;
 		sentences.Clear();
 
-		foreach (string sentence in currentDialogue.dialogue.sentences)
+		for (int i = 0; i < dialogue.Length; i++)
 		{
+			string sentence = dialogue[i].sentence;
+			string nametext = dialogue[i].npcInfo.npcName.ToString();
+			Sprite sprite = dialogue[i].npcInfo.npcSprite;
 			sentences.Enqueue(sentence);
+			name.Enqueue(nametext);
+			icon.Enqueue(sprite);
 		}
-		
+
 		ShowNextSentence();
 	}
 
@@ -48,12 +62,30 @@ public class DialogueManager : MonoBehaviour
 
 		//If we still have sentences left to say...
 		string sentence = sentences.Dequeue();
-		dialogueText.text = sentence;
+		string nametext = name.Dequeue();
+		Sprite sprite = icon.Dequeue();
+
+		StopAllCoroutines();
+		StartCoroutine(TypeSentenceAnim(sentence));
+		nameText.text = nametext;
+		currentSprite.sprite = sprite;
 	}
 
 	void EndDialogue()
 	{
+		animator.SetBool("IsOpen", false);
+		CanClick = false;
 		Debug.Log("End of convo");
+	}
+
+	IEnumerator TypeSentenceAnim(string sentence)
+	{
+		dialogueText.text = "";
+		foreach (char letter in sentence.ToCharArray())
+		{
+			dialogueText.text += letter;
+			yield return CustomTimer.Timer(.015f);
+		}
 	}
 }
 

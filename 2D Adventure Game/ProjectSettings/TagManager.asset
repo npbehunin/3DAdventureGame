@@ -10,6 +10,8 @@ TagManager:
   - Pet
   - PetAttackHitbox
   - EnemyAttackHitbox
+  - EnemyWeaponHitbox
+  - NPC
   layers:
   - Default
   - TransparentFX
