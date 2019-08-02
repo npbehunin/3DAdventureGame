@@ -111,6 +111,14 @@
     <Compile Include="Assets\Scripts\Scriptable Objects\Lists\ListVector3.cs" />
     <Compile Include="Assets\Scripts\Scriptable Objects\Signals\Signal.cs" />
     <Compile Include="Assets\Scripts\Scriptable Objects\Vector3 Values\Vector3Value.cs" />
+    <Compile Include="Assets\Scripts\Testing Scripts\DialogueTest1\DialogueTest1Dialogue.cs" />
+    <Compile Include="Assets\Scripts\Testing Scripts\DialogueTest1\DialogueTest1Manager.cs" />
+    <Compile Include="Assets\Scripts\Testing Scripts\DialogueTest2\DialogueLoad.cs" />
+    <Compile Include="Assets\Scripts\Testing Scripts\DialogueTest2\DialogueTest2Dialogue.cs" />
+    <Compile Include="Assets\Scripts\Testing Scripts\DialogueTest2\DialogueTest2Manager.cs" />
+    <Compile Include="Assets\Scripts\Testing Scripts\DialogueTest2\DialogueThingy.cs" />
+    <Compile Include="Assets\Scripts\Testing Scripts\DialogueTest2\DialogueTodorokiEng.cs" />
+    <Compile Include="Assets\Scripts\Testing Scripts\DialogueTest2\DialogueTodorokiSpan.cs" />
     <Compile Include="Assets\Scripts\Testing Scripts\DirectionTest.cs" />
     <Compile Include="Assets\Scripts\Testing Scripts\FollowTargetTest.cs" />
     <Compile Include="Assets\Scripts\Testing Scripts\LerpExample.cs" />
@@ -120,6 +128,7 @@
     <Compile Include="Assets\Scripts\UI Scripts\Dialog Scripts\DialogueNPCInfo.cs" />
     <Compile Include="Assets\Scripts\UI Scripts\Dialog Scripts\DialogueSignal.cs" />
     <Compile Include="Assets\Scripts\UI Scripts\Dialog Scripts\DialogueSignalListener.cs" />
+    <Compile Include="Assets\Scripts\UI Scripts\Dialog Scripts\TestDialogueFormat.cs" />
     <Compile Include="Assets\Scripts\UI Scripts\InteractionSymbol.cs" />
     <Compile Include="Assets\Scripts\Weapon Scripts\EquipWeapon.cs" />
     <Compile Include="Assets\Scripts\Weapon Scripts\Projectile Scripts\FastBow.cs" />
@@ -131,6 +140,7 @@
     <Compile Include="Assets\Scripts\Weapon Scripts\Sword Scripts\IceSword.cs" />
     <Compile Include="Assets\Scripts\Weapon Scripts\Sword Scripts\SwordMechanic.cs" />
     <Compile Include="Assets\Scripts\Weapon Scripts\Weapon.cs" />
+    <None Include="Assets\JsonDotNet\link.xml" />
     <None Include="Assets\SurfaceShaderTest.shader" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>B:/2D Adventure Game/2DAdventureGame/2D Adventure Game/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
@@ -341,6 +351,9 @@
     </Reference>
     <Reference Include="UnityEngine.SpatialTracking">
       <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>B:/2D Adventure Game/2DAdventureGame/2D Adventure Game/Assets/JsonDotNet/Assemblies/Standalone/Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Analytics">
       <HintPath>C:/Users/npbeh/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.16/UnityEngine.Analytics.dll</HintPath>

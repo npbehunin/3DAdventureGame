@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="B:\2D Adventure Game\2DAdventureGame\3D Adventure Game" t="IncludeRecursive">
+      <e p="3D Adventure Game.sln" t="IncludeFlat" />
+      <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
+      <e p="Assets" t="Include">
+        <e p="2D Scripts" t="Include">
+          <e p="Backup Scripts" t="Include">
+            <e p="Enemy2.cs" t="Include" />
+            <e p="Knockback(Old).cs" t="Include" />
+            <e p="KnockbackOriginal.cs" t="Include" />
+            <e p="PlayerMovementAccelTest.cs" t="Include" />
+            <e p="PlayerRigidbodyMovement.cs" t="Include" />
+            <e p="Sword(Old).cs" t="Include" />
+            <e p="SwordTest.cs" t="Include" />
+          </e>
+          <e p="Enemy Scripts" t="Include">
+            <e p="Enemy.cs" t="Include" />
+            <e p="Forest Temple" t="Include">
+              <e p="Bat.cs" t="Include" />
+              <e p="ForestBoss.cs" t="Include" />
+              <e p="ForestGuardian.cs" t="Include" />
+              <e p="Jelly" t="Include">
+                <e p="Jelly.cs" t="Include" />
+                <e p="JellyAnimation.cs" t="Include" />
+              </e>
+              <e p="Sentry.cs" t="Include" />
+              <e p="Trap.cs" t="Include" />
+              <e p="Turtle.cs" t="Include" />
+            </e>
+          </e>
+          <e p="Icon Scripts" t="Include">
+            <e p="TargetModeIcon.cs" t="Include" />
+          </e>
+          <e p="Interaction Scripts" t="Include">
+            <e p="Interactable.cs" t="Include" />
+            <e p="Plant.cs" t="Include" />
+          </e>
+          <e p="JsonDotNet" t="Include">
+            <e p="link.xml" t="Include" />
+          </e>
+          <e p="Management Scripts" t="Include">
+            <e p="CustomTimer.cs" t="Include" />
+            <e p="Hitstun.cs" t="Include" />
+            <e p="PauseGame.cs" t="Include" />
+            <e p="SignalListener.cs" t="Include" />
+          </e>
+          <e p="Movement Scripts" t="Include">
+            <e p="HitPause.cs" t="Include" />
+            <e p="Knockback.cs" t="Include" />
+            <e p="LookTowardsTarget.cs" t="Include" />
+            <e p="MoveTowardsTarget.cs" t="Include" />
+            <e p="Pathfinding" t="Include">
+              <e p="Grid.cs" t="Include" />
+              <e p="Grid2D.cs" t="Include" />
+              <e p="Heap.cs" t="Include" />
+              <e p="Line.cs" t="Include" />
+              <e p="Node.cs" t="Include" />
+              <e p="Path.cs" t="Include" />
+              <e p="Pathfinding.cs" t="Include" />
+              <e p="PathRequestManager.cs" t="Include" />
+              <e p="UnitFollow.cs" t="Include" />
+            </e>
+          </e>
+          <e p="NPC" t="Include">
+            <e p="Todoroki" t="Include">
+              <e p="TodorokiNPC.cs" t="Include" />
+            </e>
+          </e>
+          <e p="Pet Scripts" t="Include">
+            <e p="Fox.cs" t="Include" />
+            <e p="Pet.cs" t="Include" />
+            <e p="PetAnimation.cs" t="Include" />
+            <e p="PetMovement.cs" t="Include" />
+            <e p="PetMovementNew.cs" t="Include" />
+          </e>
+          <e p="Player Scripts" t="Include">
+            <e p="CameraFollowPlayer.cs" t="Include" />
+            <e p="Clothes.cs" t="Include" />
+            <e p="InteractableCollision.cs" t="Include" />
+            <e p="PlayerAnimation.cs" t="Include" />
+            <e p="PlayerHealth.cs" t="Include" />
+            <e p="PlayerMovement.cs" t="Include" />
+            <e p="TargetingSystem.cs" t="Include" />
+          </e>
+          <e p="Scene Scripts" t="Include">
+            <e p="SceneManage.cs" t="Include" />
+          </e>
+          <e p="Scriptable Objects" t="Include">
+            <e p="Bool Values" t="Include">
+              <e p="BoolValue.cs" t="Include" />
+            </e>
+            <e p="Float Values" t="Include">
+              <e p="FloatValue.cs" t="Include" />
+            </e>
+            <e p="Int Values" t="Include">
+              <e p="IntValue.cs" t="Include" />
+            </e>
+            <e p="Lists" t="Include">
+              <e p="ListVector3.cs" t="Include" />
+            </e>
+            <e p="Signals" t="Include">
+              <e p="Signal.cs" t="Include" />
+            </e>
+            <e p="Vector3 Values" t="Include">
+              <e p="Vector3Value.cs" t="Include" />
+            </e>
+          </e>
+          <e p="Testing Scripts" t="Include">
+            <e p="DialogueTest1" t="Include">
+              <e p="DialogueTest1Dialogue.cs" t="Include" />
+              <e p="DialogueTest1Manager.cs" t="Include" />
+            </e>
+            <e p="DialogueTest2" t="Include">
+              <e p="DialogueLoad.cs" t="Include" />
+              <e p="DialogueTest2Dialogue.cs" t="Include" />
+              <e p="DialogueTest2Manager.cs" t="Include" />
+              <e p="DialogueThingy.cs" t="Include" />
+              <e p="DialogueTodorokiEng.cs" t="Include" />
+              <e p="DialogueTodorokiSpan.cs" t="Include" />
+            </e>
+            <e p="DirectionTest.cs" t="Include" />
+            <e p="FollowTargetTest.cs" t="Include" />
+            <e p="LerpExample.cs" t="Include" />
+          </e>
+          <e p="UI Scripts" t="Include">
+            <e p="Dialog Scripts" t="Include">
+              <e p="Dialogue.cs" t="Include" />
+              <e p="DialogueEvent.cs" t="Include" />
+              <e p="DialogueManager.cs" t="Include" />
+              <e p="DialogueNPCInfo.cs" t="Include" />
+              <e p="DialogueSignal.cs" t="Include" />
+              <e p="DialogueSignalListener.cs" t="Include" />
+              <e p="TestDialogueFormat.cs" t="Include" />
+            </e>
+            <e p="InteractionSymbol.cs" t="Include" />
+          </e>
+          <e p="Weapon Scripts" t="Include">
+            <e p="EquipWeapon.cs" t="Include" />
+            <e p="Projectile Scripts" t="Include">
+              <e p="FastBow.cs" t="Include" />
+              <e p="Projectile.cs" t="Include" />
+              <e p="ShootingMechanic.cs" t="Include" />
+              <e p="WoodenBow.cs" t="Include" />
+            </e>
+            <e p="Sword Scripts" t="Include">
+              <e p="FireSword.cs" t="Include" />
+              <e p="GraySword.cs" t="Include" />
+              <e p="IceSword.cs" t="Include" />
+              <e p="SwordMechanic.cs" t="Include" />
+            </e>
+            <e p="Weapon.cs" t="Include" />
+          </e>
+        </e>
+        <e p="3D Scripts" t="Include">
+          <e p="Player Scripts" t="Include">
+            <e p="hmm.cs" t="Include" />
+            <e p="PlayerMovement3D.cs" t="Include" />
+            <e p="PlayerMovement3DNew.cs" t="Include" />
+          </e>
+        </e>
+      </e>
+      <e p="Library" t="ExcludeRecursive" />
+      <e p="obj" t="ExcludeRecursive" />
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="Temp" t="ExcludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+      </e>
+    </e>
+    <e p="C:\Users\npbeh\.Rider2018.1\system\resharper-host\Local\Transient\ReSharperHost\v12\SolutionCaches\_3D Adventure Game.-1443044764.00" t="ExcludeRecursive" />
+  </component>
+</project>
