@@ -140,9 +140,16 @@
     <Compile Include="Assets\2D Scripts\Weapon Scripts\Sword Scripts\IceSword.cs" />
     <Compile Include="Assets\2D Scripts\Weapon Scripts\Sword Scripts\SwordMechanic.cs" />
     <Compile Include="Assets\2D Scripts\Weapon Scripts\Weapon.cs" />
+    <Compile Include="Assets\3D Scripts\Pet Scripts\PetMovement3D.cs" />
     <Compile Include="Assets\3D Scripts\Player Scripts\hmm.cs" />
     <Compile Include="Assets\3D Scripts\Player Scripts\PlayerMovement3D.cs" />
     <Compile Include="Assets\3D Scripts\Player Scripts\PlayerMovement3DNew.cs" />
+    <Compile Include="Assets\3D Scripts\Weapon Scripts\EquipWeapon3D.cs" />
+    <Compile Include="Assets\3D Scripts\Weapon Scripts\ShootingMechanic3D.cs" />
+    <Compile Include="Assets\3D Scripts\Weapon Scripts\Sword.cs" />
+    <Compile Include="Assets\3D Scripts\Weapon Scripts\SwordMechanic3D.cs" />
+    <Compile Include="Assets\3D Scripts\Weapon Scripts\Weapon3D.cs" />
+    <Compile Include="Assets\3D Scripts\Weapon Scripts\WeaponManager.cs" />
     <None Include="Assets\2D Scripts\JsonDotNet\link.xml" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>B:/2D Adventure Game/2DAdventureGame/3D Adventure Game/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>

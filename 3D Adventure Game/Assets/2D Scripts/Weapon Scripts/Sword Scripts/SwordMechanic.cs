@@ -12,7 +12,7 @@ public class SwordMechanic : Weapon
 	public FloatValue SwordMomentumScale;
 
 	public PlayerAnimation playerAnim;
-	public PlayerMovement3DNew player;
+	public PlayerMovement player;
 
 	private Coroutine SwingCoroutine, ClickCoroutine, DelayForClickCombo;
 

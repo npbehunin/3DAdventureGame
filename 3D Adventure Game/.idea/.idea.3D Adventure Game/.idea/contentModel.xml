@@ -154,10 +154,21 @@
           </e>
         </e>
         <e p="3D Scripts" t="Include">
+          <e p="Pet Scripts" t="Include">
+            <e p="PetMovement3D.cs" t="Include" />
+          </e>
           <e p="Player Scripts" t="Include">
             <e p="hmm.cs" t="Include" />
             <e p="PlayerMovement3D.cs" t="Include" />
             <e p="PlayerMovement3DNew.cs" t="Include" />
+          </e>
+          <e p="Weapon Scripts" t="Include">
+            <e p="EquipWeapon3D.cs" t="Include" />
+            <e p="ShootingMechanic3D.cs" t="Include" />
+            <e p="Sword.cs" t="Include" />
+            <e p="SwordMechanic3D.cs" t="Include" />
+            <e p="Weapon3D.cs" t="Include" />
+            <e p="WeaponManager.cs" t="Include" />
           </e>
         </e>
       </e>

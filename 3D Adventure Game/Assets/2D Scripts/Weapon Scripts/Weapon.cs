@@ -6,10 +6,6 @@ using UnityEngine.Events;
 public class Weapon : MonoBehaviour
 {
     public IntValue WeaponDamage;
-    //public int Damage;
-    
-    //public Vector3 PlayerDirection;
-    //public GameObject PlayerObject;
 
     protected virtual void Start()
     {
