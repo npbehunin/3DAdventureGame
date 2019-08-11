@@ -141,6 +141,7 @@
     <Compile Include="Assets\2D Scripts\Weapon Scripts\Sword Scripts\SwordMechanic.cs" />
     <Compile Include="Assets\2D Scripts\Weapon Scripts\Weapon.cs" />
     <Compile Include="Assets\3D Scripts\Pet Scripts\PetMovement3D.cs" />
+    <Compile Include="Assets\3D Scripts\Player Scripts\GraphicsDirection.cs" />
     <Compile Include="Assets\3D Scripts\Player Scripts\hmm.cs" />
     <Compile Include="Assets\3D Scripts\Player Scripts\PlayerMovement3D.cs" />
     <Compile Include="Assets\3D Scripts\Player Scripts\PlayerMovement3DNew.cs" />

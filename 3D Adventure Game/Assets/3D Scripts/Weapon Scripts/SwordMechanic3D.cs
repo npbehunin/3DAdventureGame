@@ -10,7 +10,7 @@ public class SwordMechanic3D : MonoBehaviour
 
 	public float SwingTime;
 	public FloatValue SwordMomentumScale;
-	public BoolValue RestMovementBool;
+	public BoolValue playerCanDecel;
 
 	public PlayerAnimation playerAnim;
 	public PlayerMovement3D player;
@@ -29,7 +29,7 @@ public class SwordMechanic3D : MonoBehaviour
 		CanDelayForCombo = false;
 		AnimatorSwingNumber = 0;
 		MaxSwingNumber = 3;
-		SwingTime = 1f; //.25 default
+		SwingTime = .25f; //.25 default
 		SwordEquipped = true; //Temporary! Fix when EquipWeapon3D is set up.
 	}
 
@@ -81,6 +81,7 @@ public class SwordMechanic3D : MonoBehaviour
 				StopCoroutine(ClickCoroutine);
 			}
 
+			playerCanDecel.initialBool = true;
 			ComboPhase = 0;
 			CanSwing = false;
 			SwordMomentumScale.initialValue = 0;
@@ -126,7 +127,6 @@ public class SwordMechanic3D : MonoBehaviour
 	//Sword swing timing
 	private IEnumerator SwordSwingTiming()
 	{
-		RestMovementBool.initialBool = true;
 		CanDelayForCombo = true;
 		player.currentState = PlayerState.Attack;
 		ClickCoroutine = StartCoroutine(MouseClickDelay());

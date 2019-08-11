@@ -14,10 +14,10 @@ public class PlayerMovement3D : MonoBehaviour
 	public Vector3 position, fixedInputPos, rawInputPos;
 	public PlayerAnimation playerAnim;
 	//Player targeting here!
-	public bool CanSetState, accelerating, canDecel, Invincible;
+	public bool CanSetState, accelerating, canDecelDelay, Invincible;
 	public IntValue Health;
 	public int CurrentHealth;
-	public BoolValue EnemyCollision, ResetMove;
+	public BoolValue EnemyCollision, canSwordAccel;
 	
 	private float horizontalspeed, verticalspeed;
 	[SerializeField] private float SwordMomentum, SwordMomentumSmooth, SwordMomentumPower;
@@ -37,7 +37,7 @@ public class PlayerMovement3D : MonoBehaviour
 		//SwordMomentumSmooth = 6f;
 		//SwordMomentumPower = 10f;
 		CanSetState = true;
-		direction.initialPos = Vector3.zero; //Eventually, set to the dir the player spawns in
+		direction.initialPos = new Vector3(0, 0, -1); //For now, face towards the screen
 		PlayerTransform.initialPos = transform.position;
 	}
 
@@ -61,7 +61,7 @@ public class PlayerMovement3D : MonoBehaviour
 		controller.Move(position * Time.deltaTime);
 		
 		//Slope check
-		if (OnSlope() && (Math.Abs(rawInputPos.x) > 0 || Math.Abs(rawInputPos.z) > 0)) //&& if player is moving (ADD THIS!)
+		if (OnSlope())// && (Math.Abs(rawInputPos.x) > 0 || Math.Abs(rawInputPos.z) > 0)) //&& if player is moving (ADD THIS!)
 		{
 			controller.Move(Vector3.down * playerCollider.bounds.size.y / 2 * slopeForce);
 		}
@@ -89,10 +89,10 @@ public class PlayerMovement3D : MonoBehaviour
 
 		if (currentState != PlayerState.Attack)
 		{
-			canDecel = false;
+			canSwordAccel.initialBool = true;
 			startValue = 0;
 			endValue = 0;
-			ResetMove.initialBool = false;
+			//ResetMove.initialBool = false;
 		}
 		
 		//Is Grounded
@@ -148,57 +148,89 @@ public class PlayerMovement3D : MonoBehaviour
 	//Test function to move in a direction with accel, decel, power, and a wait time
 	void SwordMove(Vector3 pos, float accel, float decel, float maxSpeed, float time)
 	{
-		if (!canDecel)
+		if (canSwordAccel.initialBool)
 		{
+			StartCoroutine(waitBeforeDecel());
 			endValue = 0; //Reset
 			startValue += accel * Time.deltaTime;
-			lerpValue = Mathf.Lerp(0, 1, startValue); //"1" is the real acceleration
-			if (Math.Abs(position.x) < maxSpeed && Math.Abs(position.z) < maxSpeed) //*Doesn't work for diagonal movement!
+			//if (Math.Abs(position.x) < maxSpeed && Math.Abs(position.z) < maxSpeed) //*Doesn't work for diagonal movement!
+			if (pos.x != 0)
 			{
-				position.x += (lerpValue * pos.x);
-				position.z += (lerpValue * pos.z);
+				if (Math.Abs(position.x) <= Math.Abs(maxSpeed * pos.x))
+				{
+					position.x += (startValue * pos.x);
+					//Prevents the position from adding a value that goes above maxSpeed.
+					//if (Math.Abs(position.x) + startValue < maxSpeed)
+					//{
+					//	position.x += (startValue * pos.x);
+					//}
+					//else
+					//{
+					//	position.x += (maxSpeed * pos.x) - position.x;
+					//}
+				}
+				else
+				{
+					if (canDecelDelay)
+					{
+						canSwordAccel.initialBool = false;
+					}
+				}
 			}
+
+			if (pos.z != 0)
+			{
+				if (Math.Abs(position.z) <= Math.Abs(maxSpeed * pos.z))
+				{
+					position.z += (startValue * pos.z);
+					//if (Math.Abs(position.z) + startValue < maxSpeed)
+					//{
+					//	position.z += (startValue * pos.z);
+					//}
+					//else
+					//{
+					//	position.z += (maxSpeed * pos.z) - position.z;
+					//}
+				}
+				else
+				{
+					if (canDecelDelay)
+					{
+						canSwordAccel.initialBool = false;
+					}
+				}
+			}	
 		}
 		else
 		{
+			canDecelDelay = false;
 			startValue = 0;
 			endValue += decel * Time.deltaTime;
-			lerpValue = Mathf.Lerp(0, 1, endValue);
-			if (Math.Abs(position.x) > lerpValue)
+			if (Math.Abs(position.x) - endValue > 0)
 			{
-				position.x -= (lerpValue * pos.x);
+				position.x -= (endValue * pos.x);
 			}
 			else
 			{
 				position.x -= position.x;
 			}
 			
-			if (Math.Abs(position.z) > lerpValue)
+			if (Math.Abs(position.z) - endValue > 0)
 			{
-				position.z -= (lerpValue * pos.z);
+				position.z -= (endValue * pos.z);
 			}
 			else
 			{
 				position.z -= position.z;
 			}
 		}
-
-		if (startValue >= 1)
-		{
-			canDecel = true;
-		}
 	}
-	//Works for both negative and positive directions, since pos already covers that for us.
 
-	//TO DO:
-	//1. Fix the check in accel so that it works for diagonal movement.
-	//2. Edit the accel and decel values
-	//3. Change startvalue += accel * Time.DeltaTime to something else. Is it even necessary?
-	
-	//NOTES
-	//The number "1" used in both lerps is basically the acceleration. Increasing this number means we add more to the
-	//position each frame. The actual "accel" value currently just determines how fast the lerp counts up, and when it
-	//reaches 1, it starts the deceleration.
+	private IEnumerator waitBeforeDecel()
+	{
+		yield return CustomTimer.Timer(.05f);
+		canDecelDelay = true;
+	}
 
 	//----------------BACKUP IN CASE WE SCREW IT UP---------------
 	//void SwordMove(Vector3 pos, float accel, float decel, float maxSpeed, float time)
@@ -287,7 +319,7 @@ public class PlayerMovement3D : MonoBehaviour
 		switch (currentState)
 		{
 			case PlayerState.Idle:
-				//playerAnim.SetAnimState(AnimationState.Idle);
+				playerAnim.SetAnimState(AnimationState.Idle);
 				break;
 			case PlayerState.Walk:
 				//playerAnim.SetAnimState(AnimationState.Walk);
@@ -297,8 +329,8 @@ public class PlayerMovement3D : MonoBehaviour
 				//playerAnim.SetAnimState(AnimationState.Run);
 				break;
 			case PlayerState.Attack:
-				//playerAnim.SetAnimState(AnimationState.SwordAttack);
-				SwordMove(direction.initialPos, 3f, 3f, 6f, 0f); //Accel, decel, power, time
+				playerAnim.SetAnimState(AnimationState.SwordAttack);
+				SwordMove(direction.initialPos, 18f, 6f, 6f, 0f); //Accel, decel, power, time
 				break;
 			case PlayerState.Paused:
 				//playerAnim.AnimPause(true);
