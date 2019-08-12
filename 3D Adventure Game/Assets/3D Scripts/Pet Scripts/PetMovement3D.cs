@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR.WSA;
+using Random = System.Random;
 
 public class PetMovement3D : MonoBehaviour
 {
@@ -8,14 +11,15 @@ public class PetMovement3D : MonoBehaviour
 	public bool FollowPath, AttackMode, Attacking, CanReachEnemy, EnemyLOS, EnemyIsInRadius, CanAttackDelay, 
 		Invincible, CanSetRandPos;
 	public Vector3Value enemyPos, PlayerTransform, TargetTransform, PetTransform;
-	public Vector3 position, difference, RepositionDir;
+	public Vector3 position, newPos, difference, RepositionDir;
 	
-	public float MoveSpeed, JumpMomentum, JumpMomentumScale, randX, randY;
+	public float MoveSpeed, JumpMomentum, JumpMomentumScale, randX, randY, gravity, slopeForce, slopeForceRayLength, accel, decel;
 	public IntValue Health;
 	public int CurrentHealth;
-	//public Rigidbody2D rb;
+	public Collider petCollider;
 
 	public PetAnimation PetAnim;
+	public CharacterController controller;
 
 	public FloatValue playerMoveSpeed;
 	public UnitFollow path;
@@ -35,6 +39,8 @@ public class PetMovement3D : MonoBehaviour
 		PetTransform.initialPos = transform.position;
 		CanAttackDelay = true;
 		CanSetRandPos = true;
+		controller = gameObject.GetComponent<CharacterController>();
+		petCollider = gameObject.GetComponent<Collider>();
 	}
 	
 	void Update () 
@@ -43,6 +49,9 @@ public class PetMovement3D : MonoBehaviour
 		CheckConditions();
 		CheckDistance();
 		CheckHealth();
+		
+		controller.Move(newPos * Time.deltaTime);
+		
 		switch (currentState)
 		{
 			case PetStatev2.Run:
@@ -65,40 +74,82 @@ public class PetMovement3D : MonoBehaviour
 				MoveSpeed = 4;
 				break;
 		}
-	}
 
-	void FixedUpdate()
-	{
+		//Used to be in FixedUpdate
 		switch (currentState)
 		{
 			case PetStatev2.Idle:
 			case PetStatev2.Walk:
 			case PetStatev2.Run:
-				position = MoveTo(PlayerTransform.initialPos);
-				//rb.MovePosition(position); //Change to Move playercontroller function
+				position.x = MoveTo(PlayerTransform.initialPos).x;
+				position.z = MoveTo(PlayerTransform.initialPos).z;
 				break;
 			case PetStatev2.Wait:
 			case PetStatev2.Hitstun:
 				break;
 			case PetStatev2.AttackJump:
-				position = JumpMovement(1);
-				//rb.MovePosition(position); //Change
+				position.x = JumpMovement(1).x;
+				position.z = JumpMovement(1).z;
 				break;
 			case PetStatev2.AttackJumpBack:
-				position = JumpMovement(-1);
-				//rb.MovePosition(position); //Change
+				position.x = JumpMovement(-1).x;
+				position.z = JumpMovement(-1).z;
 				break;
 			case PetStatev2.EnemyFollow:
 			case PetStatev2.EnemyRepos:
-				position = MoveTo(RepositionDir);
-				//rb.MovePosition(position); //Change
+				position.x = MoveTo(RepositionDir).x;
+				position.z = MoveTo(RepositionDir).z;
 				break;
 		}
+		
+		if (OnSlope())
+		{
+			controller.Move(Vector3.down * petCollider.bounds.size.y / 2 * slopeForce);
+		}
+		
+		//Is Grounded
+		if (controller.isGrounded)
+			position.y = 0;
+		else
+			position.y -= gravity * Time.deltaTime;
+		
+		//Gravity
+		position.y -= gravity * Time.deltaTime; //DeltaTime applied here too for acceleration.
+
+		newPos.x = CalculateAccel(newPos.x, position.x);
+		newPos.z = CalculateAccel(newPos.z, position.z);
+		newPos.y = position.y;
 	}
 
+	//Calculate acceleration by comparing newPos to position.
+	private float CalculateAccel(float pos, float targetpos)
+	{
+		if (pos < targetpos)
+			if (Math.Abs(targetpos - pos) > accel)
+				pos += accel;
+			else
+				pos += Math.Abs(targetpos - pos);
+		if (pos > targetpos)
+			if (Math.Abs(targetpos - pos) > decel)
+				pos -= decel;
+			else
+				pos -= Math.Abs(targetpos - pos);
+		return pos;
+	}
+	
+	private bool OnSlope()
+	{
+		RaycastHit hit;
+		if (Physics.Raycast(transform.position, Vector3.down, out hit, controller.height / 2 * slopeForceRayLength))
+			if (hit.normal != Vector3.up)
+				return true;
+		return false;
+	}
+
+	//Returns a normalized direction. Make sure to only set x and z.
 	Vector3 MoveTo(Vector3 pos)
 	{
-		return Vector3.MoveTowards(transform.position, pos, MoveSpeed * Time.deltaTime);
+		return (pos - transform.position).normalized * MoveSpeed;
 	}
 
 	Vector3 JumpMovement(float dir)
@@ -111,7 +162,7 @@ public class PetMovement3D : MonoBehaviour
 		float power = 2.5f;
 		JumpMomentumScale += smooth * Time.deltaTime;
 		JumpMomentum = Mathf.Lerp(power, 0, JumpMomentumScale);
-		Vector3 Movement = transform.position + (JumpMomentum * difference * dir) * MoveSpeed * Time.deltaTime;
+		Vector3 Movement = transform.position + (JumpMomentum * difference * dir) * MoveSpeed;
 		return Movement;
 	}
 
@@ -205,8 +256,8 @@ public class PetMovement3D : MonoBehaviour
 							currentState = PetStatev2.EnemyRepos; //Runs once from here
 							if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= PlayerRadius)
 							{
-								randX = Random.Range(-1, 1);
-								randY = Random.Range(-1, 1);
+								randX = UnityEngine.Random.Range(-1, 1); //Avoid .net conflict by using UnityEngine
+								randY = UnityEngine.Random.Range(-1, 1);
 								if (randX == 0)
 								{
 									randX = 1f;
@@ -268,8 +319,8 @@ public class PetMovement3D : MonoBehaviour
 				if (!FollowPath)
 				{
 					float ChaseRadius = 12f;
-					float WalkRadius = 1.5f;
-					float StopRadius = .6f;
+					float WalkRadius = 3f;
+					float StopRadius = 2.5f;
 					if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= ChaseRadius
 					    && Vector3.Distance(PlayerTransform.initialPos, transform.position) > WalkRadius)
 					{

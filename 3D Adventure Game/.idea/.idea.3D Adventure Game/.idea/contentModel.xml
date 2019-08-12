@@ -154,6 +154,16 @@
           </e>
         </e>
         <e p="3D Scripts" t="Include">
+          <e p="Pathfinding" t="Include">
+            <e p="Grid3D.cs" t="Include" />
+            <e p="Heap3D.cs" t="Include" />
+            <e p="Line3D.cs" t="Include" />
+            <e p="Node3D.cs" t="Include" />
+            <e p="Path3D.cs" t="Include" />
+            <e p="Pathfinding3D.cs" t="Include" />
+            <e p="PathRequestManager3D.cs" t="Include" />
+            <e p="Unit3D.cs" t="Include" />
+          </e>
           <e p="Pet Scripts" t="Include">
             <e p="PetMovement3D.cs" t="Include" />
           </e>

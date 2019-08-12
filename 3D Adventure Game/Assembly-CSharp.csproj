@@ -140,6 +140,14 @@
     <Compile Include="Assets\2D Scripts\Weapon Scripts\Sword Scripts\IceSword.cs" />
     <Compile Include="Assets\2D Scripts\Weapon Scripts\Sword Scripts\SwordMechanic.cs" />
     <Compile Include="Assets\2D Scripts\Weapon Scripts\Weapon.cs" />
+    <Compile Include="Assets\3D Scripts\Pathfinding\Grid3D.cs" />
+    <Compile Include="Assets\3D Scripts\Pathfinding\Heap3D.cs" />
+    <Compile Include="Assets\3D Scripts\Pathfinding\Line3D.cs" />
+    <Compile Include="Assets\3D Scripts\Pathfinding\Node3D.cs" />
+    <Compile Include="Assets\3D Scripts\Pathfinding\Path3D.cs" />
+    <Compile Include="Assets\3D Scripts\Pathfinding\Pathfinding3D.cs" />
+    <Compile Include="Assets\3D Scripts\Pathfinding\PathRequestManager3D.cs" />
+    <Compile Include="Assets\3D Scripts\Pathfinding\Unit3D.cs" />
     <Compile Include="Assets\3D Scripts\Pet Scripts\PetMovement3D.cs" />
     <Compile Include="Assets\3D Scripts\Player Scripts\GraphicsDirection.cs" />
     <Compile Include="Assets\3D Scripts\Player Scripts\hmm.cs" />

@@ -57,7 +57,7 @@ public class PlayerMovement3D : MonoBehaviour
 	{
 		//Controller move
 		
-		Debug.Log(position.x);
+		//Debug.Log(position.x);
 		controller.Move(position * Time.deltaTime);
 		
 		//Slope check
@@ -124,6 +124,7 @@ public class PlayerMovement3D : MonoBehaviour
 	
 	//Calculates a new player input with acceleration and deceleration.
 	//Turning off "Snap" in the input settings works too, but this helps match controller movement.
+	//We could also replace this with the pet's universal acceleration calculation!
 	float calcFixedInput(float newInput, float input)
 	{
 		if (newInput != input)
@@ -159,15 +160,6 @@ public class PlayerMovement3D : MonoBehaviour
 				if (Math.Abs(position.x) <= Math.Abs(maxSpeed * pos.x))
 				{
 					position.x += (startValue * pos.x);
-					//Prevents the position from adding a value that goes above maxSpeed.
-					//if (Math.Abs(position.x) + startValue < maxSpeed)
-					//{
-					//	position.x += (startValue * pos.x);
-					//}
-					//else
-					//{
-					//	position.x += (maxSpeed * pos.x) - position.x;
-					//}
 				}
 				else
 				{
@@ -183,14 +175,6 @@ public class PlayerMovement3D : MonoBehaviour
 				if (Math.Abs(position.z) <= Math.Abs(maxSpeed * pos.z))
 				{
 					position.z += (startValue * pos.z);
-					//if (Math.Abs(position.z) + startValue < maxSpeed)
-					//{
-					//	position.z += (startValue * pos.z);
-					//}
-					//else
-					//{
-					//	position.z += (maxSpeed * pos.z) - position.z;
-					//}
 				}
 				else
 				{
@@ -413,10 +397,5 @@ public class PlayerMovement3D : MonoBehaviour
 		//inputDirection = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0).normalized;
 	}
 }
-//TO DO
-//Change the sword lerp so the position isn't set to 0 once acceleration starts.
-//Fix slope bumpin going down
-
 //NOTES
-//When transferring over things from our old player movement script, the player seems to either not move at all or move
-//very slowly. When we transfer again, check the game after each segment to see what might cause it.
+//On the 60hz monitor the player seems to jitter very briefly after changing input position.
