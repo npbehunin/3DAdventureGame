@@ -23,7 +23,7 @@ public class UnitFollow : MonoBehaviour {
 
 	void Update()
 	{
-
+		Debug.Log(targetIndex);
 	}
 
 	public void StopFollowPath()
@@ -109,7 +109,7 @@ public class UnitFollow : MonoBehaviour {
 
 	IEnumerator UpdatePath()
 	{
-		yield return new WaitForSeconds(2f);
+		yield return new WaitForSeconds(.2f);
 		StopFollowPath();
 	}
 

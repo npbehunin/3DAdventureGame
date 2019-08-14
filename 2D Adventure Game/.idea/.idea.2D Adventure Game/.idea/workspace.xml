@@ -43,7 +43,6 @@
                 <marker date="1563923343146" expanded="true" signature="486:527" ph="{...}" />
                 <marker date="1563923343146" expanded="true" signature="560:869" ph="{...}" />
                 <marker date="1563923343146" expanded="true" signature="590:866" ph="{...}" />
-                <marker date="1563923343146" expanded="true" signature="873:1132" ph="/* One way of accessing dialogue. ... */" />
               </folding>
             </state>
           </provider>
@@ -61,11 +60,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DialogueTest2Dialogue.cs" pinned="false" current-in-tab="true">
+      <file leaf-file-name="DialogueTest2Dialogue.cs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Assets/Scripts/Testing Scripts/DialogueTest2/DialogueTest2Dialogue.cs">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="345">
-              <caret line="28" column="72" lean-forward="true" selection-start-line="28" selection-start-column="72" selection-end-line="28" selection-end-column="72" />
+              <caret line="28" column="72" selection-start-line="28" selection-start-column="72" selection-end-line="28" selection-end-column="72" />
               <folding>
                 <marker date="1564284707877" expanded="false" signature="6:132" ph="..." />
                 <marker date="1564284707877" expanded="true" signature="184:1386" ph="{...}" />
@@ -74,7 +73,72 @@
                 <marker date="1564284707877" expanded="true" signature="976:1083" ph="/* using (FileStream stream = new FileStream(path, FileMode.Create)) ... */" />
                 <marker date="1564284707877" expanded="true" signature="1122:1384" ph="{...}" />
                 <marker date="1564284707877" expanded="true" signature="1137:1378" ph="/* Same thing, except we return the data back into each of our subclass's strings. ... */" />
-                <marker date="1564284707877" expanded="true" signature="1388:1895" ph="/* TO DO: ... */" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="UnitFollow.cs" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Assets/Scripts/Movement Scripts/Pathfinding/UnitFollow.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1043">
+              <caret line="110" column="5" lean-forward="true" selection-end-line="138" selection-end-column="71" />
+              <folding>
+                <marker date="1565750984793" expanded="false" signature="6:44" ph="..." />
+                <marker date="1565750984793" expanded="true" signature="86:2904" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="374:634" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="378:486" ph="/* PathRequestManager.RequestPath(transform.position,target.position, OnPathFound); ... */" />
+                <marker date="1565750984793" expanded="true" signature="650:682" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="713:911" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="790:837" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="867:908" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="948:1195" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="954:1025" ph="/* Enable this when we want to enable bools again ... */" />
+                <marker date="1565750984793" expanded="true" signature="1263:1638" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="1313:1534" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="1389:1439" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="1541:1635" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="1665:2471" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="1716:2380" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="1849:2376" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="1901:2117" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="1964:2068" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="2123:2183" ph="/* Debug.Log(&quot;REEE&quot;); ... */" />
+                <marker date="1565750984793" expanded="true" signature="2416:2468" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="2498:2564" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="2594:2902" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="2616:2899" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="2670:2895" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="2774:2832" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="2832:2890" ph="{...}" />
+                <marker date="1565750984793" expanded="true" signature="2906:3307" ph="/* KNOWN ISSUES ... */" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Grid2D.cs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Assets/Scripts/Movement Scripts/Pathfinding/Grid2D.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="233">
+              <caret line="48" column="29" lean-forward="true" selection-start-line="48" selection-start-column="29" selection-end-line="48" selection-end-column="29" />
+              <folding>
+                <marker date="1565750755432" expanded="false" signature="6:78" ph="..." />
+                <marker date="1565750755432" expanded="true" signature="198:2457" ph="{...}" />
+                <marker date="1565750755432" expanded="true" signature="403:578" ph="{...}" />
+                <marker date="1565750755432" expanded="true" signature="600:649" ph="{...}" />
+                <marker date="1565750755432" expanded="true" signature="608:646" ph="{...}" />
+                <marker date="1565750755432" expanded="true" signature="670:1236" ph="{...}" />
+                <marker date="1565750755432" expanded="true" signature="897:1233" ph="{...}" />
+                <marker date="1565750755432" expanded="true" signature="939:1229" ph="{...}" />
+                <marker date="1565750755432" expanded="true" signature="1282:1670" ph="{...}" />
+                <marker date="1565750755432" expanded="true" signature="1361:1645" ph="{...}" />
+                <marker date="1565750755432" expanded="true" signature="1396:1641" ph="{...}" />
+                <marker date="1565750755432" expanded="true" signature="1587:1636" ph="{...}" />
+                <marker date="1565750755432" expanded="true" signature="1727:2101" ph="{...}" />
+                <marker date="1565750755432" expanded="true" signature="2125:2455" ph="{...}" />
+                <marker date="1565750755432" expanded="true" signature="2285:2452" ph="{...}" />
+                <marker date="1565750755432" expanded="true" signature="2315:2448" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -91,7 +155,6 @@
                 <marker date="1564284707909" expanded="true" signature="302:1077" ph="{...}" />
                 <marker date="1564284707909" expanded="true" signature="348:697" ph="{...}" />
                 <marker date="1564284707909" expanded="true" signature="702:1074" ph="/* Forest Temple ... */" />
-                <marker date="1564284707909" expanded="true" signature="1081:2181" ph="/* OKAY SO APPARENTLY JSON DOESN'T LIKE TAKING IN DICTIONARIES, OF COOOOUUURSE ... */" />
               </folding>
             </state>
           </provider>
@@ -250,7 +313,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Assets/Scripts/Scriptable Objects/Transform Values/TransformValue.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Scriptable Objects/Transform Values/BoolValue.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Interaction Scripts/Plant.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Scriptable Objects/List Objects/List Objects.cs" />
@@ -258,7 +320,6 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/Scriptable Objects/Lists/ListValue.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Scriptable Objects/Lists/ListGameObjects.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Weapon Scripts/Projectile Scripts/Projectile.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/Movement Scripts/Pathfinding/UnitFollow.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Player Scripts/TargetingSystem.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Pet Scripts/PetAnimation.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Movement Scripts/PetMovement.cs" />
@@ -301,6 +362,8 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/Testing Scripts/DialogueTest2/DialogueThingy.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Testing Scripts/DialogueTest2/DialogueTodorokiEng.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Testing Scripts/DialogueTest2/DialogueTest2Dialogue.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Movement Scripts/Pathfinding/Grid2D.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Movement Scripts/Pathfinding/UnitFollow.cs" />
       </list>
     </option>
   </component>
@@ -316,6 +379,10 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="SolutionExplorer">
+        <option name="show-file-system" value="false" />
+        <option name="show-all-items" value="false" />
+      </pane>
       <pane id="Scratches" />
       <pane id="UnityExplorer">
         <subPane>
@@ -328,10 +395,6 @@
           <select />
         </subPane>
         <option name="show-hidden-items" value="false" />
-      </pane>
-      <pane id="SolutionExplorer">
-        <option name="show-file-system" value="false" />
-        <option name="show-all-items" value="false" />
       </pane>
     </panes>
   </component>
@@ -370,21 +433,22 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="32" y="42" width="1851" height="951" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="right" id="Errors In Solution" order="3" />
       <window_info anchor="bottom" id="Event Log" order="13" side_tool="true" weight="0.11407767" />
       <window_info anchor="bottom" id="Unit Tests" order="9" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="11" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.28308207" />
+      <window_info anchor="bottom" id="Version Control" order="11" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.28978226" />
       <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Unity" order="12" />
       <window_info anchor="right" id="Database" order="4" weight="0.32998326" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="NuGet" order="10" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -431,8 +495,26 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Assets/Scripts/Movement Scripts/Pathfinding/Grid2D.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="720">
-          <caret line="62" column="59" lean-forward="true" selection-start-line="62" selection-start-column="59" selection-end-line="62" selection-end-column="59" />
+        <state relative-caret-position="233">
+          <caret line="48" column="29" lean-forward="true" selection-start-line="48" selection-start-column="29" selection-end-line="48" selection-end-column="29" />
+          <folding>
+            <marker date="1565750755432" expanded="false" signature="6:78" ph="..." />
+            <marker date="1565750755432" expanded="true" signature="198:2457" ph="{...}" />
+            <marker date="1565750755432" expanded="true" signature="403:578" ph="{...}" />
+            <marker date="1565750755432" expanded="true" signature="600:649" ph="{...}" />
+            <marker date="1565750755432" expanded="true" signature="608:646" ph="{...}" />
+            <marker date="1565750755432" expanded="true" signature="670:1236" ph="{...}" />
+            <marker date="1565750755432" expanded="true" signature="897:1233" ph="{...}" />
+            <marker date="1565750755432" expanded="true" signature="939:1229" ph="{...}" />
+            <marker date="1565750755432" expanded="true" signature="1282:1670" ph="{...}" />
+            <marker date="1565750755432" expanded="true" signature="1361:1645" ph="{...}" />
+            <marker date="1565750755432" expanded="true" signature="1396:1641" ph="{...}" />
+            <marker date="1565750755432" expanded="true" signature="1587:1636" ph="{...}" />
+            <marker date="1565750755432" expanded="true" signature="1727:2101" ph="{...}" />
+            <marker date="1565750755432" expanded="true" signature="2125:2455" ph="{...}" />
+            <marker date="1565750755432" expanded="true" signature="2285:2452" ph="{...}" />
+            <marker date="1565750755432" expanded="true" signature="2315:2448" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -482,13 +564,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
           <caret line="15" column="5" selection-start-line="15" selection-start-column="5" selection-end-line="15" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Assets/Scripts/Movement Scripts/Pathfinding/UnitFollow.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="720">
-          <caret line="49" column="70" selection-start-line="49" selection-start-column="70" selection-end-line="49" selection-end-column="70" />
         </state>
       </provider>
     </entry>
@@ -671,7 +746,6 @@
             <marker date="1563923343146" expanded="true" signature="486:527" ph="{...}" />
             <marker date="1563923343146" expanded="true" signature="560:869" ph="{...}" />
             <marker date="1563923343146" expanded="true" signature="590:866" ph="{...}" />
-            <marker date="1563923343146" expanded="true" signature="873:1132" ph="/* One way of accessing dialogue. ... */" />
           </folding>
         </state>
       </provider>
@@ -696,7 +770,6 @@
             <marker date="1564284707909" expanded="true" signature="302:1077" ph="{...}" />
             <marker date="1564284707909" expanded="true" signature="348:697" ph="{...}" />
             <marker date="1564284707909" expanded="true" signature="702:1074" ph="/* Forest Temple ... */" />
-            <marker date="1564284707909" expanded="true" signature="1081:2181" ph="/* OKAY SO APPARENTLY JSON DOESN'T LIKE TAKING IN DICTIONARIES, OF COOOOUUURSE ... */" />
           </folding>
         </state>
       </provider>
@@ -704,7 +777,7 @@
     <entry file="file://$PROJECT_DIR$/Assets/Scripts/Testing Scripts/DialogueTest2/DialogueTest2Dialogue.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="345">
-          <caret line="28" column="72" lean-forward="true" selection-start-line="28" selection-start-column="72" selection-end-line="28" selection-end-column="72" />
+          <caret line="28" column="72" selection-start-line="28" selection-start-column="72" selection-end-line="28" selection-end-column="72" />
           <folding>
             <marker date="1564284707877" expanded="false" signature="6:132" ph="..." />
             <marker date="1564284707877" expanded="true" signature="184:1386" ph="{...}" />
@@ -713,7 +786,43 @@
             <marker date="1564284707877" expanded="true" signature="976:1083" ph="/* using (FileStream stream = new FileStream(path, FileMode.Create)) ... */" />
             <marker date="1564284707877" expanded="true" signature="1122:1384" ph="{...}" />
             <marker date="1564284707877" expanded="true" signature="1137:1378" ph="/* Same thing, except we return the data back into each of our subclass's strings. ... */" />
-            <marker date="1564284707877" expanded="true" signature="1388:1895" ph="/* TO DO: ... */" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/Movement Scripts/Pathfinding/UnitFollow.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1043">
+          <caret line="110" column="5" lean-forward="true" selection-end-line="138" selection-end-column="71" />
+          <folding>
+            <marker date="1565750984793" expanded="false" signature="6:44" ph="..." />
+            <marker date="1565750984793" expanded="true" signature="86:2904" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="374:634" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="378:486" ph="/* PathRequestManager.RequestPath(transform.position,target.position, OnPathFound); ... */" />
+            <marker date="1565750984793" expanded="true" signature="650:682" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="713:911" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="790:837" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="867:908" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="948:1195" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="954:1025" ph="/* Enable this when we want to enable bools again ... */" />
+            <marker date="1565750984793" expanded="true" signature="1263:1638" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="1313:1534" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="1389:1439" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="1541:1635" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="1665:2471" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="1716:2380" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="1849:2376" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="1901:2117" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="1964:2068" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="2123:2183" ph="/* Debug.Log(&quot;REEE&quot;); ... */" />
+            <marker date="1565750984793" expanded="true" signature="2416:2468" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="2498:2564" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="2594:2902" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="2616:2899" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="2670:2895" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="2774:2832" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="2832:2890" ph="{...}" />
+            <marker date="1565750984793" expanded="true" signature="2906:3307" ph="/* KNOWN ISSUES ... */" />
           </folding>
         </state>
       </provider>

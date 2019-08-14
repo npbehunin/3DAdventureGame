@@ -10,7 +10,7 @@ public class PetMovement3D : MonoBehaviour
 	public BoolValue EnemyExists, CanFollowPath, EnemyIsInLOS, PetIsAttacking;
 	public bool FollowPath, AttackMode, Attacking, CanReachEnemy, EnemyLOS, EnemyIsInRadius, CanAttackDelay, 
 		Invincible, CanSetRandPos;
-	public Vector3Value enemyPos, PlayerTransform, TargetTransform, PetTransform;
+	public Vector3Value enemyPos, PlayerTransform, TargetTransform, PetTransform, pathPos;
 	public Vector3 position, newPos, difference, RepositionDir;
 	
 	public float MoveSpeed, JumpMomentum, JumpMomentumScale, randX, randY, gravity, slopeForce, slopeForceRayLength, accel, decel;
@@ -22,7 +22,7 @@ public class PetMovement3D : MonoBehaviour
 	public CharacterController controller;
 
 	public FloatValue playerMoveSpeed;
-	public UnitFollow path;
+	public UnitFollowNew path;
 
 	public Coroutine AttackCoroutine, AttackDelay;
 
@@ -71,7 +71,7 @@ public class PetMovement3D : MonoBehaviour
 				MoveSpeed = 0;
 				break;
 			default:
-				MoveSpeed = 4;
+				MoveSpeed = 6;
 				break;
 		}
 
@@ -83,6 +83,10 @@ public class PetMovement3D : MonoBehaviour
 			case PetStatev2.Run:
 				position.x = MoveTo(PlayerTransform.initialPos).x;
 				position.z = MoveTo(PlayerTransform.initialPos).z;
+				break;
+			case PetStatev2.PathFollow:
+				position.x = MoveTo(pathPos.initialPos).x;
+				position.z = MoveTo(pathPos.initialPos).z;
 				break;
 			case PetStatev2.Wait:
 			case PetStatev2.Hitstun:
@@ -216,13 +220,22 @@ public class PetMovement3D : MonoBehaviour
 				currentState = PetStatev2.Idle;
 			}
 		}
+
+		if (FollowPath)
+		{
+			currentState = PetStatev2.PathFollow;
+		}
+		else
+		{
+			currentState = PetStatev2.Idle; //CHECK IF THIS WORKS WHILE ATTACKING AN ENEMY
+		}
 	}
 
 	//Distance and state checking
 	void CheckDistance()
 	{
 		//If pet is too far, teleport
-		float WarpRadius = 12f;
+		float WarpRadius = 18f;
 		if (Vector3.Distance(PlayerTransform.initialPos, transform.position) > WarpRadius)
 		{
 			OutOfRange();
@@ -395,10 +408,10 @@ public class PetMovement3D : MonoBehaviour
 		//ENEMY LINECAST CHECK
 		if (currentState != PetStatev2.Wait) 
 		{
-			int wallLayerMask = 1 << 9;
+			int wallLayerMask = 1 << 10;
 			if (AttackMode && EnemyExists.initialBool && EnemyLOS) //EnemyFound means there's one in LOS of the PLAYER, not pet
 			{
-				if (Physics2D.Linecast(transform.position, enemyPos.initialPos, wallLayerMask))
+				if (Physics.Linecast(transform.position, enemyPos.initialPos, wallLayerMask))
 				{
 					FollowPath = true;
 					Debug.DrawLine(transform.position, enemyPos.initialPos, Color.yellow);
@@ -412,7 +425,7 @@ public class PetMovement3D : MonoBehaviour
 			else if (!Attacking)
 			{
 				//Player check if the above condition isn't met
-				if (Physics2D.Linecast(transform.position, PlayerTransform.initialPos, wallLayerMask))
+				if (Physics.Linecast(transform.position, PlayerTransform.initialPos, wallLayerMask))
 				{
 					FollowPath = true;
 					Debug.DrawLine(transform.position, PlayerTransform.initialPos, Color.yellow);

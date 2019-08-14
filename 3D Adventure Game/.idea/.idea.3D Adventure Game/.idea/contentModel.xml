@@ -155,14 +155,22 @@
         </e>
         <e p="3D Scripts" t="Include">
           <e p="Pathfinding" t="Include">
-            <e p="Grid3D.cs" t="Include" />
-            <e p="Heap3D.cs" t="Include" />
-            <e p="Line3D.cs" t="Include" />
-            <e p="Node3D.cs" t="Include" />
-            <e p="Path3D.cs" t="Include" />
-            <e p="Pathfinding3D.cs" t="Include" />
-            <e p="PathRequestManager3D.cs" t="Include" />
-            <e p="Unit3D.cs" t="Include" />
+            <e p="GridNew.cs" t="Include" />
+            <e p="HeapNew.cs" t="Include" />
+            <e p="NodeNew.cs" t="Include" />
+            <e p="PathfindingNew.cs" t="Include" />
+            <e p="PathRequestManagerNew.cs" t="Include" />
+            <e p="Sebastian" t="Include">
+              <e p="Grid3D.cs" t="Include" />
+              <e p="Heap3D.cs" t="Include" />
+              <e p="Line3D.cs" t="Include" />
+              <e p="Node3D.cs" t="Include" />
+              <e p="Path3D.cs" t="Include" />
+              <e p="Pathfinding3D.cs" t="Include" />
+              <e p="PathRequestManager3D.cs" t="Include" />
+              <e p="Unit3D.cs" t="Include" />
+            </e>
+            <e p="UnitFollowNew.cs" t="Include" />
           </e>
           <e p="Pet Scripts" t="Include">
             <e p="PetMovement3D.cs" t="Include" />

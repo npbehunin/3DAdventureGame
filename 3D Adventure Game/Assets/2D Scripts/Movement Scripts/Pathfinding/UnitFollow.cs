@@ -23,7 +23,7 @@ public class UnitFollow : MonoBehaviour {
 
 	void Update()
 	{
-
+		Debug.Log(targetIndex);
 	}
 
 	public void StopFollowPath()
