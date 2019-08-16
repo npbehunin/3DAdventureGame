@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using UnityEditor.Experimental.UIElements.GraphView;
 using UnityEngine;
 
-public enum PlayerState
-{
-	Idle, Walk, Run, Attack, Paused, Dead, Hitstun
-}
-
 public class PlayerMovement : MonoBehaviour
 {
 	public PlayerState currentState, laststate;

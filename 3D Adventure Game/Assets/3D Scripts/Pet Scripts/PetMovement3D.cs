@@ -75,6 +75,19 @@ public class PetMovement3D : MonoBehaviour
 				break;
 		}
 
+		////Acceleration values
+		//switch (currentState)
+		//{
+		//	case PetStatev2.PathFollow:
+		//		accel = .05f;
+		//		decel = .05f;
+		//		break;
+		//	default:
+		//		accel = .4f;
+		//		decel = .4f;
+		//		break;
+		//}
+
 		//Used to be in FixedUpdate
 		switch (currentState)
 		{
@@ -85,8 +98,8 @@ public class PetMovement3D : MonoBehaviour
 				position.z = MoveTo(PlayerTransform.initialPos).z;
 				break;
 			case PetStatev2.PathFollow:
-				position.x = MoveTo(pathPos.initialPos).x;
-				position.z = MoveTo(pathPos.initialPos).z;
+				position.x = MoveTo(new Vector3(pathPos.initialPos.x, 0, pathPos.initialPos.z)).x;
+				position.z = MoveTo(new Vector3(pathPos.initialPos.x, 0, pathPos.initialPos.z)).z;
 				break;
 			case PetStatev2.Wait:
 			case PetStatev2.Hitstun:
@@ -523,5 +536,4 @@ public class PetMovement3D : MonoBehaviour
 
 //KNOWN ISSUES:
 //At the beginning of execution the pet will run towards the player first instead of the enemy.
-
 //After killing an enemy the pet immediately stops its attack and goes back to idle.

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class GridNew : MonoBehaviour {
 
 	public bool displayGridGizmos;
-	public LayerMask unwalkableMask;
+	public LayerMask unwalkableMask, rayMask;
 	public Vector2 gridWorldSize;
 	public float nodeRadius;
 	NodeNew[,] grid;
@@ -33,7 +33,11 @@ public class GridNew : MonoBehaviour {
 		for (int x = 0; x < gridSizeX; x ++) {
 			for (int y = 0; y < gridSizeY; y ++) {
 				Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius); // ***
-				bool walkable = !(Physics.CheckSphere(worldPoint,nodeRadius,unwalkableMask));
+				RaycastHit hit;
+				bool walkable = new bool();
+				if (Physics.Raycast(worldPoint, Vector3.down, out hit, rayMask)) //Only checks raycast on these layers
+					walkable = !(Physics.CheckSphere(hit.point, nodeRadius, unwalkableMask));
+				//walkable = !(Physics.CheckSphere(worldPoint,nodeRadius,unwalkableMask)); //Default
 				grid[x,y] = new NodeNew(walkable,worldPoint, x,y);
 			}
 		}

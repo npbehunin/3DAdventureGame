@@ -154,6 +154,9 @@
           </e>
         </e>
         <e p="3D Scripts" t="Include">
+          <e p="NOTES" t="Include">
+            <e p="WorldLayerNotes.cs" t="Include" />
+          </e>
           <e p="Pathfinding" t="Include">
             <e p="GridNew.cs" t="Include" />
             <e p="HeapNew.cs" t="Include" />

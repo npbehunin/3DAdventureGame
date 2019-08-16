@@ -140,6 +140,7 @@
     <Compile Include="Assets\2D Scripts\Weapon Scripts\Sword Scripts\IceSword.cs" />
     <Compile Include="Assets\2D Scripts\Weapon Scripts\Sword Scripts\SwordMechanic.cs" />
     <Compile Include="Assets\2D Scripts\Weapon Scripts\Weapon.cs" />
+    <Compile Include="Assets\3D Scripts\NOTES\WorldLayerNotes.cs" />
     <Compile Include="Assets\3D Scripts\Pathfinding\GridNew.cs" />
     <Compile Include="Assets\3D Scripts\Pathfinding\HeapNew.cs" />
     <Compile Include="Assets\3D Scripts\Pathfinding\NodeNew.cs" />

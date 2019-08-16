@@ -5,16 +5,20 @@ using UnityEditor.Experimental.UIElements.GraphView;
 using UnityEditorInternal;
 using UnityEngine;
 
+public enum PlayerState
+{
+	Idle, Walk, Run, Slide, Attack, Paused, Dead, Hitstun
+}
 public class PlayerMovement3D : MonoBehaviour
 {
-	public float accelSpeed, gravity = 20f, slopeForce, slopeForceRayLength;
+	public float accelSpeed, gravity = 20f, slopeForce, slopeForceRayLength, accel, decel;//, _slopeLimit;
 	public PlayerState currentState;
 	public Collider playerCollider;
 	public CharacterController controller;
-	public Vector3 position, fixedInputPos, rawInputPos;
+	public Vector3 position, rawInputPos, newPos; //fixedInputPos,
 	public PlayerAnimation playerAnim;
 	//Player targeting here!
-	public bool CanSetState, accelerating, canDecelDelay, Invincible;
+	public bool CanSetState, canDecelDelay, Invincible;
 	public IntValue Health;
 	public int CurrentHealth;
 	public BoolValue EnemyCollision, canSwordAccel;
@@ -24,6 +28,8 @@ public class PlayerMovement3D : MonoBehaviour
 	public FloatValue SwordMomentumScale, moveSpeed;
 	
 	public Vector3Value direction, PlayerTransform, TargetTransform;
+
+	public LayerMask slopeMask;
 	
 	//Test values for our smoothmove function.
 	public float startValue, endValue, lerpValue;
@@ -32,7 +38,7 @@ public class PlayerMovement3D : MonoBehaviour
 	{
 		playerCollider = gameObject.GetComponent<Collider>();
 		controller = gameObject.GetComponent<CharacterController>();
-		
+		//controller.slopeLimit = _slopeLimit;
 		currentState = PlayerState.Idle;
 		//SwordMomentumSmooth = 6f;
 		//SwordMomentumPower = 10f;
@@ -58,13 +64,38 @@ public class PlayerMovement3D : MonoBehaviour
 		//Controller move
 		
 		//Debug.Log(position.x);
-		controller.Move(position * Time.deltaTime);
+		controller.Move(newPos * Time.deltaTime);
 		
 		//Slope check
-		if (OnSlope())// && (Math.Abs(rawInputPos.x) > 0 || Math.Abs(rawInputPos.z) > 0)) //&& if player is moving (ADD THIS!)
+		//if (OnSlope())// && (Math.Abs(rawInputPos.x) > 0 || Math.Abs(rawInputPos.z) > 0)) //&& if player is moving (ADD THIS!)
+		RaycastHit hit;
+		if (Physics.Raycast(transform.position, Vector3.down, out hit, controller.height / 2 * slopeForceRayLength, slopeMask))
 		{
-			controller.Move(Vector3.down * playerCollider.bounds.size.y / 2 * slopeForce);
+			if (hit.normal != Vector3.up)
+			{
+				controller.Move(Vector3.down * playerCollider.bounds.size.y / 2 * slopeForce);
+				bool slideable = Vector3.Angle(hit.normal, Vector3.up) >= controller.slopeLimit;
+				if (slideable)
+				{
+					currentState = PlayerState.Slide;
+					float slideSpeed = 35f;
+					position.x = ((1f - hit.normal.y) * hit.normal.x) * slideSpeed;
+					position.z = ((1f - hit.normal.y) * hit.normal.z) * slideSpeed;
+				}
+				else
+				{
+					currentState = PlayerState.Idle;
+				}	
+			}
+			else
+			{
+				currentState = PlayerState.Idle;
+			}
 		}
+		//If we check if the controller is grounded, this will no longer work.
+		//The problem is that the player will "snap" to a slope if they get close to it after doing something like falling off a ledge.
+		
+				
 		
 		//Calculate the input position
 		//*For the controller, instead of taking in every small movement, lets just put it into walk if the controller
@@ -73,18 +104,13 @@ public class PlayerMovement3D : MonoBehaviour
 		if (currentState == PlayerState.Idle || currentState == PlayerState.Run || currentState == PlayerState.Walk)
 		{
 			rawInputPos = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-			fixedInputPos.x = calcFixedInput(fixedInputPos.x, rawInputPos.x);
-			fixedInputPos.z = calcFixedInput(fixedInputPos.z, rawInputPos.z);
-			position.x = fixedInputPos.x;
-			position.z = fixedInputPos.z;
+
+			position.x = rawInputPos.x;
+			position.z = rawInputPos.z;
 			
 			//MoveSpeed only applied to x and z.
 			position.x *= moveSpeed.initialValue; 
 			position.z *= moveSpeed.initialValue;
-		}
-		else
-		{
-			fixedInputPos = Vector3.zero; //Reset it
 		}
 
 		if (currentState != PlayerState.Attack)
@@ -92,8 +118,11 @@ public class PlayerMovement3D : MonoBehaviour
 			canSwordAccel.initialBool = true;
 			startValue = 0;
 			endValue = 0;
-			//ResetMove.initialBool = false;
 		}
+
+		newPos.x = CalculateAccel(newPos.x, position.x);
+		newPos.z = CalculateAccel(newPos.z, position.z);
+		newPos.y = position.y;
 		
 		//Is Grounded
 		if (controller.isGrounded)
@@ -122,93 +151,68 @@ public class PlayerMovement3D : MonoBehaviour
 		direction.initialPos.y = 0; //Never facing up or down
 	}
 	
-	//Calculates a new player input with acceleration and deceleration.
-	//Turning off "Snap" in the input settings works too, but this helps match controller movement.
-	//We could also replace this with the pet's universal acceleration calculation!
-	float calcFixedInput(float newInput, float input)
+	Vector3 MoveTo(Vector3 pos)
 	{
-		if (newInput != input)
-			if (newInput < -1)
-				newInput = -1;
-			else if (newInput > 1)
-				newInput = 1;
+		return (pos - transform.position).normalized * moveSpeed.initialValue;
+	}
+
+	//Calculate acceleration by comparing newPos to position.
+	private float CalculateAccel(float pos, float targetpos)
+	{
+		if (pos < targetpos)
+			if (Math.Abs(targetpos - pos) > accel)
+				pos += accel;
 			else
-				if (newInput < input)
-					if (Math.Abs(newInput - input) < accelSpeed) 
-						newInput += Math.Abs(newInput - input); //Make sure this is frame independent!
-					else
-						newInput += accelSpeed; //
-				else if (newInput > input)
-					if (Math.Abs(newInput - input) < accelSpeed)
-						newInput -= Math.Abs(newInput - input); //
-					else
-						newInput -= accelSpeed; //
-		return newInput;
+				pos += Math.Abs(targetpos - pos);
+		if (pos > targetpos)
+			if (Math.Abs(targetpos - pos) > decel)
+				pos -= decel;
+			else
+				pos -= Math.Abs(targetpos - pos);
+		return pos;
 	}
 
 	//Test function to move in a direction with accel, decel, power, and a wait time
-	void SwordMove(Vector3 pos, float accel, float decel, float maxSpeed, float time)
+	void SwordMove(Vector3 pos, float _accel, float _decel, float maxSpeed, float time)
 	{
+		Debug.Log(newPos);
 		if (canSwordAccel.initialBool)
 		{
 			StartCoroutine(waitBeforeDecel());
 			endValue = 0; //Reset
-			startValue += accel * Time.deltaTime;
+			startValue += _accel * Time.deltaTime;
 			//if (Math.Abs(position.x) < maxSpeed && Math.Abs(position.z) < maxSpeed) //*Doesn't work for diagonal movement!
 			if (pos.x != 0)
-			{
 				if (Math.Abs(position.x) <= Math.Abs(maxSpeed * pos.x))
-				{
 					position.x += (startValue * pos.x);
-				}
 				else
-				{
 					if (canDecelDelay)
-					{
 						canSwordAccel.initialBool = false;
-					}
-				}
-			}
 
 			if (pos.z != 0)
-			{
 				if (Math.Abs(position.z) <= Math.Abs(maxSpeed * pos.z))
-				{
 					position.z += (startValue * pos.z);
-				}
 				else
-				{
 					if (canDecelDelay)
-					{
 						canSwordAccel.initialBool = false;
-					}
-				}
-			}	
 		}
 		else
 		{
 			canDecelDelay = false;
 			startValue = 0;
-			endValue += decel * Time.deltaTime;
+			endValue += _decel * Time.deltaTime;
 			if (Math.Abs(position.x) - endValue > 0)
-			{
 				position.x -= (endValue * pos.x);
-			}
 			else
-			{
 				position.x -= position.x;
-			}
 			
 			if (Math.Abs(position.z) - endValue > 0)
-			{
 				position.z -= (endValue * pos.z);
-			}
 			else
-			{
 				position.z -= position.z;
-			}
 		}
 	}
+	//The accel and decel seems swapped depending which direction is being faced
 
 	private IEnumerator waitBeforeDecel()
 	{
@@ -216,50 +220,6 @@ public class PlayerMovement3D : MonoBehaviour
 		canDecelDelay = true;
 	}
 
-	//----------------BACKUP IN CASE WE SCREW IT UP---------------
-	//void SwordMove(Vector3 pos, float accel, float decel, float maxSpeed, float time)
-	//{
-	//	if (!canDecel)
-	//	{
-	//		endValue = 0; //Reset
-	//		startValue += accel * Time.deltaTime;
-	//		lerpValue = Mathf.Lerp(0, 1, startValue);
-	//		if (Math.Abs(position.x) < maxSpeed && Math.Abs(position.z) < maxSpeed) //*Doesn't work for diagonal movement!
-	//		{
-	//			position.x += (lerpValue * pos.x);
-	//			position.z += (lerpValue * pos.z);
-	//		}
-	//	}
-	//	else
-	//	{
-	//		startValue = 0;
-	//		endValue += decel * Time.deltaTime;
-	//		lerpValue = Mathf.Lerp(0, 1, endValue);
-	//		if (Math.Abs(position.x) > lerpValue)
-	//		{
-	//			position.x -= (lerpValue * pos.x);
-	//		}
-	//		else
-	//		{
-	//			position.x -= position.x;
-	//		}
-	//		
-	//		if (Math.Abs(position.z) > lerpValue)
-	//		{
-	//			position.z -= (lerpValue * pos.z);
-	//		}
-	//		else
-	//		{
-	//			position.z -= position.z;
-	//		}
-	//	}
-//
-	//	if (startValue >= 1)
-	//	{
-	//		canDecel = true;
-	//	}
-	//}
-	
 	//Check if the ground normal isn't up.
 	private bool OnSlope()
 	{
@@ -324,8 +284,24 @@ public class PlayerMovement3D : MonoBehaviour
 				position = Vector3.zero;
 				//playerAnim.AnimPause(true);
 				break;
+			//default:
+			//	currentState = PlayerState.Idle;
+			//	break;
+		}
+
+		switch (currentState)
+		{
+			case PlayerState.Attack:
+				accel = .9f;
+				decel = .6f;
+				break;
+			case PlayerState.Slide:
+				accel = .2f;
+				decel = .2f;
+				break;
 			default:
-				currentState = PlayerState.Idle;
+				accel = .7f;
+				decel = .6f;
 				break;
 		}
 		
@@ -397,5 +373,10 @@ public class PlayerMovement3D : MonoBehaviour
 		//inputDirection = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0).normalized;
 	}
 }
+//TO DO
+//With this new acceleration, player jitters a lot compared to old script.
+//If player is stopped (for example, up against a wall), newPos should be set to 0 in that direction. Otherwise there's accel time
+//to go back positive from that point.
+
 //NOTES
 //On the 60hz monitor the player seems to jitter very briefly after changing input position.

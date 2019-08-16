@@ -26,7 +26,7 @@ public class UnitFollowNew : MonoBehaviour {
 
 	void Update()
 	{
-		Debug.Log(targetIndex);
+		//Debug.Log(targetIndex);
 	}
 
 	public void StopFollowPath()
@@ -83,6 +83,7 @@ public class UnitFollowNew : MonoBehaviour {
 			UpdateThePath = StartCoroutine(UpdatePath());
 			while (true)
 			{
+				//Debug.Log(currentWaypoint);
 				if (Math.Abs(transform.position.x - currentWaypoint.x) < .5f && Math.Abs(transform.position.z - currentWaypoint.z) < .5f)
 				{
 					targetIndex++;
@@ -130,12 +131,13 @@ public class UnitFollowNew : MonoBehaviour {
 		}
 	}
 }
+//TO DO
+//The pathfinding will still create a path on slopes the pet can't traverse over. We either need to check the slope on our
+//raycast hit (which would still only give us the normal of the direct point right below the node), or create something like
+//a new collider or layer on slides called "slideable" or something that returns an unwalkable gridpoint (better? because it
+//checks a collision instead of a raycast.
 
 //KNOWN ISSUES
-//When a path is created, it does NOT create a waypoint in a block next to the pet. This means if the path is updated
-//right before the pet goes to round a corner, instead of creating a waypoint one block diagonally from the pet, it
-//will skip it entirely. We need to tell the pathfinding script to still check for direct neighbors.
-
 //If the player is inside red points on the grid, the pet will teleport. This means even if the player isn't colliding
 //with the wall, the player can still be in the red point on the grid.
 
