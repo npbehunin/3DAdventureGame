@@ -121,14 +121,15 @@ public class SwordMechanic3D : MonoBehaviour
 		CanSwing = true;
 		AnimatorSwingNumber = 0;
 		//Enemy.CanCollide = true; //Enemy can collide
-		player.currentState = PlayerState.Idle;
+		player.SetState(PlayerState.Attack, false);
 	}
 
 	//Sword swing timing
 	private IEnumerator SwordSwingTiming()
 	{
 		CanDelayForCombo = true;
-		player.currentState = PlayerState.Attack;
+		Debug.Log("Set to attack state");
+		player.SetState(PlayerState.Attack, true);
 		ClickCoroutine = StartCoroutine(MouseClickDelay());
 		yield return CustomTimer.Timer(SwingTime);
 		if (ComboPhase == 2)
@@ -150,7 +151,7 @@ public class SwordMechanic3D : MonoBehaviour
 		{
 			yield return CustomTimer.Timer(.12f);
 			AnimatorSwingNumber = 0;
-			player.currentState = PlayerState.Idle;
+			player.SetState(PlayerState.Attack, false);
 			yield return CustomTimer.Timer(.15f);
 			ResetSwordAttack();
 		}
@@ -158,7 +159,7 @@ public class SwordMechanic3D : MonoBehaviour
 		{
 			yield return CustomTimer.Timer(.2f);
 			AnimatorSwingNumber = 0;
-			player.currentState = PlayerState.Idle;
+			player.SetState(PlayerState.Attack, false);
 			yield return CustomTimer.Timer(.2f);
 			if (ComboPhase == 4)
 			{

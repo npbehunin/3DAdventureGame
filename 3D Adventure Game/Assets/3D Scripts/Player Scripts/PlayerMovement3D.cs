@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEditor.Experimental.UIElements.GraphView;
+using UnityEditor.VersionControl;
 using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public enum PlayerState
 {
-	Idle, Walk, Run, Slide, Attack, Paused, Dead, Hitstun
+	Idle, Walk, Run, Attack, Slide, Hitstun, Dead, Paused,
 }
 public class PlayerMovement3D : MonoBehaviour
 {
-	public float accelSpeed, gravity = 20f, slopeForce, slopeForceRayLength, accel, decel;//, _slopeLimit;
+	public float gravity = 20f, slopeForce, slopeForceRayLength, accel, decel;//, _slopeLimit;
 	public PlayerState currentState;
 	public Collider playerCollider;
 	public CharacterController controller;
@@ -24,24 +27,26 @@ public class PlayerMovement3D : MonoBehaviour
 	public BoolValue EnemyCollision, canSwordAccel;
 	
 	private float horizontalspeed, verticalspeed;
-	[SerializeField] private float SwordMomentum, SwordMomentumSmooth, SwordMomentumPower;
-	public FloatValue SwordMomentumScale, moveSpeed;
-	
-	public Vector3Value direction, PlayerTransform, TargetTransform;
+	public FloatValue moveSpeed;
+
+	public Vector3Value direction, PlayerTransform;
 
 	public LayerMask slopeMask;
+	//public List<PlayerStateClass> stateList;
+	public List<int> stateList, activeStateList;
 	
 	//Test values for our smoothmove function.
-	public float startValue, endValue, lerpValue;
+	public float startValue, endValue;
+
+	public Vector3 spherepos;
+	public float sphereradius;
 
 	void Start()
 	{
+		//CreateStates();
 		playerCollider = gameObject.GetComponent<Collider>();
 		controller = gameObject.GetComponent<CharacterController>();
-		//controller.slopeLimit = _slopeLimit;
 		currentState = PlayerState.Idle;
-		//SwordMomentumSmooth = 6f;
-		//SwordMomentumPower = 10f;
 		CanSetState = true;
 		direction.initialPos = new Vector3(0, 0, -1); //For now, face towards the screen
 		PlayerTransform.initialPos = transform.position;
@@ -50,61 +55,90 @@ public class PlayerMovement3D : MonoBehaviour
 	void Update()
 	{
 		Debug.DrawRay(transform.position, direction.initialPos, Color.green);
-		//Debug.Log(direction.initialPos);
 		PlayerMovement();
 		CheckForPause();
 		CheckStates();
-		//GetDirection();
 		CheckHealth();
+		//CheckStatePriority();
 		PlayerTransform.initialPos = transform.position;
+		SetState(PlayerState.Idle, true); //Idle is always active
+
+		//if (!controller.isGrounded)
+		//{
+		//	Debug.Log("Not on the ground");
+		//}
+	}
+
+	void OnDrawGizmos()
+	{
+		Gizmos.DrawSphere(spherepos, sphereradius);
 	}
 
 	void PlayerMovement()
 	{
 		//Controller move
-		
-		//Debug.Log(position.x);
 		controller.Move(newPos * Time.deltaTime);
 		
 		//Slope check
 		//if (OnSlope())// && (Math.Abs(rawInputPos.x) > 0 || Math.Abs(rawInputPos.z) > 0)) //&& if player is moving (ADD THIS!)
 		RaycastHit hit;
-		if (Physics.Raycast(transform.position, Vector3.down, out hit, controller.height / 2 * slopeForceRayLength, slopeMask))
+		//if (Physics.Raycast(transform.position, Vector3.down, out hit, controller.height / 2 * slopeForceRayLength, slopeMask))
+		float radius = controller.radius;
+		Vector3 pos = transform.position + Vector3.down * (radius);
+		bool isOnGround = Physics.SphereCast(pos, radius, Vector3.down, out hit, slopeForceRayLength, slopeMask);
+		spherepos = pos;
+		sphereradius = radius;
+		Debug.DrawRay(hit.point, Vector3.down, Color.red);
+		if (isOnGround)
 		{
-			if (hit.normal != Vector3.up)
+			slopeForceRayLength = 5f; //1 default
 			{
-				controller.Move(Vector3.down * playerCollider.bounds.size.y / 2 * slopeForce);
+				//Debug.Log(hit.point);
+				controller.Move(new Vector3(0, -.8f, 0) * 50 * Time.deltaTime);
+				//controller.Move(Vector3.down * playerCollider.bounds.size.y / 2 * slopeForce * Time.deltaTime);
+				//Debug.Log(Vector3.down * playerCollider.bounds.size.y / 2 * slopeForce * Time.deltaTime);
 				bool slideable = Vector3.Angle(hit.normal, Vector3.up) >= controller.slopeLimit;
 				if (slideable)
 				{
-					currentState = PlayerState.Slide;
+					SetState(PlayerState.Slide, true);
 					float slideSpeed = 35f;
 					position.x = ((1f - hit.normal.y) * hit.normal.x) * slideSpeed;
 					position.z = ((1f - hit.normal.y) * hit.normal.z) * slideSpeed;
+
+					if (position.x > 10)
+						position.x = 10;
+					if (position.z > 10)
+						position.z = 10;
 				}
 				else
 				{
-					currentState = PlayerState.Idle;
+					SetState(PlayerState.Slide, false);
 				}	
 			}
-			else
-			{
-				currentState = PlayerState.Idle;
-			}
+			//else
+			//{
+			//	SetState(PlayerState.Slide, false);
+			//}
 		}
-		//If we check if the controller is grounded, this will no longer work.
-		//The problem is that the player will "snap" to a slope if they get close to it after doing something like falling off a ledge.
+		else
+		{
+			slopeForceRayLength = .1f; //.1f default
+			SetState(PlayerState.Slide, false);
+		}
+		//Current issues for SLOPE:
+		//After walking off a ledge, the player will slide down steeper slopes faster
+		//The player will still snap down to ledges within the .1f ray length if he drops from a tiny platform
+		//(The player bounces down slopes within the slope angle)
 		
 				
 		
 		//Calculate the input position
 		//*For the controller, instead of taking in every small movement, lets just put it into walk if the controller
 		//is halfway, and run if the controller is pushed farther.
-
+		rawInputPos = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+		
 		if (currentState == PlayerState.Idle || currentState == PlayerState.Run || currentState == PlayerState.Walk)
 		{
-			rawInputPos = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-
 			position.x = rawInputPos.x;
 			position.z = rawInputPos.z;
 			
@@ -118,6 +152,16 @@ public class PlayerMovement3D : MonoBehaviour
 			canSwordAccel.initialBool = true;
 			startValue = 0;
 			endValue = 0;
+		}
+
+		//Temp for setting a run state
+		if (position.x != 0 || position.z != 0)
+		{
+			SetState(PlayerState.Run, true);
+		}
+		else
+		{
+			SetState(PlayerState.Run, false);
 		}
 
 		newPos.x = CalculateAccel(newPos.x, position.x);
@@ -178,6 +222,7 @@ public class PlayerMovement3D : MonoBehaviour
 		Debug.Log(newPos);
 		if (canSwordAccel.initialBool)
 		{
+			Debug.Log("Can sword move");
 			StartCoroutine(waitBeforeDecel());
 			endValue = 0; //Reset
 			startValue += _accel * Time.deltaTime;
@@ -252,8 +297,12 @@ public class PlayerMovement3D : MonoBehaviour
 		Health.initialValue = CurrentHealth;
 		if (CurrentHealth <= 0)
 		{
-			currentState = PlayerState.Dead;
+			SetState(PlayerState.Dead, true);
 			Debug.Log("Player has died");
+		}
+		else
+		{
+			SetState(PlayerState.Dead, false);
 		}
 	}
 	
@@ -317,15 +366,6 @@ public class PlayerMovement3D : MonoBehaviour
 		{
 			moveSpeed.initialValue = 6;
 		}
-
-		//Set Idle
-		if (currentState != PlayerState.Attack && currentState != PlayerState.Paused && currentState != PlayerState.Hitstun)
-		{
-			if (position == Vector3.zero)
-			{
-				currentState = PlayerState.Idle;
-			}
-		}
 	}
 	
 	//Check if game is paused or if player is hitstunned
@@ -338,7 +378,11 @@ public class PlayerMovement3D : MonoBehaviour
 				CanSetState = false;
 				//laststate = currentState;
 			}
-			currentState = PlayerState.Paused;
+			SetState(PlayerState.Paused, true);
+		}
+		else
+		{
+			SetState(PlayerState.Paused, false);
 		}
 	}
 	
@@ -359,10 +403,10 @@ public class PlayerMovement3D : MonoBehaviour
 	//Hitstun coroutine
 	public IEnumerator HitstunCo()
 	{
-		PlayerState lastState = currentState;
-		currentState = PlayerState.Hitstun;
+		//PlayerState lastState = currentState;
+		SetState(PlayerState.Hitstun, true);
 		yield return CustomTimer.Timer(.075f);
-		currentState = lastState;
+		SetState(PlayerState.Hitstun, false);
 		Debug.Log("Hitstun ended");
 	}
 
@@ -372,6 +416,63 @@ public class PlayerMovement3D : MonoBehaviour
 		//3D!
 		//inputDirection = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0).normalized;
 	}
+
+	////HERE'S A GREAT EXAMPLE OF SOMETHING ONLY RUNNING ONCE WOO
+	//public void SetState(PlayerState state)
+	//{
+	//	if (currentState != state && state != PlayerState.Idle)
+	//	{
+	//		//Debug.Log("Set state to " + state);
+	//		currentState = state;
+	//	}
+	//	
+	//	//Set Idle
+	//	if (state == PlayerState.Idle && currentState != PlayerState.Attack && currentState != PlayerState.Paused
+	//	    && currentState != PlayerState.Hitstun)
+	//	{
+	//		if (position == Vector3.zero || rawInputPos == Vector3.zero)
+	//		{
+	//			currentState = state;
+	//		}
+	//	}
+	//}
+	
+	//Check which active state has the highest value
+	public void CheckStatePriority()
+	{
+		currentState = (PlayerState) newState();
+	}
+
+	public int newState()
+	{
+		int i = 0;
+		foreach (var c in activeStateList)
+			if (c > i)
+				i = c;
+		return i;
+	}
+
+	//Set a state to active or inactive
+	public void SetState(PlayerState state, bool _active)
+	{
+		int thing = (int) state;
+		if (_active)
+		{
+			if (!activeStateList.Contains(thing))
+			{
+				activeStateList.Add(thing);
+			}
+		}
+		else
+		{
+			if (activeStateList.Contains(thing))
+			{
+				activeStateList.Remove(thing);
+			}
+		}
+		
+		CheckStatePriority();
+	}
 }
 //TO DO
 //With this new acceleration, player jitters a lot compared to old script.
@@ -379,4 +480,6 @@ public class PlayerMovement3D : MonoBehaviour
 //to go back positive from that point.
 
 //NOTES
-//On the 60hz monitor the player seems to jitter very briefly after changing input position.
+//We added a simple state machine that simply checks the order of the PlayerState enum and uses their values as "priority" values.
+//We now set states to active or inactive. Then, the setstate function will simply check which state in the activeStateList has
+//the highest value, and sets the currentState to that value.

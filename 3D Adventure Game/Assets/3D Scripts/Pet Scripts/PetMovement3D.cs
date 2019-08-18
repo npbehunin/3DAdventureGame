@@ -344,7 +344,7 @@ public class PetMovement3D : MonoBehaviour
 
 				if (!FollowPath)
 				{
-					float ChaseRadius = 12f;
+					float ChaseRadius = 18f;
 					float WalkRadius = 3f;
 					float StopRadius = 2.5f;
 					if (Vector3.Distance(PlayerTransform.initialPos, transform.position) <= ChaseRadius
