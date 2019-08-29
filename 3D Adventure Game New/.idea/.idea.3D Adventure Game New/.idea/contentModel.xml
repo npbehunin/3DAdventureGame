@@ -3,6 +3,7 @@
   <component name="ContentModelStore">
     <e p="B:\2D Adventure Game\2DAdventureGame\3D Adventure Game New" t="IncludeRecursive">
       <e p="3D Adventure Game New.sln" t="IncludeFlat" />
+      <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
         <e p="2D Scripts" t="Include">
@@ -193,6 +194,158 @@
         </e>
         <e p="JsonDotNet" t="Include">
           <e p="link.xml" t="Include" />
+        </e>
+        <e p="KinematicCharacterController" t="Include">
+          <e p="Core" t="Include">
+            <e p="Editor" t="Include">
+              <e p="KinematicCharacterMotorEditor.cs" t="Include" />
+              <e p="ReadOnlyPropertyDrawer.cs" t="Include" />
+            </e>
+            <e p="ICharacterController.cs" t="Include" />
+            <e p="IMoverController.cs" t="Include" />
+            <e p="KinematicCharacterMotor.cs" t="Include" />
+            <e p="KinematicCharacterSystem.cs" t="Include" />
+            <e p="PhysicsMover.cs" t="Include" />
+            <e p="ReadOnlyAttribute.cs" t="Include" />
+          </e>
+          <e p="ExampleCharacter" t="Include">
+            <e p="Scripts" t="Include">
+              <e p="ExampleCharacterCamera.cs" t="Include" />
+              <e p="ExampleCharacterController.cs" t="Include" />
+              <e p="ExamplePlayer.cs" t="Include" />
+            </e>
+          </e>
+          <e p="Examples" t="Include">
+            <e p="Scripts" t="Include">
+              <e p="BuildManager.cs" t="Include" />
+              <e p="Editor" t="Include">
+                <e p="PauseStateHandler.cs" t="Include" />
+              </e>
+              <e p="ExampleAIController.cs" t="Include" />
+              <e p="ExampleMovingPlatform.cs" t="Include" />
+              <e p="FrameratePanel.cs" t="Include" />
+              <e p="PlanetManager.cs" t="Include" />
+              <e p="PlayableMover.cs" t="Include" />
+              <e p="PrefabLauncher.cs" t="Include" />
+              <e p="StressTestManager.cs" t="Include" />
+              <e p="Teleporter.cs" t="Include" />
+            </e>
+          </e>
+          <e p="Testing (Nate)" t="Include">
+            <e p="CHARCONTROLLER NOTES.cs" t="Include" />
+            <e p="NateCharacterController.cs" t="Include" />
+            <e p="NatePlayer.cs" t="Include" />
+          </e>
+          <e p="Walkthrough" t="Include">
+            <e p="1- Player Camera Character Setup" t="Include">
+              <e p="Scripts" t="Include">
+                <e p="MyCharacterController.cs" t="Include" />
+                <e p="MyPlayer.cs" t="Include" />
+              </e>
+            </e>
+            <e p="10- Multiple movement states setup" t="Include">
+              <e p="Scripts" t="Include">
+                <e p="MyCharacterController.cs" t="Include" />
+                <e p="MyPlayer.cs" t="Include" />
+              </e>
+            </e>
+            <e p="11- Charging state" t="Include">
+              <e p="Scripts" t="Include">
+                <e p="MyCharacterController.cs" t="Include" />
+                <e p="MyPlayer.cs" t="Include" />
+              </e>
+            </e>
+            <e p="12- NoClip state" t="Include">
+              <e p="Scripts" t="Include">
+                <e p="MyCharacterController.cs" t="Include" />
+                <e p="MyPlayer.cs" t="Include" />
+              </e>
+            </e>
+            <e p="13- Swimming state" t="Include">
+              <e p="Scripts" t="Include">
+                <e p="MyCharacterController.cs" t="Include" />
+                <e p="MyPlayer.cs" t="Include" />
+              </e>
+            </e>
+            <e p="14- Climbing Ladders" t="Include">
+              <e p="Scripts" t="Include">
+                <e p="MyCharacterController.cs" t="Include" />
+                <e p="MyLadder.cs" t="Include" />
+                <e p="MyPlayer.cs" t="Include" />
+              </e>
+            </e>
+            <e p="15- Root motion example" t="Include">
+              <e p="Scripts" t="Include">
+                <e p="MyCharacterController.cs" t="Include" />
+                <e p="MyPlayer.cs" t="Include" />
+              </e>
+            </e>
+            <e p="16- FramePerfect Rotation" t="Include">
+              <e p="Scripts" t="Include">
+                <e p="MyCharacterController.cs" t="Include" />
+                <e p="MyPlayer.cs" t="Include" />
+              </e>
+            </e>
+            <e p="2- Basic Movement and Gravity" t="Include">
+              <e p="Scripts" t="Include">
+                <e p="MyCharacterController.cs" t="Include" />
+                <e p="MyPlayer.cs" t="Include" />
+              </e>
+            </e>
+            <e p="3- Jumping" t="Include">
+              <e p="Scripts" t="Include">
+                <e p="a- Simple Jumping" t="Include">
+                  <e p="MyCharacterController.cs" t="Include" />
+                  <e p="MyPlayer.cs" t="Include" />
+                </e>
+                <e p="b- Double Jumping" t="Include">
+                  <e p="MyCharacterController.cs" t="Include" />
+                  <e p="MyPlayer.cs" t="Include" />
+                </e>
+                <e p="c- Wall Jumping" t="Include">
+                  <e p="MyCharacterController.cs" t="Include" />
+                  <e p="MyPlayer.cs" t="Include" />
+                </e>
+              </e>
+            </e>
+            <e p="4- Landing and leaving ground" t="Include">
+              <e p="Scripts" t="Include">
+                <e p="MyCharacterController.cs" t="Include" />
+                <e p="MyPlayer.cs" t="Include" />
+              </e>
+            </e>
+            <e p="5- Adding velocities and impulses" t="Include">
+              <e p="Scripts" t="Include">
+                <e p="MyCharacterController.cs" t="Include" />
+                <e p="MyPlayer.cs" t="Include" />
+              </e>
+            </e>
+            <e p="6- Crouching" t="Include">
+              <e p="Scripts" t="Include">
+                <e p="MyCharacterController.cs" t="Include" />
+                <e p="MyPlayer.cs" t="Include" />
+              </e>
+            </e>
+            <e p="7- Orienting towards arbitrary up direction" t="Include">
+              <e p="Scripts" t="Include">
+                <e p="MyCharacterController.cs" t="Include" />
+                <e p="MyPlayer.cs" t="Include" />
+              </e>
+            </e>
+            <e p="8- Creating a moving platform" t="Include">
+              <e p="Scripts" t="Include">
+                <e p="MyCharacterController.cs" t="Include" />
+                <e p="MyMovingPlatform.cs" t="Include" />
+                <e p="MyPlayer.cs" t="Include" />
+              </e>
+            </e>
+            <e p="9- Custom collision filtering" t="Include">
+              <e p="Scripts" t="Include">
+                <e p="MyCharacterController.cs" t="Include" />
+                <e p="MyPlayer.cs" t="Include" />
+              </e>
+            </e>
+          </e>
         </e>
       </e>
       <e p="obj" t="ExcludeRecursive" />

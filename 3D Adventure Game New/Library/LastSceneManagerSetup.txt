@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/Scenes/Experimenting Scene.unity
+- path: Assets/Scenes/Character controller walkthrough scene 1.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0
