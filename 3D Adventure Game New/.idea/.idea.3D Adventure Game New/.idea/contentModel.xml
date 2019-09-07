@@ -152,6 +152,15 @@
           </e>
         </e>
         <e p="3D Scripts" t="Include">
+          <e p="Backups (Unused)" t="Include">
+            <e p="GraphicsDirection.cs" t="Include" />
+            <e p="hmm.cs" t="Include" />
+            <e p="PlayerMovement3DNew.cs" t="Include" />
+            <e p="PlayerStateClass.cs" t="Include" />
+          </e>
+          <e p="Items" t="Include">
+            <e p="ItemDatabase.cs" t="Include" />
+          </e>
           <e p="NOTES" t="Include">
             <e p="WorldLayerNotes.cs" t="Include" />
           </e>
@@ -177,19 +186,27 @@
             <e p="PetMovement3D.cs" t="Include" />
           </e>
           <e p="Player Scripts" t="Include">
-            <e p="GraphicsDirection.cs" t="Include" />
-            <e p="hmm.cs" t="Include" />
-            <e p="PlayerMovement3D.cs" t="Include" />
-            <e p="PlayerMovement3DNew.cs" t="Include" />
-            <e p="PlayerStateClass.cs" t="Include" />
+            <e p="ItemEquippingInfo.txt" t="Include" />
+            <e p="Player Info" t="Include">
+              <e p="EquipItemController.cs" t="Include" />
+              <e p="PlayerStats.cs" t="Include" />
+            </e>
+            <e p="Player Movement" t="Include">
+              <e p="NateCharacterController.cs" t="Include" />
+              <e p="NatePlayer.cs" t="Include" />
+              <e p="PlayerMovement3D.cs" t="Include" />
+              <e p="TestSwordCoroutine.cs" t="Include" />
+            </e>
           </e>
           <e p="Weapon Scripts" t="Include">
             <e p="EquipWeapon3D.cs" t="Include" />
             <e p="ShootingMechanic3D.cs" t="Include" />
-            <e p="Sword.cs" t="Include" />
             <e p="SwordMechanic3D.cs" t="Include" />
-            <e p="Weapon3D.cs" t="Include" />
-            <e p="WeaponManager.cs" t="Include" />
+            <e p="WIP" t="Include">
+              <e p="Sword.cs" t="Include" />
+              <e p="Weapon3D.cs" t="Include" />
+              <e p="WeaponManager.cs" t="Include" />
+            </e>
           </e>
         </e>
         <e p="JsonDotNet" t="Include">
@@ -232,9 +249,8 @@
             </e>
           </e>
           <e p="Testing (Nate)" t="Include">
+            <e p="CharacterControllerTestAccel.cs" t="Include" />
             <e p="CHARCONTROLLER NOTES.cs" t="Include" />
-            <e p="NateCharacterController.cs" t="Include" />
-            <e p="NatePlayer.cs" t="Include" />
           </e>
           <e p="Walkthrough" t="Include">
             <e p="1- Player Camera Character Setup" t="Include">

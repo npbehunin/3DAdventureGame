@@ -1,0 +1,14 @@
+NOTES ON EQUIPPING ITEMS AND INVENTORY
+SCRIPTS (So far)
+- Item (The specific item information)
+- ItemDatabase (Contains all the items in the game)
+- Inventory (Contains the collected items)
+- EquipController (Handles equipping items/weapons)
+
+ITEM INFORMATION
+- Items will have information such as an id, "title", description, sellable, stats (with sub info such as damage, etc), etc.
+- Each item will be given a "type" to determine what kind of an item it is. If it's a "weapon" type, we also choose a sub type like "sword", "bow", etc. If it's a "collectable", then it's automatically a "stackable" type.
+- All the information will be stored in JSON.
+
+INVENTORY
+- The inventory will contain all the items the player collects throughout the game.

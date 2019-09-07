@@ -1,0 +1,57 @@
+SCRIPTS--------------------
+
+Item Database - Contains all the items in the game
+Inventory - Contains all the items the player has collected.
+InventoryUI - Shows the items the player has collected.
+Equip Manager - Contains the currently equipped objects.
+Player Stats - Player statistics.
+
+Player Input - Keeps track of all the player's inputs.
+Sword Coroutine - Calculates when the player can swing.
+Character Controller - Moves the player.
+Animator - Sets the character's 3d objects and animation.
+
+BREAKDOWN-----------------
+
+Item Database
+- Will reference a JSON file for item name, description, id, item type, etc.
+- The item type will determine if sellable, equipable, stackable, etc.
+
+Inventory
+- Contains everything the player has collected and stores it.
+
+InventoryUI
+- Shows what the player has collected. Allows the player to equip and interact.
+
+Equip Manager
+- Keeps track of what the player currently has equipped.
+- Clothes, weapons, etc.
+- Will switch out the currently equipped item from InventoryUI interaction.
+- Reference this script to know if there's a sword equipped, and what type of sword.
+
+Player Stats
+- Health, experience, equipment stats
+- References the Equip Manager to know what type of stats to apply.
+
+Player Input
+- Runs through update and checks for any player input.
+- Any scripts that need to check inputs (JUST FOR THE PLAYER) checks this.
+
+Sword Coroutine
+//- First, check if we're in the correct state to initiate a sword swing from Character 		Controller.
+//- Second, check if the mouse was clicked from Player Input.
+- Third, check if there's a sword equipped from Equip Manager.
+- Fourth, check what type of sword is equipped from Equip Manager.
+- Will execute different coroutines based on sword type. (Light, normal, or heavy sword)
+
+Character Controller
+- Controls the different movement states of the character.
+- Checks inputs from Player Input and changes the states accordingly.
+- If mouse input was detected... start the sword coroutine script?
+- Maybe check the Equip Manager here and pass through the stats to the Sword Coroutine?
+
+Animator
+- Checks the Equip Manager for equipped items.
+- Displays the equipped items and attaches them to the player's joints.
+- Displays animations based on the types of items.
+

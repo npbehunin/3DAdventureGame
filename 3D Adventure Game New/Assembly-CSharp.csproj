@@ -142,6 +142,11 @@
     <Compile Include="Assets\2D Scripts\Weapon Scripts\Sword Scripts\IceSword.cs" />
     <Compile Include="Assets\2D Scripts\Weapon Scripts\Sword Scripts\SwordMechanic.cs" />
     <Compile Include="Assets\2D Scripts\Weapon Scripts\Weapon.cs" />
+    <Compile Include="Assets\3D Scripts\Backups (Unused)\GraphicsDirection.cs" />
+    <Compile Include="Assets\3D Scripts\Backups (Unused)\hmm.cs" />
+    <Compile Include="Assets\3D Scripts\Backups (Unused)\PlayerMovement3DNew.cs" />
+    <Compile Include="Assets\3D Scripts\Backups (Unused)\PlayerStateClass.cs" />
+    <Compile Include="Assets\3D Scripts\Items\ItemDatabase.cs" />
     <Compile Include="Assets\3D Scripts\NOTES\WorldLayerNotes.cs" />
     <Compile Include="Assets\3D Scripts\Pathfinding\GridNew.cs" />
     <Compile Include="Assets\3D Scripts\Pathfinding\HeapNew.cs" />
@@ -158,17 +163,18 @@
     <Compile Include="Assets\3D Scripts\Pathfinding\Sebastian\Unit3D.cs" />
     <Compile Include="Assets\3D Scripts\Pathfinding\UnitFollowNew.cs" />
     <Compile Include="Assets\3D Scripts\Pet Scripts\PetMovement3D.cs" />
-    <Compile Include="Assets\3D Scripts\Player Scripts\GraphicsDirection.cs" />
-    <Compile Include="Assets\3D Scripts\Player Scripts\hmm.cs" />
-    <Compile Include="Assets\3D Scripts\Player Scripts\PlayerMovement3D.cs" />
-    <Compile Include="Assets\3D Scripts\Player Scripts\PlayerMovement3DNew.cs" />
-    <Compile Include="Assets\3D Scripts\Player Scripts\PlayerStateClass.cs" />
+    <Compile Include="Assets\3D Scripts\Player Scripts\Player Info\EquipItemController.cs" />
+    <Compile Include="Assets\3D Scripts\Player Scripts\Player Info\PlayerStats.cs" />
+    <Compile Include="Assets\3D Scripts\Player Scripts\Player Movement\NateCharacterController.cs" />
+    <Compile Include="Assets\3D Scripts\Player Scripts\Player Movement\NatePlayer.cs" />
+    <Compile Include="Assets\3D Scripts\Player Scripts\Player Movement\PlayerMovement3D.cs" />
+    <Compile Include="Assets\3D Scripts\Player Scripts\Player Movement\TestSwordCoroutine.cs" />
     <Compile Include="Assets\3D Scripts\Weapon Scripts\EquipWeapon3D.cs" />
     <Compile Include="Assets\3D Scripts\Weapon Scripts\ShootingMechanic3D.cs" />
-    <Compile Include="Assets\3D Scripts\Weapon Scripts\Sword.cs" />
     <Compile Include="Assets\3D Scripts\Weapon Scripts\SwordMechanic3D.cs" />
-    <Compile Include="Assets\3D Scripts\Weapon Scripts\Weapon3D.cs" />
-    <Compile Include="Assets\3D Scripts\Weapon Scripts\WeaponManager.cs" />
+    <Compile Include="Assets\3D Scripts\Weapon Scripts\WIP\Sword.cs" />
+    <Compile Include="Assets\3D Scripts\Weapon Scripts\WIP\Weapon3D.cs" />
+    <Compile Include="Assets\3D Scripts\Weapon Scripts\WIP\WeaponManager.cs" />
     <Compile Include="Assets\KinematicCharacterController\Core\ICharacterController.cs" />
     <Compile Include="Assets\KinematicCharacterController\Core\IMoverController.cs" />
     <Compile Include="Assets\KinematicCharacterController\Core\KinematicCharacterMotor.cs" />
@@ -187,9 +193,8 @@
     <Compile Include="Assets\KinematicCharacterController\Examples\Scripts\PrefabLauncher.cs" />
     <Compile Include="Assets\KinematicCharacterController\Examples\Scripts\StressTestManager.cs" />
     <Compile Include="Assets\KinematicCharacterController\Examples\Scripts\Teleporter.cs" />
+    <Compile Include="Assets\KinematicCharacterController\Testing (Nate)\CharacterControllerTestAccel.cs" />
     <Compile Include="Assets\KinematicCharacterController\Testing (Nate)\CHARCONTROLLER NOTES.cs" />
-    <Compile Include="Assets\KinematicCharacterController\Testing (Nate)\NateCharacterController.cs" />
-    <Compile Include="Assets\KinematicCharacterController\Testing (Nate)\NatePlayer.cs" />
     <Compile Include="Assets\KinematicCharacterController\Walkthrough\1- Player Camera Character Setup\Scripts\MyCharacterController.cs" />
     <Compile Include="Assets\KinematicCharacterController\Walkthrough\1- Player Camera Character Setup\Scripts\MyPlayer.cs" />
     <Compile Include="Assets\KinematicCharacterController\Walkthrough\10- Multiple movement states setup\Scripts\MyCharacterController.cs" />
@@ -229,6 +234,7 @@
     <Compile Include="Assets\KinematicCharacterController\Walkthrough\9- Custom collision filtering\Scripts\MyCharacterController.cs" />
     <Compile Include="Assets\KinematicCharacterController\Walkthrough\9- Custom collision filtering\Scripts\MyPlayer.cs" />
     <None Include="Assets\JsonDotNet\link.xml" />
+    <None Include="Assets\3D Scripts\Player Scripts\ItemEquippingInfo.txt" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>B:/2D Adventure Game/2DAdventureGame/3D Adventure Game New/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>

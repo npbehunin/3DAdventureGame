@@ -1,0 +1,17 @@
+Although the main focus is to feel more like Banjo-Kazooie in terms of the combat style, weapons should come with additional stats to make other aspects more interesting.
+
+BASE WEAPON STATS EXAMPLES
+- Damage
+- Speed
+- Knockback
+- Element
+- Rarity (Color / Stars)
+
+ADDITIVE STATS EXAMPLES
+- Damage
+- Speed
+- Knockback
+- Player health
+- Player speed
+- Coin earning rate
+- 

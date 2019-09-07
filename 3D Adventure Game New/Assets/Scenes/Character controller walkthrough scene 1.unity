@@ -1519,7 +1519,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Motor: {fileID: 2079106474}
   MaxStableMoveSpeed: 7
-  StableMovementSharpness: 10
+  StableMovementSharpness: 7
   OrientationSharpness: 10
   OrientationMethod: 1
   MaxAirMoveSpeed: 7
@@ -1533,10 +1533,10 @@ MonoBehaviour:
   IgnoredColliders: []
   OrientTowardsGravity: 0
   Gravity: {x: 0, y: -30, z: 0}
-  MeshRoot: {fileID: 0}
+  MeshRoot: {fileID: 998463176}
   CameraFollowPoint: {fileID: 0}
-  _accelerationSpeed: 0.95
-  _decelerationSpeed: 0.95
+  _accelerationSpeed: 4
+  _decelerationSpeed: 0.1
 --- !u!114 &2079106474
 MonoBehaviour:
   m_ObjectHideFlags: 0
