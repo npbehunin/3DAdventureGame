@@ -1,23 +1,28 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using KinematicCharacterController.Nate;
 using UnityEngine;
 
 public class TestSwordCoroutine: MonoBehaviour
 {
-	public bool SwordEquipped, CanSwing, CanDelayForCombo;
+	public bool SwordEquipped, CanDelayForCombo;
 
-	public int ComboPhase, SwingNumber, MaxSwingNumber;
+	public int ComboPhase, SwingNumber, AnimatorSwingNumber, MaxSwingNumber;
 
 	public float SwingTime;
-	public BoolValue playerCanDecel;
+	public BoolValue CanSwing;
 
 	private Coroutine SwingCoroutine, ClickCoroutine, DelayForClickCombo;
+
+	public Animator animator;
+	public NateCharacterController controller;
 
 	void Start()
 	{
 		ComboPhase = 0;
-		CanSwing = true;
+		CanSwing.initialBool = true;
 		CanDelayForCombo = false;
+		AnimatorSwingNumber = 0;
 		MaxSwingNumber = 3;
 		SwingTime = .25f; //.25 default
 		SwordEquipped = true; //Temporary! Fix when EquipWeapon3D is set up.
@@ -25,15 +30,16 @@ public class TestSwordCoroutine: MonoBehaviour
 
 	void Update()
 	{
-		
+		//animator.SetInteger("SwordAttack", AnimatorSwingNumber);
 	}
 
 	//Runs when mouse button is pressed in Character Controller
-	void StartSwordCoroutine()
+	public void StartSwordCoroutine()
 	{
+		Debug.Log(AnimatorSwingNumber);
 		if (SwordEquipped)
 		{
-			if (CanSwing)
+			if (CanSwing.initialBool)
 			{
 				SwordSwing();
 			}
@@ -54,6 +60,7 @@ public class TestSwordCoroutine: MonoBehaviour
 	{
 		if (SwingNumber < MaxSwingNumber)
 		{
+			
 			if (DelayForClickCombo!= null)
 			{
 				StopCoroutine(DelayForClickCombo);
@@ -68,11 +75,13 @@ public class TestSwordCoroutine: MonoBehaviour
 				StopCoroutine(ClickCoroutine);
 			}
 
-			playerCanDecel.initialBool = true;
+			//playerCanDecel.initialBool = true;
+			controller.RunSwordSwingMovement(); //EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 			ComboPhase = 0;
-			CanSwing = false;
+			CanSwing.initialBool = false;
 			SwingCoroutine = StartCoroutine(SwordSwingTiming());
 			SwingNumber += 1;
+			AnimatorSwingNumber = SwingNumber;
 		}
 	}
 
@@ -100,16 +109,17 @@ public class TestSwordCoroutine: MonoBehaviour
 		}
 		ComboPhase = 0;
 		SwingNumber = 0;
+		AnimatorSwingNumber = 0;
 		CanDelayForCombo = false;
-		CanSwing = true;
-		//Set attack state to false
+		CanSwing.initialBool = true;
+		controller.TransitionToState(CharacterState.Default);
 	}
 
 	//Sword swing timing
 	private IEnumerator SwordSwingTiming()
 	{
 		CanDelayForCombo = true;
-		//Set attack state to true.
+		controller.TransitionToState(CharacterState.SwordAttack);
 		ClickCoroutine = StartCoroutine(MouseClickDelay());
 		yield return CustomTimer.Timer(SwingTime);
 		if (ComboPhase == 2)
@@ -118,7 +128,7 @@ public class TestSwordCoroutine: MonoBehaviour
 		}
 		else
 		{
-			CanSwing = true;
+			CanSwing.initialBool = true;
 		}
 
 		if (SwingNumber >= MaxSwingNumber && CanDelayForCombo)
@@ -130,14 +140,16 @@ public class TestSwordCoroutine: MonoBehaviour
 		if (SwingNumber < MaxSwingNumber)
 		{
 			yield return CustomTimer.Timer(.12f);
-			//Set attack state to false
+			AnimatorSwingNumber = 0;
+			controller.TransitionToState(CharacterState.Default);
 			yield return CustomTimer.Timer(.15f);
 			ResetSwordAttack();
 		}
 		else
 		{
 			yield return CustomTimer.Timer(.2f);
-			//Set attack state to false
+			AnimatorSwingNumber = 0;
+			controller.TransitionToState(CharacterState.Default);
 			yield return CustomTimer.Timer(.2f);
 			if (ComboPhase == 4)
 			{

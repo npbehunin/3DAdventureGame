@@ -35,6 +35,8 @@
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Info/EquipItemController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/6- Crouching/Scripts/MyCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/6- Crouching/Scripts/MyPlayer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/2D Scripts/Player Scripts/PlayerAnimation.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/NPC/NPC Scripts/NPCCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/PlayerMovement3D.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/2D Scripts/Player Scripts/PlayerMovement.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/4- Landing and leaving ground/Scripts/MyCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
@@ -49,10 +51,12 @@
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/13- Swimming state/Scripts/MyPlayer.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/2D Scripts/Pet Scripts/PetMovementNew.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/14- Climbing Ladders/Scripts/MyCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/2D Scripts/Weapon Scripts/Sword Scripts/SwordMechanic.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/14- Climbing Ladders/Scripts/MyLadder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/ExampleCharacter/Scripts/ExampleCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/14- Climbing Ladders/Scripts/MyPlayer.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/ExampleCharacter/Scripts/ExamplePlayer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NewTempSwordCoroutine.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Core/ICharacterController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/15- Root motion example/Scripts/MyCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Core/KinematicCharacterMotor.cs" root0="FORCE_HIGHLIGHTING" />
@@ -80,7 +84,9 @@
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NatePlayer.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Weapon Scripts/SwordMechanic3D.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/TestSwordCoroutine.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NewTempSwordCoroutine.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NateCharacterController.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/NPC/NPC Scripts/NPCCharacterController.cs" />
       </list>
     </option>
   </component>

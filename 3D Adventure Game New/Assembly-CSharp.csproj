@@ -148,6 +148,7 @@
     <Compile Include="Assets\3D Scripts\Backups (Unused)\PlayerStateClass.cs" />
     <Compile Include="Assets\3D Scripts\Items\ItemDatabase.cs" />
     <Compile Include="Assets\3D Scripts\NOTES\WorldLayerNotes.cs" />
+    <Compile Include="Assets\3D Scripts\NPC\NPC Scripts\NPCCharacterController.cs" />
     <Compile Include="Assets\3D Scripts\Pathfinding\GridNew.cs" />
     <Compile Include="Assets\3D Scripts\Pathfinding\HeapNew.cs" />
     <Compile Include="Assets\3D Scripts\Pathfinding\NodeNew.cs" />
@@ -167,6 +168,7 @@
     <Compile Include="Assets\3D Scripts\Player Scripts\Player Info\PlayerStats.cs" />
     <Compile Include="Assets\3D Scripts\Player Scripts\Player Movement\NateCharacterController.cs" />
     <Compile Include="Assets\3D Scripts\Player Scripts\Player Movement\NatePlayer.cs" />
+    <Compile Include="Assets\3D Scripts\Player Scripts\Player Movement\NewTempSwordCoroutine.cs" />
     <Compile Include="Assets\3D Scripts\Player Scripts\Player Movement\PlayerMovement3D.cs" />
     <Compile Include="Assets\3D Scripts\Player Scripts\Player Movement\TestSwordCoroutine.cs" />
     <Compile Include="Assets\3D Scripts\Weapon Scripts\EquipWeapon3D.cs" />

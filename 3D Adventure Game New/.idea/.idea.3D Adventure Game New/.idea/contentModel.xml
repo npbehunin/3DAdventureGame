@@ -164,6 +164,11 @@
           <e p="NOTES" t="Include">
             <e p="WorldLayerNotes.cs" t="Include" />
           </e>
+          <e p="NPC" t="Include">
+            <e p="NPC Scripts" t="Include">
+              <e p="NPCCharacterController.cs" t="Include" />
+            </e>
+          </e>
           <e p="Pathfinding" t="Include">
             <e p="GridNew.cs" t="Include" />
             <e p="HeapNew.cs" t="Include" />
@@ -194,6 +199,7 @@
             <e p="Player Movement" t="Include">
               <e p="NateCharacterController.cs" t="Include" />
               <e p="NatePlayer.cs" t="Include" />
+              <e p="NewTempSwordCoroutine.cs" t="Include" />
               <e p="PlayerMovement3D.cs" t="Include" />
               <e p="TestSwordCoroutine.cs" t="Include" />
             </e>

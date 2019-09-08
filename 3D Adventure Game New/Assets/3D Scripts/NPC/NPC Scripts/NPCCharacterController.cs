@@ -4,9 +4,12 @@ using UnityEngine;
 using KinematicCharacterController;
 using System;
 
+//Basic template for an NPC controller. Can also be used for pet and enemies.
+//Inputs should be set based on states and change inside coroutines.
+
 namespace KinematicCharacterController.Nate
 {
-    public enum CharacterState //Character states (Walking, crouching, attacking, etc)
+    public enum NPCState //Character states (Walking, crouching, attacking, etc)
     {
         Default, 
         Walk, 
@@ -14,41 +17,21 @@ namespace KinematicCharacterController.Nate
         SwordAttack
     }
 
-    public enum SwordAttackState
-    {
-        SwingStart,
-        SwingEnd
-    }
-
-    public enum OrientationMethod
-    {
-        TowardsCamera,
-        TowardsMovement,
-    }
-
-    public struct PlayerCharacterInputs
-    {
-        public float MoveAxisForward;
-        public float MoveAxisRight;
-        public Quaternion CameraRotation;
-        public bool JumpDown;
-        public bool CrouchDown;
-        public bool CrouchUp;
-        public bool SwordSwing;
-    }
-
-    public struct AICharacterInputs
-    {
-        public Vector3 MoveVector;
-        public Vector3 LookVector;
-    }
-
-    public class NateCharacterController : MonoBehaviour, ICharacterController
+    //public struct NPCInputs
+    //{
+    //    public float MoveAxisForward;
+    //    public float MoveAxisRight;
+    //    public Quaternion CameraRotation;
+    //    public bool JumpDown;
+    //    public bool CrouchDown;
+    //    public bool CrouchUp;
+    //    public bool SwordSwing;
+    //}
+    
+    public class NPCCharacterController : MonoBehaviour, ICharacterController
     {
         public KinematicCharacterMotor Motor;
-        public NewTempSwordCoroutine swordCoroutineScript;
-        public BoolValue canSwing;
-
+        
         [Header("Stable Movement")] public float MaxStableMoveSpeed = 10f;
         public float StableMovementSharpness = 15f;
         public float OrientationSharpness = 10f;
@@ -58,11 +41,11 @@ namespace KinematicCharacterController.Nate
         public float AirAccelerationSpeed = 15f;
         public float Drag = 0.1f;
 
-        [Header("Jumping")] public bool AllowJumpingWhenSliding = false;
-        public float JumpUpSpeed = 10f;
-        public float JumpScalableForwardSpeed = 10f;
-        public float JumpPreGroundingGraceTime = 0f;
-        public float JumpPostGroundingGraceTime = 0f;
+        //[Header("Jumping")] public bool AllowJumpingWhenSliding = false;
+        //public float JumpUpSpeed = 10f;
+        //public float JumpScalableForwardSpeed = 10f;
+        //public float JumpPreGroundingGraceTime = 0f;
+        //public float JumpPostGroundingGraceTime = 0f;
 
         [Header("Misc")] public List<Collider> IgnoredColliders = new List<Collider>();
         public bool OrientTowardsGravity = false;
@@ -70,15 +53,13 @@ namespace KinematicCharacterController.Nate
         public Transform MeshRoot;
         public Transform CameraFollowPoint;
 
-        public CharacterState CurrentCharacterState { get; private set; }
-        public SwordAttackState CurrentSwordAttackState;
+        public NPCState CurrentNPCState { get; private set; }
 
         private Collider[] _probedColliders = new Collider[8];
         private Vector3 _moveInputVector;
 
         private Vector3 _lookInputVector;
-
-        //private Vector3 _targetVector;
+        
         private bool _jumpRequested = false;
         private bool _jumpConsumed = false;
         private bool _jumpedThisFrame = false;
@@ -91,47 +72,37 @@ namespace KinematicCharacterController.Nate
         private bool _shouldBeCrouching = false;
         private bool _isCrouching = false;
 
-        private bool SwordEquipped = false; //Temp for sword swinging
-
         private Vector3 lastInnerNormal = Vector3.zero;
         private Vector3 lastOuterNormal = Vector3.zero;
-        
-        public Coroutine _tempSwordCoroutine;
-       // private Coroutine _timeBeforeFallingStateCoroutine;
 
         private void Start()
         {
             //Handle initial state
-            TransitionToState(CharacterState.Default);
+            TransitionToState(NPCState.Default);
 
             // Assign the characterController to the motor
             Motor.CharacterController = this;
         }
 
-        void Update()
-        {
-            //Debug.Log(_moveInputVector);
-        }
-
         /// <summary>
         /// Handles movement state transitions and enter/exit callbacks
         /// </summary>
-        public void TransitionToState(CharacterState newState)
+        public void TransitionToState(NPCState newState)
         {
-            CharacterState tmpInitialState = CurrentCharacterState; //Get current state.
+            NPCState tmpInitialState = CurrentNPCState; //Get current state.
             OnStateExit(tmpInitialState, newState); //Do the OnStateExit stuff from current state to new state.
-            CurrentCharacterState = newState; //Current state = new state.
+            CurrentNPCState = newState; //Current state = new state.
             OnStateEnter(newState, tmpInitialState); //Do the OnStateEnter stuff to new state from the last state.
         }
 
         /// <summary>
         /// Event when entering a state
         /// </summary>
-        public void OnStateEnter(CharacterState state, CharacterState fromState)
+        public void OnStateEnter(NPCState state, NPCState fromState)
         {
             switch (state)
             {
-                case CharacterState.Default:
+                case NPCState.Default:
                 {
                     break;
                 }
@@ -141,11 +112,11 @@ namespace KinematicCharacterController.Nate
         /// <summary>
         /// Event when exiting a state
         /// </summary>
-        public void OnStateExit(CharacterState state, CharacterState toState)
+        public void OnStateExit(NPCState state, NPCState toState)
         {
             switch (state)
             {
-                case CharacterState.Default:
+                case NPCState.Default:
                 {
                     break;
                 }
@@ -172,34 +143,15 @@ namespace KinematicCharacterController.Nate
 
             Quaternion cameraPlanarRotation = Quaternion.LookRotation(cameraPlanarDirection, Motor.CharacterUp);
 
-            //Inputs while grounded
-            if (Motor.GroundingStatus.IsStableOnGround)
+            switch (CurrentNPCState)
             {
-                if (inputs.SwordSwing) //Temp
-                {
-                    swordCoroutineScript.StartSwordSwing(); //Temporary, to start coroutine for canSwing check.
-                } 
-            }
-
-            switch (CurrentCharacterState)
-            {
-                case CharacterState.Default:
-                case CharacterState.Crouched:
+                case NPCState.Default:
+                case NPCState.Crouched:
                 {
                     //canSwing = true; //Temp
                     // Move and look inputs
                     _moveInputVector = cameraPlanarRotation * moveInputVector;
                     StableMovementSharpness = 7f;
-
-                    switch (OrientationMethod)
-                    {
-                        case OrientationMethod.TowardsCamera:
-                            _lookInputVector = cameraPlanarDirection;
-                            break;
-                        case OrientationMethod.TowardsMovement:
-                            _lookInputVector = _moveInputVector.normalized;
-                            break;
-                    }
 
                     // Crouching input
                     if (inputs.CrouchDown)
@@ -212,9 +164,9 @@ namespace KinematicCharacterController.Nate
                             Motor.SetCapsuleDimensions(0.5f, 1f, 0.5f); //Scales the hitbox.
                             MeshRoot.localScale = new Vector3(1f, 0.5f, 1f); //Scales the mesh root.
 
-                            if (CurrentCharacterState == CharacterState.Default)
+                            if (CurrentNPCState == NPCState.Default)
                             {
-                                TransitionToState(CharacterState.Crouched);
+                                TransitionToState(NPCState.Crouched);
                                 //Transition to crouch
                             }
                         }
@@ -226,33 +178,12 @@ namespace KinematicCharacterController.Nate
 
                     break;
                 }
-                case CharacterState.SwordAttack: //Temp
+                case NPCState.SwordAttack: //Temp
                 {
                     _moveInputVector = Vector3.ClampMagnitude(Motor.CharacterForward, 1f);
-
-                    switch (CurrentSwordAttackState)
-                    {
-                        case SwordAttackState.SwingStart:
-                        {
-                            StableMovementSharpness = 10f;
-                            break;
-                        }
-                        case SwordAttackState.SwingEnd:
-                        {
-                            StableMovementSharpness = 10f;
-                            break;
-                        }
-                            
-                    }
                     break;
                 }
             }
-        }
-
-        public void RunSwordSwingMovement()
-        {
-            //Debug.Log("Hi");
-            _tempSwordCoroutine = StartCoroutine(SwordMovementCoroutine(.5f));
         }
 
         /// <summary>
@@ -270,34 +201,20 @@ namespace KinematicCharacterController.Nate
         /// </summary>
         public void BeforeCharacterUpdate(float deltaTime)
         {
-            switch (CurrentCharacterState)
+            switch (CurrentNPCState)
             {
-                case CharacterState.Default:
+                case NPCState.Default:
                 {
                     MaxStableMoveSpeed = 7f;
                     break;
                 }
-                case CharacterState.Crouched:
+                case NPCState.Crouched:
                 {
                     MaxStableMoveSpeed = 3f;
                     break;
                 }
-                case CharacterState.SwordAttack:
+                case NPCState.SwordAttack:
                 {
-                    switch (CurrentSwordAttackState)
-                    {
-                        case SwordAttackState.SwingStart:
-                        {
-                            MaxStableMoveSpeed = 10f;
-                            break;
-                        }
-                        case SwordAttackState.SwingEnd:
-                        {
-                            MaxStableMoveSpeed = 0f;
-                            break;
-                        }
-                    }
-                    
                     break;
                 }
             }
@@ -310,10 +227,10 @@ namespace KinematicCharacterController.Nate
         /// </summary>
         public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
         {
-            switch (CurrentCharacterState)
+            switch (CurrentNPCState)
             {
-                case CharacterState.Default:
-                case CharacterState.Crouched:
+                case NPCState.Default:
+                case NPCState.Crouched:
                 {
                     if (_lookInputVector.sqrMagnitude > 0f && OrientationSharpness > 0f)
                     {
@@ -447,10 +364,10 @@ namespace KinematicCharacterController.Nate
         /// </summary>
         public void AfterCharacterUpdate(float deltaTime)
         {
-            switch (CurrentCharacterState)
+            switch (CurrentNPCState)
             {
-                case CharacterState.Default:
-                case CharacterState.Crouched:
+                case NPCState.Default:
+                case NPCState.Crouched:
                 {
                     // Handle uncrouching
                     if (_isCrouching && !_shouldBeCrouching
@@ -473,7 +390,7 @@ namespace KinematicCharacterController.Nate
                             // If no obstructions, uncrouch
                             MeshRoot.localScale = new Vector3(1f, 1f, 1f);
                             _isCrouching = false;
-                            TransitionToState(CharacterState.Default);
+                            TransitionToState(NPCState.Default);
                         }
                     }
 
@@ -484,7 +401,7 @@ namespace KinematicCharacterController.Nate
             //Switch to default state if in midair
             if (!Motor.GroundingStatus.IsStableOnGround)
             {
-                if (CurrentCharacterState != CharacterState.Default)
+                if (CurrentNPCState != NPCState.Default)
                 {
                     //_timeBeforeFallingStateCoroutine = StartCoroutine(TimeBeforeFallingStateCoroutine());
                     StartCoroutine(TimeBeforeFallingStateCoroutine());
@@ -532,9 +449,9 @@ namespace KinematicCharacterController.Nate
 
         public void AddVelocity(Vector3 velocity)
         {
-            switch (CurrentCharacterState)
+            switch (CurrentNPCState)
             {
-                case CharacterState.Default:
+                case NPCState.Default:
                 {
                     _internalVelocityAdd += velocity;
                     break;
@@ -561,22 +478,10 @@ namespace KinematicCharacterController.Nate
 
         // COROUTINES
 
-        private IEnumerator SwordMovementCoroutine(float time) //Temp
-        {
-            float timeStart = time * .35f;
-            float timeEnd = timeStart - time;
-            CurrentSwordAttackState = SwordAttackState.SwingStart; //Start swing movement
-            yield return CustomTimer.Timer(timeStart);
-            CurrentSwordAttackState = SwordAttackState.SwingEnd; //End swing movement
-            yield return CustomTimer.Timer(timeEnd);
-            //canSwing.initialBool = true;
-            //TransitionToState(CharacterState.Default);
-        }
-
         private IEnumerator TimeBeforeFallingStateCoroutine()
         {
             yield return CustomTimer.Timer(.1f);
-            TransitionToState(CharacterState.Default);
+            TransitionToState(NPCState.Default);
         }
 
 }
