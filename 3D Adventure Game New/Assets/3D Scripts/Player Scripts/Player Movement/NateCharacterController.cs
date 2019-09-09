@@ -11,7 +11,9 @@ namespace KinematicCharacterController.Nate
         Default, 
         Walk, 
         Crouched, 
-        SwordAttack
+        SwordAttack,
+        Slide,
+        BowAttack,
     }
 
     public enum SwordAttackState
@@ -35,6 +37,7 @@ namespace KinematicCharacterController.Nate
         public bool CrouchDown;
         public bool CrouchUp;
         public bool SwordSwing;
+        public bool ToggleTargetingMode;
     }
 
     public struct AICharacterInputs
@@ -47,7 +50,6 @@ namespace KinematicCharacterController.Nate
     {
         public KinematicCharacterMotor Motor;
         public NewTempSwordCoroutine swordCoroutineScript;
-        public BoolValue canSwing;
 
         [Header("Stable Movement")] public float MaxStableMoveSpeed = 10f;
         public float StableMovementSharpness = 15f;
@@ -58,14 +60,16 @@ namespace KinematicCharacterController.Nate
         public float AirAccelerationSpeed = 15f;
         public float Drag = 0.1f;
 
-        [Header("Jumping")] public bool AllowJumpingWhenSliding = false;
-        public float JumpUpSpeed = 10f;
-        public float JumpScalableForwardSpeed = 10f;
-        public float JumpPreGroundingGraceTime = 0f;
-        public float JumpPostGroundingGraceTime = 0f;
+        //[Header("Jumping")] public bool AllowJumpingWhenSliding = false;
+        //public float JumpUpSpeed = 10f;
+        //public float JumpScalableForwardSpeed = 10f;
+        //public float JumpPreGroundingGraceTime = 0f;
+        //public float JumpPostGroundingGraceTime = 0f;
 
         [Header("Misc")] public List<Collider> IgnoredColliders = new List<Collider>();
         public bool OrientTowardsGravity = false;
+        //public BoolValue TargetingModeActive;
+        public CameraFollowPlayer camera; //Change to target mode manager later
         public Vector3 Gravity = new Vector3(0, -30f, 0);
         public Transform MeshRoot;
         public Transform CameraFollowPoint;
@@ -90,14 +94,8 @@ namespace KinematicCharacterController.Nate
         private Vector3 _internalVelocityAdd = Vector3.zero;
         private bool _shouldBeCrouching = false;
         private bool _isCrouching = false;
-
-        private bool SwordEquipped = false; //Temp for sword swinging
-
-        private Vector3 lastInnerNormal = Vector3.zero;
-        private Vector3 lastOuterNormal = Vector3.zero;
         
         public Coroutine _tempSwordCoroutine;
-       // private Coroutine _timeBeforeFallingStateCoroutine;
 
         private void Start()
         {
@@ -106,11 +104,6 @@ namespace KinematicCharacterController.Nate
 
             // Assign the characterController to the motor
             Motor.CharacterController = this;
-        }
-
-        void Update()
-        {
-            //Debug.Log(_moveInputVector);
         }
 
         /// <summary>
@@ -169,7 +162,7 @@ namespace KinematicCharacterController.Nate
                 cameraPlanarDirection = Vector3.ProjectOnPlane(inputs.CameraRotation * Vector3.up, Motor.CharacterUp)
                     .normalized;
             }
-
+            
             Quaternion cameraPlanarRotation = Quaternion.LookRotation(cameraPlanarDirection, Motor.CharacterUp);
 
             //Inputs while grounded
@@ -178,7 +171,23 @@ namespace KinematicCharacterController.Nate
                 if (inputs.SwordSwing) //Temp
                 {
                     swordCoroutineScript.StartSwordSwing(); //Temporary, to start coroutine for canSwing check.
-                } 
+                }
+
+                if (inputs.ToggleTargetingMode) //Temp target mode activation
+                {
+                    if (!camera.TargetingModeActive)
+                    {
+                        camera.TargetingModeActive = true;
+                    }
+                    else
+                    {
+                        camera.TargetingModeActive = false;
+                    }
+                }
+            }
+            else
+            {
+                camera.TargetingModeActive = false;
             }
 
             switch (CurrentCharacterState)
@@ -246,6 +255,7 @@ namespace KinematicCharacterController.Nate
                     }
                     break;
                 }
+                
             }
         }
 
@@ -300,6 +310,24 @@ namespace KinematicCharacterController.Nate
                     
                     break;
                 }
+                case CharacterState.Slide:
+                {
+                    //At high velocities, the MaxSlopeAngle will decrease until 0, causing the player to slide on everything and even go off ramps.
+                    //Could also just set MaxStableSlopeAngle to 0 until magnitude is under a certain point.
+                    float velocitySlidingPoint = 15f;
+                    float maxAngle = 60f;
+                    if (Motor.Velocity.magnitude > velocitySlidingPoint)
+                    {
+                        float percentage = Motor.Velocity.magnitude / 35f;
+                        Motor.MaxStableSlopeAngle = Mathf.Lerp(maxAngle, 0, percentage);
+                    }
+                    else
+                    {
+                        Motor.MaxStableSlopeAngle = maxAngle;
+                    }
+
+                    break;
+                }
             }
         }
 
@@ -314,24 +342,39 @@ namespace KinematicCharacterController.Nate
             {
                 case CharacterState.Default:
                 case CharacterState.Crouched:
+                case CharacterState.BowAttack:
                 {
-                    if (_lookInputVector.sqrMagnitude > 0f && OrientationSharpness > 0f)
+                    if (camera.TargetingModeActive)
                     {
-                        // Smoothly interpolate from current to target look direction
-                        Vector3 smoothedLookInputDirection = Vector3.Slerp(Motor.CharacterForward, _lookInputVector,
+                        //Almost... but still rotates to directly face the target, instead of just rotating towards the general direction.
+                        Vector3 targetDir = Vector3.Slerp(Motor.CharacterForward, (camera.target.position - transform.position).normalized,
                             1 - Mathf.Exp(-OrientationSharpness * deltaTime)).normalized;
-
-                        // Set the current rotation (which will be used by the KinematicCharacterMotor)
-                        currentRotation = Quaternion.LookRotation(smoothedLookInputDirection, Motor.CharacterUp);
+                        currentRotation = Quaternion.LookRotation(targetDir, Motor.CharacterUp);
                     }
-
-                    if (OrientTowardsGravity)
+                    else
                     {
-                        // Rotate from current up to invert gravity
-                        currentRotation = Quaternion.FromToRotation((currentRotation * Vector3.up), -Gravity) *
-                                          currentRotation;
-                    }
+                        if (_lookInputVector.sqrMagnitude > 0f && OrientationSharpness > 0f)
+                        {
+                            // Smoothly interpolate from current to target look direction
+                            Vector3 smoothedLookInputDirection = Vector3.Slerp(Motor.CharacterForward, _lookInputVector,
+                                1 - Mathf.Exp(-OrientationSharpness * deltaTime)).normalized;
 
+                            // Set the current rotation (which will be used by the KinematicCharacterMotor)
+                            currentRotation = Quaternion.LookRotation(smoothedLookInputDirection, Motor.CharacterUp);
+                        }
+
+                        if (OrientTowardsGravity)
+                        {
+                            // Rotate from current up to invert gravity
+                            currentRotation = Quaternion.FromToRotation((currentRotation * Vector3.up), -Gravity) *
+                                              currentRotation;
+                        }
+                    }
+                    break;
+                }
+                case CharacterState.Slide:
+                {
+                    //currentRotation = Quaternion.FromToRotation(Motor.GroundingStatus.GroundPoint, Motor.CharacterUp);
                     break;
                 }
 

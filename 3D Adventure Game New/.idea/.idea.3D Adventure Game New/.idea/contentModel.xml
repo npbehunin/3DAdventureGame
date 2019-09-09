@@ -201,6 +201,7 @@
               <e p="NatePlayer.cs" t="Include" />
               <e p="NewTempSwordCoroutine.cs" t="Include" />
               <e p="PlayerMovement3D.cs" t="Include" />
+              <e p="TargetingMode.cs" t="Include" />
               <e p="TestSwordCoroutine.cs" t="Include" />
             </e>
           </e>

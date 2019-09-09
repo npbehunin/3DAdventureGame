@@ -39,10 +39,11 @@ namespace KinematicCharacterController.Nate
             characterInputs.MoveAxisForward = Input.GetAxisRaw(VerticalInput);
             characterInputs.MoveAxisRight = Input.GetAxisRaw(HorizontalInput);
            // characterInputs.CameraRotation = OrbitCamera.Transform.rotation;
-            characterInputs.JumpDown = Input.GetKeyDown(KeyCode.Space);
+            //characterInputs.JumpDown = Input.GetKeyDown(KeyCode.Space);
             characterInputs.CrouchDown = Input.GetKey(KeyCode.LeftControl);
             characterInputs.CrouchUp = Input.GetKeyUp(KeyCode.LeftControl);
             characterInputs.SwordSwing = Input.GetMouseButtonDown(0);
+            characterInputs.ToggleTargetingMode = Input.GetKeyDown(KeyCode.Space);
 
             // Apply inputs to character
             Character.SetInputs(ref characterInputs);
