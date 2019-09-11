@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="4c62b2f0-04d8-49ac-b81b-cf9be93b4ab4" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Testing (Nate)/CharacterControllerTestAccel.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Info/PlayerStats.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NateCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/TestSwordCoroutine.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Weapon Scripts/SwordMechanic3D.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NatePlayer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Info/EquipItemController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/6- Crouching/Scripts/MyCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/6- Crouching/Scripts/MyPlayer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/2D Scripts/Player Scripts/TargetingSystem.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/2D Scripts/Player Scripts/CameraFollowPlayer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/2D Scripts/Player Scripts/PlayerAnimation.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/NPC/NPC Scripts/NPCCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/PlayerMovement3D.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/2D Scripts/Player Scripts/PlayerMovement.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/4- Landing and leaving ground/Scripts/MyCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/11- Charging state/Scripts/MyCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/4- Landing and leaving ground/Scripts/MyPlayer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/11- Charging state/Scripts/MyPlayer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/UnitFollowNew.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Testing (Nate)/CHARCONTROLLER NOTES.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/13- Swimming state/Scripts/MyCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Items/ItemDatabase.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/2D Scripts/Pet Scripts/PetMovement.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/13- Swimming state/Scripts/MyPlayer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/2D Scripts/Pet Scripts/PetMovementNew.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/2D Scripts/Enemy Scripts/Enemy.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/14- Climbing Ladders/Scripts/MyCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/2D Scripts/Weapon Scripts/Sword Scripts/SwordMechanic.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/TargetingMode.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/14- Climbing Ladders/Scripts/MyLadder.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2CE23092-8A98-496B-A12C-A183760FB5F6/3e/031efc7d/Vector3.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/ExampleCharacter/Scripts/ExampleCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/14- Climbing Ladders/Scripts/MyPlayer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/ExampleCharacter/Scripts/ExamplePlayer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NewTempSwordCoroutine.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Core/ICharacterController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/15- Root motion example/Scripts/MyCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Core/KinematicCharacterMotor.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/15- Root motion example/Scripts/MyPlayer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetMovement3D.cs" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/Assets/2D Scripts/Pet Scripts/PetMovementNew.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/PlayerMovement3D.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetMovement3D.cs" />
+        <option value="$PROJECT_DIR$/Assets/KinematicCharacterController/Testing (Nate)/MyPlayer.cs" />
+        <option value="$PROJECT_DIR$/Assets/KinematicCharacterController/ExampleCharacter/Scripts/ExampleCharacterController.cs" />
+        <option value="$PROJECT_DIR$/Assets/KinematicCharacterController/Testing (Nate)/MyCharacterController.cs" />
+        <option value="$PROJECT_DIR$/Assets/KinematicCharacterController/Testing (Nate)/CHARCONTROLLER NOTES.cs" />
+        <option value="$PROJECT_DIR$/Assets/KinematicCharacterController/Testing (Nate)/CharacterController(TestAccel).cs" />
+        <option value="$PROJECT_DIR$/Assets/KinematicCharacterController/Testing (Nate)/CharacterControllerTestAccel.cs" />
+        <option value="$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/14- Climbing Ladders/Scripts/MyCharacterController.cs" />
+        <option value="$PROJECT_DIR$/Assets/KinematicCharacterController/Testing (Nate)/NateCharacterController.cs" />
+        <option value="$PROJECT_DIR$/Assets/KinematicCharacterController/Testing (Nate)/NatePlayer.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Items/ItemDatabase.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Info/PlayerStats.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Info/EquipItemController.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Weapon Scripts/SwordMechanic3D.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/TestSwordCoroutine.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NewTempSwordCoroutine.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/NPC/NPC Scripts/NPCCharacterController.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NatePlayer.cs" />
+        <option value="$PROJECT_DIR$/Assets/2D Scripts/Player Scripts/CameraFollowPlayer.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NateCharacterController.cs" />
+        <option value="$PROJECT_DIR$/Assets/2D Scripts/Player Scripts/TargetingSystem.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/TargetingMode.cs" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1Pil1vJnS7k7OPUmzBZmtqu5FJe" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="PropertiesComponent">
+    <property name="Discover.Launch.Via.Unity" value="true" />
+    <property name="Rider.DefaultBreakpoints.AreToggled" value="true" />
+    <property name="Rider.ProjectViewActivator.IsNotFirstRun" value="true" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.C#" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
+    <configuration name="Attach to Unity Editor &amp; Play" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="UNITY_ATTACH_AND_PLAY" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+      <option name="allowRunningInParallel" value="false" />
+      <option name="listenPortForConnections" value="false" />
+      <option name="pid" />
+      <option name="userSelectedPid" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+      <option name="allowRunningInParallel" value="false" />
+      <option name="listenPortForConnections" value="false" />
+      <option name="pid" />
+      <option name="userSelectedPid" value="false" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="true" />
+  <component name="UnityUnitTestConfiguration" currentTestLauncher="EditMode" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="437" y="159" key="SettingsEditor" />
+    <state x="437" y="159" key="SettingsEditor/1920.1080/1920.1080/1920.1080" />
+    <state x="606" y="301" width="672" height="678" key="search.everywhere.popup" />
+    <state x="606" y="301" width="672" height="678" key="search.everywhere.popup/1920.1080/1920.1080/1920.1080" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" suspend="NONE" type="DotNet Exception Breakpoints">
+          <properties exception="System.Threading.ThreadAbortException" displayValue="System.Threading.ThreadAbortException" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
