@@ -1,2 +1,2 @@
-# 2DAdventureGame
-Repo for our Zelda-like 2D adventure game.
+# 3DAdventureGame
+Repo for our Zelda-like 3D adventure game.
