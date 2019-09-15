@@ -165,6 +165,7 @@
           <e p="Enemy Scripts" t="Include">
             <e p="Raccoon (Bokoblin)" t="Include">
               <e p="RaccoonController.cs" t="Include" />
+              <e p="RaccoonInputs.cs" t="Include" />
             </e>
           </e>
           <e p="Items" t="Include">

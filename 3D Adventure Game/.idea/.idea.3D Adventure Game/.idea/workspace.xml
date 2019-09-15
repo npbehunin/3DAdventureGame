@@ -12,19 +12,33 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/NPC/NPC Scripts/NPCCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NatePlayer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonInputs.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/NOTES/EnemyRaccoonNotes.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/NOTES/EnemyMovementNotes.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Examples/Scripts/PlayableMover.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/ExampleCharacter/Scripts/ExampleCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/NOTES/EnemyAINotes.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/2D Scripts Backup/Enemy Scripts/Enemy.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Examples/Scripts/ExampleAIController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Core/KinematicCharacterMotor.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Core/ICharacterController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/NOTES/EnemyMovementNotes.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Examples/Scripts/ExampleMovingPlatform.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/PlayerMovement3D.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NateCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/TargetingMode.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/NOTES/EnemyAINotes.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/2D Scripts Backup/Enemy Scripts/Forest Temple/Jelly/Jelly.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/Assets/3D Scripts/NOTES/EnemyMovementNotes.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/NOTES/EnemyAINotes.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonInputs.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/NOTES/EnemyRaccoonNotes.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NateCharacterController.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonController.cs" />
       </list>
     </option>
