@@ -17,15 +17,21 @@
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonInputs.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/NOTES/EnemyRaccoonNotes.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/15- Root motion example/Scripts/MyCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Examples/Scripts/PlayableMover.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/ExampleCharacter/Scripts/ExampleCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/GridNew.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/UnitFollowNew.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/NOTES/EnemyAINotes.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/2D Scripts Backup/Enemy Scripts/Enemy.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Examples/Scripts/ExampleAIController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Core/KinematicCharacterMotor.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Core/ICharacterController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetMovement3D.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/NOTES/EnemyMovementNotes.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Examples/Scripts/ExampleMovingPlatform.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/14- Climbing Ladders/Scripts/MyLadder.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/14- Climbing Ladders/Scripts/MyCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/PlayerMovement3D.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NateCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/TargetingMode.cs" root0="FORCE_HIGHLIGHTING" />
@@ -39,7 +45,11 @@
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonInputs.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/NOTES/EnemyRaccoonNotes.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NateCharacterController.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/Raccon State Transition Outlining.txt" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetMovement3D.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/UnitFollowNew.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonController.cs" />
+        <option value="$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/14- Climbing Ladders/Scripts/MyLadder.cs" />
       </list>
     </option>
   </component>
@@ -98,6 +108,10 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="398" y="173" key="#com.intellij.execution.impl.EditConfigurationsDialog" />
+    <state x="398" y="173" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.1080/1920.1080/1920.1080" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

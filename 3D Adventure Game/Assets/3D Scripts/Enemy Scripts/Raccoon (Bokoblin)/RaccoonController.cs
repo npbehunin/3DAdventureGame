@@ -35,6 +35,12 @@ namespace KinematicCharacterController.Raccoon
         Flail,
     }
     
+    public enum SwordAttackState
+    {
+        SwingStart,
+        SwingEnd
+    }
+    
     public struct RaccoonCharacterInputs
     {
         public Vector3 MoveVector;
@@ -70,6 +76,9 @@ namespace KinematicCharacterController.Raccoon
         
         //Custom stuff
         public RaccoonState CurrentRaccoonState { get; private set; }
+        public SwordAttackState CurrentSwordAttackState;
+        public UnitFollowNew unitPathfinding;
+        
         public LayerMask WallLayerMask;
         public Transform target;
         private int fieldOfView;
@@ -78,9 +87,14 @@ namespace KinematicCharacterController.Raccoon
         public bool _lineOfSightToTarget;
         private bool _targetDetected;
         private bool _canSetSwordAttack;
+        private bool _canCheckPathfinding = true;
         private Coroutine DetectionWaitCoroutine;
         private Coroutine WaitForAlertCoroutine;
         private Coroutine SwordAttackCoroutine;
+        private Coroutine SwordMovementCoroutine;
+        private Coroutine PathfindingCoroutine;
+
+        private Vector3 targetPos;
 
 
         private void Start()
@@ -98,7 +112,7 @@ namespace KinematicCharacterController.Raccoon
 
             if (CurrentRaccoonState == RaccoonState.Default)
             {
-                fieldOfView = 35; //70
+                fieldOfView = 50; //70
             }
             else
             {
@@ -136,7 +150,8 @@ namespace KinematicCharacterController.Raccoon
                 }
                 case RaccoonState.SwordAttack:
                 {
-                    SwordAttackCoroutine = StartCoroutine(SwordSwingTime(1.5f)); //Temporary sword attack time.
+                    SwordAttackCoroutine = StartCoroutine(SwordSwingTime(.5f)); //Temporary sword attack time.
+                    SwordMovementCoroutine = StartCoroutine(SwordMovement(.5f));
                     break;
                 }
             }
@@ -162,83 +177,101 @@ namespace KinematicCharacterController.Raccoon
         /// </summary>
         public void SetInputs(ref RaccoonCharacterInputs inputs) //AI
         {
-            //_moveInputVector = inputs.MoveVector;
-            //_lookInputVector = inputs.LookVector;
             switch (CurrentRaccoonState)
             {
+                //Follow the target
                 case RaccoonState.FollowTarget:
                 {
-                    //METHOD 1
-                    //If target is outside of attack distance...
-                        //Choose a position somewhere within 180 degrees of the target.
-                        //Move towards the position.
-
-                        //Otherwise, if it's in the attack distance...
-                        //Check the other group enemies.
-                        
-                        //RULES:
-                        //Only 1-2 enemies can swing at a time.
-                        //Only 1 enemy can be leaping at a time.
-                        //Only 1-2 enemies can be throwing objects at a time.
-                        
-                        //If outside of melee and jumping range...
-                            //Throw objects
-                        //If outside of melee range...
-                            //Throw objects or jump
-                        //If inside melee range...
-                            //Transition to sword attack state
+                    Vector3 targetDirection = new Vector3();
+                    targetDirection = targetPos - Motor.Transform.position;
                     
-                    //METHOD 2
-                    //If target is outside of attack distance...
-                        //Move towards the target.
-                    
-                    //Otherwise, if it's in the attack distance...
-                        //Transition to the attack state.
-                        
-                    //(Then, the attack state will handle different sub-attack states and choose one randomly
-                    //base on what is equipped and how far the enemy is from the player.)
-
-                    Vector3 targetDirection = target.transform.position - Motor.Transform.position;
-                    float attackDistance = 4f;
-                    
-                    Debug.Log(_moveInputVector);
-                    if (targetDirection.sqrMagnitude > Mathf.Pow(attackDistance, 2))
+                    if (_lineOfSightToTarget) //If there's line of sight...
                     {
-                        _moveInputVector = Vector3.ProjectOnPlane(targetDirection.normalized, Motor.CharacterUp); //Move towards the target.
-                    }
-                    else
-                    {
-                        _moveInputVector = Vector3.zero;
-                        if (!_attackDelay)
+                        MaxStableMoveSpeed = 5f;
+                        targetPos = target.transform.position;
+
+                        float attackDistance = 4f;
+                    
+                        if (targetDirection.sqrMagnitude > Mathf.Pow(attackDistance, 2)) //If the target is outside the attack distance...
                         {
-                            //Debug.Log("Should transition here");
-                            TransitionToState(RaccoonState.SwordAttack);
+                            _moveInputVector = Vector3.ProjectOnPlane(targetDirection.normalized, Motor.CharacterUp); //Move towards the target.
+                        }
+                        else
+                        {
+                            _moveInputVector = Vector3.zero;
+                            if (!_attackDelay)
+                            {
+                                TransitionToState(RaccoonState.SwordAttack);
+                            }
                         }
                     }
+                    else //If there's NO line of sight...
+                    {
+                        unitPathfinding.motorUpDirection = Motor.CharacterUp;
+                        if (_canCheckPathfinding)
+                        {
+                            _canCheckPathfinding = false;
+                            PathfindingCoroutine = StartCoroutine(PathfindingTiming(targetPos));
+                        }
+                        
+                        if (unitPathfinding.CanReachTarget)
+                        {
+                            Vector3 pathPosition = unitPathfinding.targetPathPosition;
+                            Vector3 pathDirection = pathPosition - Motor.Transform.position;
+                            _moveInputVector = Vector3.ProjectOnPlane(pathDirection.normalized, Motor.CharacterUp); //Move towards last seen position.
+                        }
+                        else
+                        {
+                            //Don't transition immediately to default, because canreachtarget starts false.
+                        }
+                    }
+
                     break;
+                    
+                    //TO DO HERE:
+                    //1. After completing the path, add wait time where the enemy looks around, then uses pathfinding back to its home position.
+                    //2. Add pathfinding when there's line of sight, but the height difference is too high.
                 }
+                //Sword attack
                 case RaccoonState.SwordAttack:
                 {
                     if (_canSetSwordAttack)
                     {
                         _canSetSwordAttack = false;
-                        float attackMethod = Mathf.RoundToInt(UnityEngine.Random.Range(0, 2.49f)); //0, 1, or 2.
+                        float attackMethod = Mathf.RoundToInt(UnityEngine.Random.Range(-.51f, 2.49f)); //0, 1, or 2.
                         Debug.Log("Executing attack #" + attackMethod + "!");
+                        _moveInputVector = Motor.CharacterForward;
                         switch (attackMethod)
                         {
-                            case 0:
+                            case 0: //Sword attack type 1
                             {
+                                
                                 break;
                             }
-                            case 1:
+                            case 1: //Sword attack type 2
                             {
                             
                                 break;
                             }
-                            case 2:
+                            case 2: //Sword attack type 3
                             {
                                 break;
                             }
+                        }
+                    }
+                    
+                    //Sword attack movement
+                    switch (CurrentSwordAttackState)
+                    {
+                        case SwordAttackState.SwingStart:
+                        {
+                            MaxStableMoveSpeed = 10f;
+                            break;
+                        }
+                        case SwordAttackState.SwingEnd:
+                        {
+                            MaxStableMoveSpeed = 0f;
+                            break;
                         }
                     }
                     break;
@@ -272,32 +305,45 @@ namespace KinematicCharacterController.Raccoon
         /// </summary>
         public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
         {
-            //switch (CurrentRaccoonState)
-            //{
-            //    case RaccoonState.Default:
-                //case RaccoonState.Crouched:
+            switch (CurrentRaccoonState)
                 {
-                    _lookInputVector = _moveInputVector;
-                    if (_lookInputVector.sqrMagnitude > 0f && OrientationSharpness > 0f)
+                    //When the raccoon is following the target...
+                    case RaccoonState.FollowTarget:
                     {
-                        // Smoothly interpolate from current to target look direction
-                        Vector3 smoothedLookInputDirection = Vector3.Slerp(Motor.CharacterForward, _lookInputVector,
-                            1 - Mathf.Exp(-OrientationSharpness * deltaTime)).normalized;
-    
-                        // Set the current rotation (which will be used by the KinematicCharacterMotor)
-                        currentRotation = Quaternion.LookRotation(smoothedLookInputDirection, Motor.CharacterUp);
+                        if (_lineOfSightToTarget)
+                        {
+                            _lookInputVector = Vector3.ProjectOnPlane(target.transform.position - Motor.Transform.position, Motor.CharacterUp);
+                        }
+                        else
+                        {
+                            _lookInputVector = _moveInputVector;
+                        }
+                        
+                        break;
                     }
-    
-                    if (OrientTowardsGravity)
+                    default:
                     {
-                        // Rotate from current up to invert gravity
-                        currentRotation = Quaternion.FromToRotation((currentRotation * Vector3.up), -Gravity) *
-                                          currentRotation;
+                        _lookInputVector = _moveInputVector;
+                        break;
                     }
-    
-                    //break;
                 }
-           // }
+                
+                if (_lookInputVector.sqrMagnitude > 0f && OrientationSharpness > 0f)
+                {
+                    // Smoothly interpolate from current to target look direction
+                    Vector3 smoothedLookInputDirection = Vector3.Slerp(Motor.CharacterForward, _lookInputVector,
+                        1 - Mathf.Exp(-OrientationSharpness * deltaTime)).normalized;
+    
+                    // Set the current rotation (which will be used by the KinematicCharacterMotor)
+                    currentRotation = Quaternion.LookRotation(smoothedLookInputDirection, Motor.CharacterUp);
+                }
+    
+                if (OrientTowardsGravity)
+                {
+                    // Rotate from current up to invert gravity
+                    currentRotation = Quaternion.FromToRotation((currentRotation * Vector3.up), -Gravity) *
+                                      currentRotation;
+                }
         }
     
         /// <summary>
@@ -458,10 +504,18 @@ namespace KinematicCharacterController.Raccoon
 
             if (targetDirection.sqrMagnitude < Mathf.Pow(maxDistance, 2) && Vector3.Angle(targetDirection, Motor.CharacterForward) <= fieldOfView)
             {
-                if (Physics.Linecast(Motor.Transform.position, targetPosition, WallLayerMask));
+                if (!Physics.Linecast(Motor.Transform.position, targetPosition, WallLayerMask))
                 {
                     _lineOfSightToTarget = true;
                 }
+                else
+                {
+                    _lineOfSightToTarget = false;
+                }
+            }
+            else
+            {
+                _lineOfSightToTarget = false;
             }
         }
 
@@ -539,6 +593,11 @@ namespace KinematicCharacterController.Raccoon
     
         // COROUTINES
 
+        private IEnumerator PathfindingTiming(Vector3 target)
+        {
+            yield return CustomTimer.Timer(.2f);
+            unitPathfinding.CheckIfCanFollowPath(target);
+        }
         private IEnumerator SwordSwingTime(float seconds)
         {
             yield return CustomTimer.Timer(seconds);
@@ -547,6 +606,17 @@ namespace KinematicCharacterController.Raccoon
             yield return CustomTimer.Timer(2f);
             _canSetSwordAttack = true;
             _attackDelay = false;
+        }
+        
+        private IEnumerator SwordMovement(float time) //Temp
+        {
+            yield return CustomTimer.Timer(.2f);
+            float timeStart = time * .35f;
+            float timeEnd = timeStart - time;
+            CurrentSwordAttackState = SwordAttackState.SwingStart; //Start swing movement
+            yield return CustomTimer.Timer(timeStart);
+            CurrentSwordAttackState = SwordAttackState.SwingEnd; //End swing movement
+            yield return CustomTimer.Timer(timeEnd);
         }
 
         private IEnumerator WaitForSeconds(float seconds)

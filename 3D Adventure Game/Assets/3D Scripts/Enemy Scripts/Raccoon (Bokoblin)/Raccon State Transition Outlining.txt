@@ -1,0 +1,32 @@
+RACCOON STATE OVERVIEWS
+
+Default
+- Check what type of default state the raccoon is set to. (Each raccoon has a selectable type of default movement.)
+- Sitting. When in the home position, enemy will sit in place.
+- Wandering. When in the home position, set a random position near it and move to it. Once reached, set a coroutine to wait before moving to the next position.
+- Patrolling. When in the home position, check the array of set positions and move to the first one. Once reached, set a coroutine. After the coroutine, move to the next position, and so on.
+- Sleeping. Sit in place.
+- Scouting (bow and arrow). Sit in place and move their head.
+
+Alerted
+- Target based rotation is set to true.
+
+FollowTarget
+- Choose a random point set around the target and move to it.
+- These points are the offset resulting from the target.position + offset.
+- Once the target is close enough, wait for a random amount of time before attacking.
+
+Attack
+- Choose a random attack based on distance to player.
+- If within melee distance, jump or melee.
+- If within jumping distance, jump or throw objects.
+- If within throwing distance, throw objects. 
+- (These can vary if a bow and arrow or shield is equipped)
+
+Stun
+- Enemy will stop its attack coroutines.
+- Set a stun coroutine. Once done, transition back to followtarget.
+
+Knocked
+- Enemy will stop its stun and attack coroutines.
+- Set a knocked coroutine. Once done, will get back up and transition back to followtarget.

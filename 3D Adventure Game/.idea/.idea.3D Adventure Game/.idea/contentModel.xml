@@ -164,6 +164,7 @@
           </e>
           <e p="Enemy Scripts" t="Include">
             <e p="Raccoon (Bokoblin)" t="Include">
+              <e p="Raccon State Transition Outlining.txt" t="Include" />
               <e p="RaccoonController.cs" t="Include" />
               <e p="RaccoonInputs.cs" t="Include" />
             </e>

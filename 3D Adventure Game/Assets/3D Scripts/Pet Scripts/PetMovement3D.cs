@@ -402,7 +402,7 @@ public class PetMovement3D : MonoBehaviour
 		if (FollowPath && CanFollowPath.initialBool)
 		{
 			CanFollowPath.initialBool = false;
-			path.CheckIfCanFollowPath();
+			path.CheckIfCanFollowPath(TargetTransform.initialPos);
 		}
 		
 		if (!FollowPath)
@@ -411,9 +411,9 @@ public class PetMovement3D : MonoBehaviour
 			CanFollowPath.initialBool = true;
 		}
 
-		if (path.CannotReachPlayer) //Runs once
+		if (!path.CanReachTarget) //Runs once
 		{
-			path.CannotReachPlayer = false;
+			path.CanReachTarget = true;
 			if (TargetTransform.initialPos == PlayerTransform.initialPos)
 			{
 				OutOfRange();

@@ -241,6 +241,7 @@
     <Compile Include="Assets\KinematicCharacterController\Walkthrough\8- Creating a moving platform\Scripts\MyPlayer.cs" />
     <Compile Include="Assets\KinematicCharacterController\Walkthrough\9- Custom collision filtering\Scripts\MyCharacterController.cs" />
     <Compile Include="Assets\KinematicCharacterController\Walkthrough\9- Custom collision filtering\Scripts\MyPlayer.cs" />
+    <None Include="Assets\3D Scripts\Enemy Scripts\Raccoon (Bokoblin)\Raccon State Transition Outlining.txt" />
     <None Include="Assets\JsonDotNet\link.xml" />
     <None Include="Assets\3D Scripts\Player Scripts\ItemEquippingInfo.txt" />
     <Reference Include="Unity.Timeline.Editor">

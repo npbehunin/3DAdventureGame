@@ -8,19 +8,21 @@ public class UnitFollowNew : MonoBehaviour {
 	//public Transform target;
 	float speed = 3.5f;
 	public Vector3[] path;
-	int targetIndex;
+	public int targetIndex;
 	public Coroutine FollowPathCoroutine;
 	public Coroutine UpdateThePath;
-	public bool CannotReachPlayer;
-	public BoolValue PetCanFollowPath;
-	public Vector3Value TargetTransform;
+	public bool CanReachTarget;
+	//private BoolValue PetCanFollowPath;
+	//private Vector3Value TargetTransform;
+	//public Transform target;
 
-	public Vector3Value targetPos;
+	public Vector3 motorUpDirection;
+	public Vector3 targetPathPosition;
 
 	void Start() {
 		//PathRequestManager.RequestPath(transform.position,target.position, OnPathFound);
 		//CanFollowPath = true;
-		CannotReachPlayer = false;
+		//CanReachTarget = true;
 		//This method needs to stop once the pet's linecast with the player is true. We need to tell everything to reset.
 	}
 
@@ -31,7 +33,6 @@ public class UnitFollowNew : MonoBehaviour {
 
 	public void StopFollowPath()
 	{
-		PetCanFollowPath.initialBool = true;
 		if (FollowPathCoroutine != null)
 		{
 			StopCoroutine(FollowPathCoroutine);
@@ -43,20 +44,18 @@ public class UnitFollowNew : MonoBehaviour {
 		}
 	}
 
-	public void CheckIfCanFollowPath()
+	public void CheckIfCanFollowPath(Vector3 targetPosition)
 	{
-		//Enable this when we want to enable bools again
-		//if (CanFollowPath)
-		{
-			//CanFollowPath = false;
-			Debug.Log("Requesting a path");
-			PathRequestManagerNew.RequestPath(transform.position, TargetTransform.initialPos, OnPathFound);
-		}
+		Debug.Log("Requesting a path");
+		PathRequestManagerNew.RequestPath(transform.position, targetPosition, OnPathFound);
 	}
 	
 	public void OnPathFound(Vector3[] newPath, bool pathSuccessful) { //When a path is found...
-		if (pathSuccessful) {
+		if (pathSuccessful)
+		{
+			CanReachTarget = true;
 			path = newPath;
+			Debug.Log("Path successful");
 			targetIndex = 0;
 			if (FollowPathCoroutine != null)
 			{
@@ -69,7 +68,7 @@ public class UnitFollowNew : MonoBehaviour {
 		else
 		{
 			Debug.Log("Can't reach target");
-			CannotReachPlayer = true;
+			CanReachTarget = false;
 			StopFollowPath();
 		}
 	}
@@ -80,11 +79,11 @@ public class UnitFollowNew : MonoBehaviour {
 		if (path.Length != 0)
 		{
 			Vector3 currentWaypoint = path[0]; //OUT OF RANGE ERROR HERE
-			UpdateThePath = StartCoroutine(UpdatePath());
+			//UpdateThePath = StartCoroutine(UpdatePath());
 			while (true)
 			{
-				//Debug.Log(currentWaypoint);
-				if (Math.Abs(transform.position.x - currentWaypoint.x) < .5f && Math.Abs(transform.position.z - currentWaypoint.z) < .5f)
+				//Debug.Log(Vector3.Distance(Vector3.ProjectOnPlane(currentWaypoint, transform.position), motorUpDirection));
+				if (Vector3.Distance(Vector3.ProjectOnPlane(currentWaypoint, transform.position), motorUpDirection) < .75f)
 				{
 					targetIndex++;
 					if (targetIndex >= path.Length)
@@ -95,10 +94,8 @@ public class UnitFollowNew : MonoBehaviour {
 
 					currentWaypoint = path[targetIndex];
 				}
-
-				//Debug.Log("REEE");
-				//CanReachEnemy.initialBool = true;
-				targetPos.initialPos = currentWaypoint; //Set our target position to be the waypoint.
+				
+				targetPathPosition = currentWaypoint; //Set our target position to be the waypoint.
 				yield return null;
 			}
 		}
@@ -109,11 +106,11 @@ public class UnitFollowNew : MonoBehaviour {
 		}
 	}
 
-	IEnumerator UpdatePath()
-	{
-		yield return new WaitForSeconds(.2f);
-		StopFollowPath();
-	}
+	//IEnumerator UpdatePath()
+	//{
+	//	yield return new WaitForSeconds(.2f);
+	//	StopFollowPath();
+	//}
 
 	public void OnDrawGizmos() {
 		if (path != null) {
