@@ -12,6 +12,7 @@ public class UnitFollowNew : MonoBehaviour {
 	public Coroutine FollowPathCoroutine;
 	public Coroutine UpdateThePath;
 	public bool CanReachTarget;
+	public bool EndOfPath;
 	//private BoolValue PetCanFollowPath;
 	//private Vector3Value TargetTransform;
 	//public Transform target;
@@ -33,6 +34,8 @@ public class UnitFollowNew : MonoBehaviour {
 
 	public void StopFollowPath()
 	{
+		EndOfPath = true;
+		CanReachTarget = false;
 		if (FollowPathCoroutine != null)
 		{
 			StopCoroutine(FollowPathCoroutine);
@@ -46,6 +49,7 @@ public class UnitFollowNew : MonoBehaviour {
 
 	public void CheckIfCanFollowPath(Vector3 targetPosition)
 	{
+		EndOfPath = false;
 		Debug.Log("Requesting a path");
 		PathRequestManagerNew.RequestPath(transform.position, targetPosition, OnPathFound);
 	}
@@ -83,12 +87,13 @@ public class UnitFollowNew : MonoBehaviour {
 			while (true)
 			{
 				//Debug.Log(Vector3.Distance(Vector3.ProjectOnPlane(currentWaypoint, transform.position), motorUpDirection));
-				if (Vector3.Distance(Vector3.ProjectOnPlane(currentWaypoint, transform.position), motorUpDirection) < .75f)
+				if (Vector3.Distance(Vector3.ProjectOnPlane(currentWaypoint, motorUpDirection), transform.position) < .75f)
 				{
 					targetIndex++;
 					if (targetIndex >= path.Length)
 					{
 						Debug.Log("Hiya test"); //THIS IS THE END OF THE PATH FOLLOWING.
+						StopFollowPath();
 						yield break;
 					}
 
@@ -99,9 +104,8 @@ public class UnitFollowNew : MonoBehaviour {
 				yield return null;
 			}
 		}
-		else //Not actually redundant lol
+		else
 		{
-			StopFollowPath();
 			Debug.Log("AAGUh");
 		}
 	}

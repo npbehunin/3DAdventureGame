@@ -11,6 +11,7 @@ namespace KinematicCharacterController.Raccoon
     public enum RaccoonState
     {
         Default,
+        Search,
         FollowTarget,
         Alerted,
         SwordAttack,
@@ -25,7 +26,8 @@ namespace KinematicCharacterController.Raccoon
         Sitting,
         Talking,
         Patrolling,
-        Sleeping
+        Sleeping,
+        Reset
     }
     
     public enum RaccoonSwordAttackState
@@ -63,9 +65,10 @@ namespace KinematicCharacterController.Raccoon
         public bool OrientTowardsGravity = false;
         public Vector3 Gravity = new Vector3(0, -30f, 0);
         public Transform MeshRoot;
+        public Transform HomePosition;
         
         private Collider[] _probedColliders = new Collider[8];
-        private Vector3 _moveInputVector;
+        public Vector3 _moveInputVector;
     
         private Vector3 _lookInputVector;
         private float testLerp = 0f;
@@ -75,24 +78,31 @@ namespace KinematicCharacterController.Raccoon
         private Vector3 lastOuterNormal = Vector3.zero;
         
         //Custom stuff
-        public RaccoonState CurrentRaccoonState { get; private set; }
-        public SwordAttackState CurrentSwordAttackState;
+        public RaccoonState CurrentRaccoonState;// { get; private set; }
+        private SwordAttackState CurrentSwordAttackState;
+        private RaccoonDefaultState CurrentDefaultState;
+        public RaccoonDefaultState SelectedDefaultState;
         public UnitFollowNew unitPathfinding;
         
         public LayerMask WallLayerMask;
         public Transform target;
         private int fieldOfView;
         private bool _attackIsActive;
-        public bool _attackDelay;
+        private bool _attackDelay;
         public bool _lineOfSightToTarget;
         private bool _targetDetected;
         private bool _canSetSwordAttack;
         private bool _canCheckPathfinding = true;
+        private bool _canStartReactionTime = true;
+
+        public bool _shouldMoveToHome;
+        
         private Coroutine DetectionWaitCoroutine;
         private Coroutine WaitForAlertCoroutine;
         private Coroutine SwordAttackCoroutine;
         private Coroutine SwordMovementCoroutine;
         private Coroutine PathfindingCoroutine;
+        private Coroutine SearchTimeCoroutine;
 
         private Vector3 targetPos;
 
@@ -108,6 +118,7 @@ namespace KinematicCharacterController.Raccoon
 
         private void Update()
         {
+            //Debug.Log(unitPathfinding.EndOfPath);
             LineOfSightCheck(Motor.CharacterForward, target.position);
 
             if (CurrentRaccoonState == RaccoonState.Default)
@@ -141,6 +152,7 @@ namespace KinematicCharacterController.Raccoon
             {
                 case RaccoonState.Default:
                 {
+                    _shouldMoveToHome = true;
                     break;
                 }
                 case RaccoonState.Alerted:
@@ -152,6 +164,11 @@ namespace KinematicCharacterController.Raccoon
                 {
                     SwordAttackCoroutine = StartCoroutine(SwordSwingTime(.5f)); //Temporary sword attack time.
                     SwordMovementCoroutine = StartCoroutine(SwordMovement(.5f));
+                    break;
+                }
+                case RaccoonState.Search:
+                {
+                    SearchTimeCoroutine = StartCoroutine(SearchStateCoroutine());
                     break;
                 }
             }
@@ -167,6 +184,13 @@ namespace KinematicCharacterController.Raccoon
                 case RaccoonState.Default:
                 {
                     //Sound detection false
+                    _canCheckPathfinding = true;
+                    break;
+                }
+                case RaccoonState.FollowTarget:
+                {
+                    unitPathfinding.EndOfPath = false; //Reset
+                    _canCheckPathfinding = true; //Reset
                     break;
                 }
             }
@@ -179,7 +203,81 @@ namespace KinematicCharacterController.Raccoon
         {
             switch (CurrentRaccoonState)
             {
-                //Follow the target
+                //Default state
+                case RaccoonState.Default:
+                {
+                    MaxStableMoveSpeed = 5f;
+                    if (_shouldMoveToHome)
+                    {
+                        Vector3 homeDirection = HomePosition.position - Motor.Transform.position;
+
+                        //Debug.Log((Vector3.ProjectOnPlane(homeDirection, Motor.CharacterUp).magnitude));
+                        if (Vector3.ProjectOnPlane(homeDirection, Motor.CharacterUp).magnitude > .35f) //Change to take into account home position y.
+                        {
+                            if (_canCheckPathfinding) //If we can check for a path...
+                            {
+                                _canCheckPathfinding = false;
+                                PathfindingCoroutine = StartCoroutine(PathfindingTiming(HomePosition.position));
+                            }
+                        }
+                        else
+                        {
+                            _shouldMoveToHome = false;
+                            //CurrentDefaultState = SelectedDefaultState; //Choose in inspector
+                        }
+                        
+                        if (unitPathfinding.CanReachTarget)
+                        {
+                            Vector3 pathPosition = new Vector3();
+                            if (unitPathfinding.path.Length > 0)
+                            {
+                                pathPosition = unitPathfinding.targetPathPosition;
+                            }
+                            else
+                            {
+                                pathPosition = HomePosition.position; //(In case the pathfinding returns a length of 0)
+                                
+                            }
+                            Vector3 pathDirection = pathPosition - Motor.Transform.position;
+                            //Debug.Log(pathPosition.normalized);
+                            _moveInputVector = Vector3.ProjectOnPlane(pathDirection, Motor.CharacterUp).normalized; //Move towards pathPosition.
+                            
+                        }
+                        //else
+                        //{
+                        //    _shouldMoveToHome = false;
+                        //}
+                    }
+                    else
+                    {
+                        _moveInputVector = Vector3.zero;
+                        switch (CurrentDefaultState)
+                        {
+                            case RaccoonDefaultState.Sitting:
+                            {
+                                break;
+                            }
+                            case RaccoonDefaultState.Patrolling:
+                            {
+                                break;
+                            }
+                            case RaccoonDefaultState.Sleeping:
+                            {
+                                break;
+                            }
+                            case RaccoonDefaultState.Talking:
+                            {
+                                break;
+                            }
+                            case RaccoonDefaultState.Reset:
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+                //Follow target state
                 case RaccoonState.FollowTarget:
                 {
                     Vector3 targetDirection = new Vector3();
@@ -208,7 +306,7 @@ namespace KinematicCharacterController.Raccoon
                     else //If there's NO line of sight...
                     {
                         unitPathfinding.motorUpDirection = Motor.CharacterUp;
-                        if (_canCheckPathfinding)
+                        if (_canCheckPathfinding) //If we can check for a path...
                         {
                             _canCheckPathfinding = false;
                             PathfindingCoroutine = StartCoroutine(PathfindingTiming(targetPos));
@@ -220,9 +318,15 @@ namespace KinematicCharacterController.Raccoon
                             Vector3 pathDirection = pathPosition - Motor.Transform.position;
                             _moveInputVector = Vector3.ProjectOnPlane(pathDirection.normalized, Motor.CharacterUp); //Move towards last seen position.
                         }
-                        else
+                        //else
+                        //{
+                        //    TransitionToState(RaccoonState.Search);
+                        //    //Don't transition immediately to default, because canreachtarget starts false.
+                        //}
+
+                        if (unitPathfinding.EndOfPath)
                         {
-                            //Don't transition immediately to default, because canreachtarget starts false.
+                            TransitionToState(RaccoonState.Search);
                         }
                     }
 
@@ -232,10 +336,11 @@ namespace KinematicCharacterController.Raccoon
                     //1. After completing the path, add wait time where the enemy looks around, then uses pathfinding back to its home position.
                     //2. Add pathfinding when there's line of sight, but the height difference is too high.
                 }
-                //Sword attack
+                //Sword attack state
                 case RaccoonState.SwordAttack:
                 {
-                    if (_canSetSwordAttack)
+                    if (_canSetSwordAttack) //*Make sure enemy will facing the player first here. (Angle between direct linecast and characterforward)
+                                            //Otherwise, enemy might attack without actually facing the player.
                     {
                         _canSetSwordAttack = false;
                         float attackMethod = Mathf.RoundToInt(UnityEngine.Random.Range(-.51f, 2.49f)); //0, 1, or 2.
@@ -260,7 +365,7 @@ namespace KinematicCharacterController.Raccoon
                         }
                     }
                     
-                    //Sword attack movement
+                    //Sword attack movement substates
                     switch (CurrentSwordAttackState)
                     {
                         case SwordAttackState.SwingStart:
@@ -274,6 +379,11 @@ namespace KinematicCharacterController.Raccoon
                             break;
                         }
                     }
+                    break;
+                }
+                case RaccoonState.Search:
+                {
+                    _moveInputVector = Vector3.zero;
                     break;
                 }
             }
@@ -477,9 +587,11 @@ namespace KinematicCharacterController.Raccoon
             {
                 case RaccoonState.Default:
                 {
-                    if (_lineOfSightToTarget && DetectionWaitCoroutine == null)
+                    if (_lineOfSightToTarget && _canStartReactionTime)
                     {
+                        Debug.Log("Detected! Time to react.");
                         DetectionWaitCoroutine = StartCoroutine(DetectionReactionTime());
+                        _canStartReactionTime = false;
                     }
                     break;
                 }
@@ -491,7 +603,7 @@ namespace KinematicCharacterController.Raccoon
                 if (CurrentRaccoonState != RaccoonState.Default)
                 {
                     //_timeBeforeFallingStateCoroutine = StartCoroutine(TimeBeforeFallingStateCoroutine());
-                    StartCoroutine(TimeBeforeFallingStateCoroutine());
+                    //StartCoroutine(TimeBeforeFallingStateCoroutine());
                 }
             }
         }
@@ -592,12 +704,22 @@ namespace KinematicCharacterController.Raccoon
         }
     
         // COROUTINES
+        
+        //Search state time
+        private IEnumerator SearchStateCoroutine()
+        {
+            yield return CustomTimer.Timer(2f);
+            TransitionToState(RaccoonState.Default);
+        }
 
+        //Search for a path (pathfinding)
         private IEnumerator PathfindingTiming(Vector3 target)
         {
             yield return CustomTimer.Timer(.2f);
             unitPathfinding.CheckIfCanFollowPath(target);
         }
+        
+        //Transition to FollowTarget after a sword swing and set an attack delay.
         private IEnumerator SwordSwingTime(float seconds)
         {
             yield return CustomTimer.Timer(seconds);
@@ -608,6 +730,7 @@ namespace KinematicCharacterController.Raccoon
             _attackDelay = false;
         }
         
+        //Set the time between SwingStart and SwingEnd in a sword swing.
         private IEnumerator SwordMovement(float time) //Temp
         {
             yield return CustomTimer.Timer(.2f);
@@ -619,24 +742,24 @@ namespace KinematicCharacterController.Raccoon
             yield return CustomTimer.Timer(timeEnd);
         }
 
-        private IEnumerator WaitForSeconds(float seconds)
-        {
-            yield return CustomTimer.Timer(seconds);
-        }
-
-        private IEnumerator TimeBeforeFallingStateCoroutine()
-        {
-            yield return CustomTimer.Timer(.1f);
-            TransitionToState(RaccoonState.Default);
-        }
+        //Transition to default state while in midair after x amount of time.
+        //private IEnumerator TimeBeforeFallingStateCoroutine()
+        //{
+        //    yield return CustomTimer.Timer(.1f);
+        //    TransitionToState(RaccoonState.Default);
+        //}
+        //Greyed out for now until we can tell the raccoon to go back to its last state after falling.
         
+        //Reaction time to detect something.
         private IEnumerator DetectionReactionTime()
         {
             float reactionTime = .35f;
             yield return CustomTimer.Timer(reactionTime);
             TransitionToState(RaccoonState.Alerted);
+            _canStartReactionTime = true; //Reset
         }
 
+        //Alert state time before following a target.
         private IEnumerator AlertStateTransitionDelay()
         {
             yield return CustomTimer.Timer(.75f);
@@ -645,5 +768,49 @@ namespace KinematicCharacterController.Raccoon
     }
 }
 
-//IDEAS:
-//Setup a custom coroutine method that stops any coroutines running in a different state.
+//CURRENT SCRIPT NOTES
+//Enemy will sword attack even if not directly facing the player.
+//Some coroutines might cause issues with state transitions unless they're stopped. (Ex: A coroutine to transition to
+//followtarget will still run after the enemy is knocked.)
+
+//--------------------------------------------------------------------------------------------------------------------
+
+//TO DO:
+//Start the first rewrite. In the next script, we'll have 2 different detection states and 2 rotation states.
+//(Try to make it as generic as possible so we can use most of it for other enemies!)
+
+//DETECTION STATES:
+//Direct Linecast - Used in follow target. When the player goes behind a wall, the enemy will begin pathfinding.
+//Line of sight - Used in default and search. Used when the player isn't detected, and it will always transition to
+    //the alerted state.
+
+//ROTATION STATES:
+//Movement based - Used in every state that doesn't require looking at a target.
+//Target based - Used in states like alerted and follow target. Turns facing towards a target.
+
+//OVERVIEW:
+
+//1. Start in default state. Enemy will move based on the 4 default substates. Line of sight and audio detection is
+//enabled. If the enemy is too far away from its home position, use pathfinding to get back. If the path can't be
+//completed, remain in default state.
+
+//2. If line of sight is made, transition to the alerted state. In the alerted state, keep track of how much time passes
+//between the start of the state and the end. If the time goes over x amount, transition to the followplayer state.
+//Otherwise, transition to the search state.
+//Target based rotation will be turned on for as long as the player is within line of sight.
+
+//3. Once in the followplayer state, direct linecast detection is turned on and pathfinding will be enabled. IF the
+//enemy gets close enough and an x amount of random time passes, the enemy will attack. (We'll implement different
+//attacks and group attacks later.) If the player leaves linecast detection, the enemy will wait a brief moment and
+//start pathfinding. If pathfinding can't be completed and line of sight is still false, transition to search state.
+
+//4. In the attack state, the enemy will attack until the animation ends or x amount of time passes, then transition
+//back to followplayer.
+
+//5. Once the end of the path has been reached, transition to the search state and enable line of sight detection. After
+//x amount of time passes, transition back to the default state.
+
+//NOTES
+//On a slope or an unreachable area, the enemy might still try to use normal attacks as long as it's within attacking
+//distance. Eventually, we should try always implementing pathfinding so the enemy knows if it definitely can't reach
+//the player, instead of just checking direct linecast sight.
