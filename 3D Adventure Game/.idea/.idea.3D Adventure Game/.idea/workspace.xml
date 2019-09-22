@@ -31,6 +31,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/GridNew.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/UnitFollowNew.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/NOTES/EnemyAINotes.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonControllerv2.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Core/KinematicCharacterMotor.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Core/ICharacterController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/11- Charging state/Scripts/MyCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
@@ -66,6 +67,7 @@
         <option value="$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/14- Climbing Ladders/Scripts/MyLadder.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/UnitFollowNew.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonController.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonControllerv2.cs" />
       </list>
     </option>
   </component>
