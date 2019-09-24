@@ -163,6 +163,9 @@
             <e p="CameraFollowPlayer.cs" t="Include" />
           </e>
           <e p="Enemy Scripts" t="Include">
+            <e p="AIGroupManagement" t="Include">
+              <e p="AIGroupManager.cs" t="Include" />
+            </e>
             <e p="Raccoon (Bokoblin)" t="Include">
               <e p="Raccon State Transition Outlining.txt" t="Include" />
               <e p="RaccoonController.cs" t="Include" />

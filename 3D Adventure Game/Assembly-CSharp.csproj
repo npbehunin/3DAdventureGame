@@ -146,6 +146,7 @@
     <Compile Include="Assets\3D Scripts\Backups (Unused)\PlayerMovement3DNew.cs" />
     <Compile Include="Assets\3D Scripts\Backups (Unused)\PlayerStateClass.cs" />
     <Compile Include="Assets\3D Scripts\Camera\CameraFollowPlayer.cs" />
+    <Compile Include="Assets\3D Scripts\Enemy Scripts\AIGroupManagement\AIGroupManager.cs" />
     <Compile Include="Assets\3D Scripts\Enemy Scripts\Raccoon (Bokoblin)\RaccoonController.cs" />
     <Compile Include="Assets\3D Scripts\Enemy Scripts\Raccoon (Bokoblin)\RaccoonControllerv2.cs" />
     <Compile Include="Assets\3D Scripts\Enemy Scripts\Raccoon (Bokoblin)\RaccoonInputs.cs" />

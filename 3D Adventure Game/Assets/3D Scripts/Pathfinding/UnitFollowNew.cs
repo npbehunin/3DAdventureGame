@@ -13,9 +13,6 @@ public class UnitFollowNew : MonoBehaviour {
 	public Coroutine UpdateThePath;
 	public bool CanReachTarget;
 	public bool EndOfPath;
-	//private BoolValue PetCanFollowPath;
-	//private Vector3Value TargetTransform;
-	//public Transform target;
 
 	public Vector3 motorUpDirection;
 	public Vector3 targetPathPosition;
@@ -72,7 +69,6 @@ public class UnitFollowNew : MonoBehaviour {
 		else
 		{
 			Debug.Log("Can't reach target");
-			CanReachTarget = false;
 			StopFollowPath();
 		}
 	}

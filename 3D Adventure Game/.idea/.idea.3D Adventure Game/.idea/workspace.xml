@@ -33,6 +33,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/NOTES/EnemyAINotes.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonControllerv2.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Core/KinematicCharacterMotor.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/PathfindingNew.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Core/ICharacterController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/11- Charging state/Scripts/MyCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/11- Charging state/Scripts/MyPlayer.cs" root0="FORCE_HIGHLIGHTING" />
@@ -40,6 +41,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NateCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/TargetingMode.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/2D Scripts Backup/Enemy Scripts/Forest Temple/Jelly/Jelly.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/AIGroupManagement/AIGroupManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/NPC/NPC Scripts/NPCCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NatePlayer.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonInputs.cs" root0="FORCE_HIGHLIGHTING" />
@@ -53,6 +55,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Examples/Scripts/ExampleMovingPlatform.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/14- Climbing Ladders/Scripts/MyLadder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/14- Climbing Ladders/Scripts/MyCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/Sebastian/Pathfinding3D.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -65,8 +68,9 @@
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/Raccon State Transition Outlining.txt" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetMovement3D.cs" />
         <option value="$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/14- Climbing Ladders/Scripts/MyLadder.cs" />
-        <option value="$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/UnitFollowNew.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonController.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/AIGroupManagement/AIGroupManager.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/UnitFollowNew.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonControllerv2.cs" />
       </list>
     </option>
