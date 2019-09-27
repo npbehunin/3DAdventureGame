@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using KinematicCharacterController;
 using System;
+using System.Runtime.InteropServices;
 using UnityEditor.Experimental.GraphView;
 using Random = System.Random;
 
@@ -38,6 +39,13 @@ namespace KinematicCharacterController.Raccoonv2
         RockAttack,
         JumpAttack
     }
+
+    public enum RaccoonFollowTargetState
+    {
+        MoveToTarget,
+        Reposition,
+        Wait,
+    }
     
     public enum RaccoonSwordAttackState
     {
@@ -45,19 +53,7 @@ namespace KinematicCharacterController.Raccoonv2
         DoubleSwing,
         Flail,
     }
-    
-    public enum SwordAttackMovementState
-    {
-        SwingStart,
-        SwingEnd
-    }
 
-    public enum DetectionState
-    {
-        AlmostDetected,
-        Detected
-    }
-    
     public struct RaccoonCharacterInputs
     {
         public Vector3 MoveVector;
@@ -94,15 +90,19 @@ namespace KinematicCharacterController.Raccoonv2
         
         //States
         public RaccoonState CurrentRaccoonState;// { get; private set; }
-        private SwordAttackMovementState CurrentSwordAttackMovementState;
+        //private SwordAttackMovementState CurrentSwordAttackMovementState;
         //private RaccoonDefaultState CurrentDefaultState;
         private RaccoonAttackState CurrentAttackState;
         public RaccoonDefaultState SelectedDefaultState;
-        private DetectionState CurrentDetectionState;
+        //private DetectionState CurrentDetectionState;
+        private RaccoonFollowTargetState CurrentFollowState;
         
-        private float RockAttackDistance = 8f;
-        private float JumpAttackDistance = 5f;
-        private float MeleeAttackDistance = 2.5f;
+        //private float RockAttackDistance = 8f;
+        //private float JumpAttackDistance = 5f;
+        //private float MeleeAttackDistance = 2.5f;
+        private float RepositionDistance = 4f;
+        private float AttackDistance = 2f;
+        //private float TargetAttackDistance;
 
         public LayerMask WallLayerMask;
         public Transform Target;
@@ -116,17 +116,22 @@ namespace KinematicCharacterController.Raccoonv2
         private float maxAlertedTime = .75f;
         private int timesAlerted = 0;
         private int randomAttackInt = 0;
+        private int timesRepositioned;
+        private int timesWaitedInPlace;
         private bool _canChooseRandomAttack;
         private bool _canAttack;
         private bool _canCheckPathfinding;
+        private bool _canReposition;
 
         public UnitFollowNew pathfinding;
         
         //Coroutines
         private Coroutine AlertToSearchCoroutine;
         private bool canStartAlertToSearch = true;
-
         private Coroutine SearchStateCoroutine;
+        private Coroutine AttackDelayTimeCoroutine;
+        private bool canStartAttackDelayTime;
+        private Coroutine AttackTimeCoroutine;
 
         //Coroutine
         //bool
@@ -187,6 +192,7 @@ namespace KinematicCharacterController.Raccoonv2
                 }
                 case RaccoonState.Attack:
                 {
+                    //_canAttack = true;
                     _canChooseRandomAttack = true;
                     CurrentAttackState = RaccoonAttackState.FollowTarget;
                     break;
@@ -218,17 +224,22 @@ namespace KinematicCharacterController.Raccoonv2
                 {
                     pathfinding.StopFollowPath();
                     _canCheckPathfinding = true;
+                    canStartAttackDelayTime = true;
+                    _canAttack = false;
+                    timesRepositioned = 0;
+                    StopActiveCoroutine(AttackTimeCoroutine);
                     break;
                 }
                 case RaccoonState.Alerted:
                 {
                     timeWhileTargetSeen = 0;
-                    StopCoroutine(AlertToSearchCoroutine);
+                    StopActiveCoroutine(AlertToSearchCoroutine);
+                    canStartAlertToSearch = true;
                     break;
                 }
                 case RaccoonState.Search:
                 {
-                    StopCoroutine(SearchStateCoroutine);
+                    StopActiveCoroutine(SearchStateCoroutine);
                     break;
                 }
             }
@@ -254,26 +265,9 @@ namespace KinematicCharacterController.Raccoonv2
                 //Follow target movement
                 case RaccoonState.Attack:
                 {
-                    if (pathfinding.CanReachTarget)
+                    switch (CurrentAttackState)
                     {
-                        pathPosition = pathfinding.targetPathPosition;
-                        //Set moveinputvector to move towards pathPosition.
-                        //Pathfinding movement to path position.
-                    }
-                    else
-                    {
-                        //Attack type 1:
-                            //If the distance is outside rock throwing distance, move closer.
-                            //Throw rocks.
-                        //Attack type 2:
-                            //If the distance is outside jumping distance, move closer.
-                            //Jump.
-                        //Attack type 3:
-                            //If the distance is outside melee distance, move closer.
-                            //Swing melee weapon.
                         
-                        //(After the attack is finished, transition to followtarget. This can be done in the
-                        //coroutines.)
                     }
                     break;
                 }
@@ -303,7 +297,7 @@ namespace KinematicCharacterController.Raccoonv2
                 {
                     if (_lineOfSightToTarget)
                     {
-                        StopCoroutine(AlertToSearchCoroutine);
+                        StopActiveCoroutine(AlertToSearchCoroutine);
                         timeWhileTargetSeen += deltaTime;
                     }
                     //(Otherwise, it stops counting.)
@@ -554,46 +548,158 @@ namespace KinematicCharacterController.Raccoonv2
 
                 case RaccoonState.Attack:
                 {
-                    //Choose a random attack option
-                    if (_canChooseRandomAttack)
+                    switch (CurrentAttackState)
                     {
-                        _canChooseRandomAttack = false; //Reset when entering state or performing another attack.
-                        float targetDirMagnitude = targetDirection.sqrMagnitude;
+                        case RaccoonAttackState.FollowTarget:
+                        {
+                            float targetDirMagnitude = targetDirection.sqrMagnitude;
 
-                        //Melee, jump, or throw rock
-                        if (targetDirMagnitude > Mathf.Pow(JumpAttackDistance, 2))
-                        {
-                            randomAttackInt = Mathf.RoundToInt(UnityEngine.Random.Range(-.5f, 2.49f));
-                        }
-                        //Melee, or jump
-                        else if (targetDirMagnitude > Mathf.Pow(MeleeAttackDistance, 2) &&
-                                 targetDirMagnitude < Mathf.Pow(JumpAttackDistance, 2))
-                        {
-                            randomAttackInt = Mathf.RoundToInt(UnityEngine.Random.Range(-.5f, 1.49f));
-                        }
-                        //Melee
-                        else if (targetDirMagnitude < Mathf.Pow(MeleeAttackDistance, 2))
-                        {
-                            randomAttackInt = 0;
+                            //If the target is ever outside the reposition distance...
+                            if (targetDirMagnitude > Mathf.Pow(RepositionDistance, 2))
+                            {
+                                CurrentFollowState = RaccoonFollowTargetState.MoveToTarget; //**
+                                //If 1 hand is free...
+                                    //Random chance to throw rocks.
+                            }
+                            else
+                            {
+                                if (_canReposition) //Remember to reset this, timesRepositioned, AND timesWaited.
+                                {
+                                    _canReposition = false;
+                                    float rand = UnityEngine.Random.Range(0, 100);
+
+                                    //If repositioned/waited up to 3 times...
+                                    if (timesRepositioned + timesWaitedInPlace <= 3)
+                                    {
+                                        //Reposition (up to 2)
+                                        if ((rand > 50 && rand <= 75) || timesWaitedInPlace > 0)
+                                        {
+                                            timesRepositioned += 1;
+                                            CurrentFollowState = RaccoonFollowTargetState.Reposition;
+                                        }
+                                        //Wait (up to 1)
+                                        else if ((rand > 75 && rand <= 100) && timesWaitedInPlace == 0)
+                                        {
+                                            timesWaitedInPlace += 1;
+                                            CurrentFollowState = RaccoonFollowTargetState.Wait;
+                                        }
+                                    }
+
+                                    //If over the reposition amount OR rand <= 50...
+                                    if (timesRepositioned + timesWaitedInPlace > 3 || rand <= 50)
+                                    {
+                                        //(Moves towards the target here in moveInputVector)
+                                        CurrentFollowState = RaccoonFollowTargetState.MoveToTarget; //**
+                                    }
+                                }
+                            }
+
+                            switch (CurrentFollowState)
+                            {
+                                case RaccoonFollowTargetState.MoveToTarget:
+                                {
+                                    if (targetDirMagnitude < Mathf.Pow(AttackDistance, 2)) //**
+                                    {
+                                        //Sword Attack.
+                                        CurrentAttackState = RaccoonAttackState.SwordAttack;
+                                        AttackTimeCoroutine = StartCoroutine(AttackTime(1.2f));
+                                        timesRepositioned = 0;
+                                        timesWaitedInPlace = 0;
+                                    }
+                                    break;
+                                }
+                            }
+                            break;
                         }
                     }
+                    
+                    //**: Make sure none of these areas conflict when checking reposition distance and attack distance.
+                    //Could also make it cleaner.
+                    
+                    //For now, removing this area since we don't randomly assign any attack anymore.
+                    //Choose a random attack option
+                    //if (_canChooseRandomAttack)
+                    //{
+                    //    _canChooseRandomAttack = false; //Reset when entering state or performing another attack.
+//
+                    //    //Melee, jump, or throw rock
+                    //    if (targetDirMagnitude > Mathf.Pow(JumpAttackDistance, 2))
+                    //    {
+                    //        randomAttackInt = Mathf.RoundToInt(UnityEngine.Random.Range(-.5f, 2.49f));
+                    //    }
+                    //    //Melee, or jump
+                    //    else if (targetDirMagnitude > Mathf.Pow(MeleeAttackDistance, 2) &&
+                    //             targetDirMagnitude < Mathf.Pow(JumpAttackDistance, 2))
+                    //    {
+                    //        randomAttackInt = Mathf.RoundToInt(UnityEngine.Random.Range(-.5f, 1.49f));
+                    //    }
+                    //    //Melee
+                    //    else if (targetDirMagnitude < Mathf.Pow(MeleeAttackDistance, 2))
+                    //    {
+                    //        randomAttackInt = 0;
+                    //    }
+                    //    else
+                    //    {
+                    //        randomAttackInt = 0;
+                    //    }
+                    //    
+                    //    //Set the target attack distance the enemy should move into if it's too far away.
+                    //    switch (randomAttackInt)
+                    //    {
+                    //        case 0:
+                    //        {
+                    //            TargetAttackDistance = RockAttackDistance;
+                    //            break;
+                    //        }
+                    //        case 1:
+                    //        {
+                    //            TargetAttackDistance = JumpAttackDistance;
+                    //            break;
+                    //        }
+                    //        case 2:
+                    //        {
+                    //            TargetAttackDistance = MeleeAttackDistance;
+                    //            break;
+                    //        }
+                    //    }
+                    //}
 
                     //Transition to an attack state
-                    if (_canAttack)
-                    {
-                        if (randomAttackInt == 0)
-                        {
-                            CurrentAttackState = RaccoonAttackState.SwordAttack;
-                        }
-                        else if (randomAttackInt == 1)
-                        {
-                            CurrentAttackState = RaccoonAttackState.JumpAttack;
-                        }
-                        else if (randomAttackInt == 2)
-                        {
-                            CurrentAttackState = RaccoonAttackState.RockAttack;
-                        }
-                    }
+                    //if (_canAttack)
+                    //{
+                    //    switch (randomAttackInt)
+                    //    {
+                    //        case 0:
+                    //            CurrentAttackState = RaccoonAttackState.SwordAttack;
+                    //            AttackTimeCoroutine = StartCoroutine(AttackTime(1.2f));
+                    //            break;
+                    //        case 1:
+                    //            CurrentAttackState = RaccoonAttackState.JumpAttack;
+                    //            AttackTimeCoroutine = StartCoroutine(AttackTime(2f));
+                    //            break;
+                    //        case 2:
+                    //            CurrentAttackState = RaccoonAttackState.RockAttack;
+                    //            AttackTimeCoroutine = StartCoroutine(AttackTime(.75f));
+                    //            break;
+                    //    }
+//
+                    //    _canAttack = false;
+                    //}
+                    
+                    //If the enemy is within attacking distance, start a coroutine delay before _canAttack is true.
+                    //if (CurrentAttackState == RaccoonAttackState.FollowTarget)
+                    //{
+                    //    if (targetDirMagnitude < TargetAttackDistance && canStartAttackDelayTime)
+                    //    {
+                    //        canStartAttackDelayTime = false;
+                    //        AttackDelayTimeCoroutine = StartCoroutine(AttackDelayTime());
+                    //    }
+                    //    else
+                    //    {
+                    //        canStartAttackDelayTime = true;
+                    //        StopActiveCoroutine(AttackDelayTimeCoroutine);
+                    //    }
+                    //}
 
                     //Pathfinding
                     if (!_lineOfSightToTarget)
@@ -689,7 +795,7 @@ namespace KinematicCharacterController.Raccoonv2
         {
         }
 
-        public void StopCoroutine(Coroutine coroutine)
+        public void StopActiveCoroutine(Coroutine coroutine)
         {
             if (coroutine != null)
             {
@@ -700,6 +806,14 @@ namespace KinematicCharacterController.Raccoonv2
         // COROUTINES
         
         //Attack time
+
+        private IEnumerator AttackDelayTime()
+        {
+            float rand = UnityEngine.Random.Range(.35f, 1.35f);
+            yield return CustomTimer.Timer(rand);
+            _canAttack = true;
+            canStartAttackDelayTime = true;
+        }
         private IEnumerator AttackTime(float time)
         {
             yield return CustomTimer.Timer(time);
@@ -725,12 +839,16 @@ namespace KinematicCharacterController.Raccoonv2
 
 //--------------------------------------------------------------------------------------------------------------------
 //LAST TIME ON DRAGONBALL Z:
-//Polished the attack state and changed the followtarget state to be an attack state.
-//Started implementing pathfinding.
+//FollowTarget now has 3 sub states: moveToTarget, Reposition, and Wait
+    //MoveToTarget occurs if the distance is greater than repositionDist, if rand <= 50, or if the amount of times to 
+    //reposition/delay has exceeded.
+    //Reposition occurs if rand is x or if timesWaited exceeds 1.
+    //Wait occurs if rand is x or if timesWaited remains 0.
 
 //TO DO NEXT
-//Tell attack script when to transition to followtarget attack state.
+//Clean up FollowTarget's sub states. (Remember: Attack State > Follow Target State > MoveToTarget, etc.)
 //Improve the pathfinding under beforeupdate.
+//Implement group based decisions.
 
 //(Transition to followTarget when entering the attack state or after an attack is performed.)
 //(Set canAttack to true when the position is within the distance of the associated random attack.)

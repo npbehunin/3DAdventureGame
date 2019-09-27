@@ -81,6 +81,7 @@
     <property name="Discover.Launch.Via.Unity" value="true" />
     <property name="Rider.DefaultBreakpoints.AreToggled" value="true" />
     <property name="Rider.ProjectViewActivator.IsNotFirstRun" value="true" />
+    <property name="settings.editor.selected.configurable" value="reference.settings.ide.settings.file-colors" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -132,8 +133,14 @@
     <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="true" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="88" y="273" key="#Inspection_severity" />
+    <state x="88" y="273" key="#Inspection_severity/1920.1080/1920.1080/1920.1080" />
     <state x="398" y="173" key="#com.intellij.execution.impl.EditConfigurationsDialog" />
     <state x="398" y="173" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.1080/1920.1080/1920.1080" />
+    <state x="437" y="159" key="SettingsEditor" />
+    <state x="437" y="159" key="SettingsEditor/1920.1080/1920.1080/1920.1080" />
+    <state x="626" y="268" width="672" height="678" key="search.everywhere.popup" />
+    <state x="626" y="268" width="672" height="678" key="search.everywhere.popup/1920.1080/1920.1080/1920.1080" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
