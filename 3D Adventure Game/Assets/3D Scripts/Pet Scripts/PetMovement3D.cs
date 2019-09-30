@@ -411,19 +411,19 @@ public class PetMovement3D : MonoBehaviour
 			CanFollowPath.initialBool = true;
 		}
 
-		if (!path.CanReachTarget) //Runs once
-		{
-			path.CanReachTarget = true;
-			if (TargetTransform.initialPos == PlayerTransform.initialPos)
-			{
-				OutOfRange();
-			}
-			//else
-			{
-				//DO SOMETHING WHEN IT CAN'T REACH THE ENEMY
-				StartCoroutine(CantReachEnemyDelay());
-			}
-		}
+		//if (!path.CanReachTarget) //Runs once
+		//{
+		//	path.CanReachTarget = true;
+		//	if (TargetTransform.initialPos == PlayerTransform.initialPos)
+		//	{
+		//		OutOfRange();
+		//	}
+		//	//else
+		//	{
+		//		//DO SOMETHING WHEN IT CAN'T REACH THE ENEMY
+		//		StartCoroutine(CantReachEnemyDelay());
+		//	}
+		//}
 
 		//ENEMY LINECAST CHECK
 		if (currentState != PetStatev2.Wait) 

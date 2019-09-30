@@ -11,8 +11,9 @@ public class UnitFollowNew : MonoBehaviour {
 	public int targetIndex;
 	public Coroutine FollowPathCoroutine;
 	public Coroutine UpdateThePath;
-	public bool CanReachTarget;
-	public bool EndOfPath;
+	
+	public bool PathIsActive;
+	public bool CheckingPath;
 
 	public Vector3 motorUpDirection;
 	public Vector3 targetPathPosition;
@@ -31,8 +32,7 @@ public class UnitFollowNew : MonoBehaviour {
 
 	public void StopFollowPath()
 	{
-		EndOfPath = true;
-		CanReachTarget = false;
+		PathIsActive = false;
 		if (FollowPathCoroutine != null)
 		{
 			StopCoroutine(FollowPathCoroutine);
@@ -46,15 +46,17 @@ public class UnitFollowNew : MonoBehaviour {
 
 	public void CheckIfCanFollowPath(Vector3 targetPosition)
 	{
-		EndOfPath = false;
+		CheckingPath = true;
 		Debug.Log("Requesting a path");
 		PathRequestManagerNew.RequestPath(transform.position, targetPosition, OnPathFound);
 	}
 	
 	public void OnPathFound(Vector3[] newPath, bool pathSuccessful) { //When a path is found...
+		CheckingPath = false;
 		if (pathSuccessful)
 		{
-			CanReachTarget = true;
+			//CanReachTarget = true;
+			PathIsActive = true;
 			path = newPath;
 			Debug.Log("Path successful");
 			targetIndex = 0;

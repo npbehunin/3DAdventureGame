@@ -189,7 +189,8 @@ namespace KinematicCharacterController.Raccoon
                 }
                 case RaccoonState.FollowTarget:
                 {
-                    unitPathfinding.EndOfPath = false; //Reset
+                    //unitPathfinding.EndOfPath = false; //Reset
+                    unitPathfinding.PathIsActive = false;
                     _canCheckPathfinding = true; //Reset
                     break;
                 }
@@ -226,7 +227,8 @@ namespace KinematicCharacterController.Raccoon
                             //CurrentDefaultState = SelectedDefaultState; //Choose in inspector
                         }
                         
-                        if (unitPathfinding.CanReachTarget)
+                        //if (unitPathfinding.CanReachTarget)
+                        if (unitPathfinding.PathIsActive)
                         {
                             Vector3 pathPosition = new Vector3();
                             if (unitPathfinding.path.Length > 0)
@@ -312,11 +314,16 @@ namespace KinematicCharacterController.Raccoon
                             PathfindingCoroutine = StartCoroutine(PathfindingTiming(targetPos));
                         }
                         
-                        if (unitPathfinding.CanReachTarget)
+                        //if (unitPathfinding.CanReachTarget)
+                        if (unitPathfinding.PathIsActive)
                         {
                             Vector3 pathPosition = unitPathfinding.targetPathPosition;
                             Vector3 pathDirection = pathPosition - Motor.Transform.position;
                             _moveInputVector = Vector3.ProjectOnPlane(pathDirection.normalized, Motor.CharacterUp); //Move towards last seen position.
+                        }
+                        else
+                        {
+                            TransitionToState(RaccoonState.Search);
                         }
                         //else
                         //{
@@ -324,10 +331,10 @@ namespace KinematicCharacterController.Raccoon
                         //    //Don't transition immediately to default, because canreachtarget starts false.
                         //}
 
-                        if (unitPathfinding.EndOfPath)
-                        {
-                            TransitionToState(RaccoonState.Search);
-                        }
+                       //if (unitPathfinding.EndOfPath)
+                       //{
+                       //    TransitionToState(RaccoonState.Search);
+                       //}
                     }
 
                     break;

@@ -3120,6 +3120,7 @@ GameObject:
   - component: {fileID: 1222896223}
   - component: {fileID: 1222896222}
   - component: {fileID: 1222896221}
+  - component: {fileID: 1222896220}
   - component: {fileID: 1222896219}
   - component: {fileID: 1222896218}
   - component: {fileID: 1222896217}
@@ -3144,8 +3145,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   path: []
   targetIndex: 0
-  CanReachTarget: 0
-  EndOfPath: 0
+  PathIsActive: 0
+  CheckingPath: 0
   motorUpDirection: {x: 0, y: 0, z: 0}
   targetPathPosition: {x: 0, y: 0, z: 0}
 --- !u!95 &1222896218
@@ -3174,7 +3175,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1222896216}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f520edc368e04043b98cc20cfdaf616, type: 3}
   m_Name: 
@@ -3201,6 +3202,38 @@ MonoBehaviour:
   target: {fileID: 2079106476}
   _lineOfSightToTarget: 0
   _shouldMoveToHome: 0
+--- !u!114 &1222896220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1222896216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db4cc08af61b5934497cfb382bbdd093, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Motor: {fileID: 0}
+  MaxStableMoveSpeed: 5
+  StableMovementSharpness: 15
+  OrientationSharpness: 10
+  MaxAirMoveSpeed: 100
+  AirAccelerationSpeed: 15
+  Drag: 0.1
+  IgnoredColliders: []
+  OrientTowardsGravity: 0
+  Gravity: {x: 0, y: -30, z: 0}
+  MeshRoot: {fileID: 0}
+  _moveInputVector: {x: 0, y: 0, z: 0}
+  CurrentRaccoonState: 0
+  SelectedDefaultState: 0
+  WallLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  Target: {fileID: 0}
+  Home: {fileID: 0}
+  pathfinding: {fileID: 0}
 --- !u!114 &1222896221
 MonoBehaviour:
   m_ObjectHideFlags: 0
