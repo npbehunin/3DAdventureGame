@@ -3214,7 +3214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db4cc08af61b5934497cfb382bbdd093, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Motor: {fileID: 0}
+  Motor: {fileID: 1222896221}
   MaxStableMoveSpeed: 5
   StableMovementSharpness: 15
   OrientationSharpness: 10
@@ -3227,13 +3227,15 @@ MonoBehaviour:
   MeshRoot: {fileID: 0}
   _moveInputVector: {x: 0, y: 0, z: 0}
   CurrentRaccoonState: 0
+  CurrentAttackState: 0
   SelectedDefaultState: 0
+  CurrentFollowState: 0
   WallLayerMask:
     serializedVersion: 2
-    m_Bits: 0
-  Target: {fileID: 0}
-  Home: {fileID: 0}
-  pathfinding: {fileID: 0}
+    m_Bits: 512
+  Target: {fileID: 2079106476}
+  Home: {fileID: 1347334229}
+  pathfinding: {fileID: 1222896217}
 --- !u!114 &1222896221
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -44,8 +44,6 @@ namespace KinematicCharacterController.Raccoonv2
         MoveToTarget,
         Reposition,
         Wait,
-        Idle,
-        MoveToPath,
     }
     
     public enum RaccoonSwordAttackState
@@ -93,10 +91,10 @@ namespace KinematicCharacterController.Raccoonv2
         public RaccoonState CurrentRaccoonState;// { get; private set; }
         //private SwordAttackMovementState CurrentSwordAttackMovementState;
         //private RaccoonDefaultState CurrentDefaultState;
-        private RaccoonAttackState CurrentAttackState;
+        public RaccoonAttackState CurrentAttackState;
         public RaccoonDefaultState SelectedDefaultState;
         //private DetectionState CurrentDetectionState;
-        private RaccoonFollowTargetState CurrentFollowState;
+        public RaccoonFollowTargetState CurrentFollowState;
 
         private float RepositionDistance = 4f;
         private float AttackDistance = 2f;
@@ -171,6 +169,7 @@ namespace KinematicCharacterController.Raccoonv2
                     timesAlerted = 0;
                     _canCheckPathfinding = true;
                     _shouldMoveToHome = true;
+                    MaxStableMoveSpeed = 9f;
                     //MaxMoveSpeed = x.
                     //Set target to home position.
                     //Reset numberOfTimesAlerted.
@@ -233,6 +232,7 @@ namespace KinematicCharacterController.Raccoonv2
                     canStartAttackDelayTime = true;
                     _canAttack = false;
                     timesRepositioned = 0;
+                    timesWaitedInPlace = 0;
                     StopActiveCoroutine(AttackTimeCoroutine);
                     break;
                 }
@@ -258,7 +258,7 @@ namespace KinematicCharacterController.Raccoonv2
         {
             //USE THIS AREA TO SET MOVE INPUT AND LOOK DIRECTION.
             //AVOID SETTING STATE TRANSITIONS HERE.
-            
+            Vector3 playerLookDirection = Vector3.ProjectOnPlane(targetPosition - Motor.Transform.position, Motor.CharacterUp);
             switch (CurrentRaccoonState)
             {
                 //Default movement
@@ -268,35 +268,21 @@ namespace KinematicCharacterController.Raccoonv2
                     {
                         if (pathfinding.PathIsActive)
                         {
-                            //Move to path position.
+                            Vector3 pathDirection = pathPosition - Motor.transform.position;
+                            _moveInputVector = Vector3.ProjectOnPlane(pathDirection, Motor.CharacterUp).normalized;
                         }
                         else
                         {
-                            //Move straight to home position.
+                            Vector3 homeDirection = homePosition - Motor.transform.position;
+                            _moveInputVector = Vector3.ProjectOnPlane(homeDirection, Motor.CharacterUp).normalized;
                         }
                     }
                     else
                     {
-                        switch (CurrentFollowState)
-                        {
-                            case RaccoonFollowTargetState.MoveToTarget:
-                            {
-                                //Move straight towards the player.
-                                break;
-                            }
-                            case RaccoonFollowTargetState.Reposition:
-                            {
-                                //Move to a spot near the player.
-                                break;
-                            }
-                            case RaccoonFollowTargetState.Wait:
-                            case RaccoonFollowTargetState.Idle:
-                            {
-                                //Nothing?
-                                break;
-                            }
-                        }
+                        _moveInputVector = Vector3.zero;
+                        //Do nothin'.
                     }
+                    _lookInputVector = _moveInputVector;
                     break;
                 }
                 //Follow target movement
@@ -304,21 +290,78 @@ namespace KinematicCharacterController.Raccoonv2
                 {
                     switch (CurrentAttackState)
                     {
-                        //Sword attack.
-                        
-                        //Jump attack.
-                        
-                        //Rock attack.
+                        case RaccoonAttackState.FollowTarget:
+                        {
+                            switch (CurrentFollowState)
+                            {
+                                case RaccoonFollowTargetState.MoveToTarget:
+                                {
+                                    //Follow target movement.
+                                    if (!_lineOfSightToTarget && pathfinding.PathIsActive) //If both false, goes to search state. (Taken care of below)
+                                    {
+                                        Vector3 pathDirection = pathPosition - Motor.transform.position;
+                                        _moveInputVector = Vector3.ProjectOnPlane(pathDirection, Motor.CharacterUp).normalized;
+                                        //Move towards path.
+                                    }
+                                    else
+                                    {
+                                        Vector3 playerDirection = targetPosition - Motor.Transform.position;
+                                        _moveInputVector = Vector3.ProjectOnPlane(playerDirection, Motor.CharacterUp).normalized;
+                                        //Move straight towards the player.
+                                    }
+                                    
+                                    //Follow target rotation.
+                                    if (_lineOfSightToTarget)
+                                    {
+                                        _lookInputVector = playerLookDirection;
+                                    }
+                                    else
+                                    {
+                                        _lookInputVector = _moveInputVector;
+                                    }
+                                    break;
+                                }
+                                case RaccoonFollowTargetState.Reposition:
+                                {
+                                    //Move to a spot near the player.
+                                    _lookInputVector = _moveInputVector;
+                                    break;
+                                }
+                                case RaccoonFollowTargetState.Wait:
+                                {
+                                    _moveInputVector = Vector3.zero;
+                                    _lookInputVector = playerLookDirection;
+                                    //Do nuthin.
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        case RaccoonAttackState.SwordAttack:
+                        {
+                            //Sword attack.
+                            break;
+                        }
+                        case RaccoonAttackState.JumpAttack:
+                        {
+                            //Jump attack.
+                            break;
+                        }
+                        case RaccoonAttackState.RockAttack:
+                        {
+                            //Rock attack.
+                            break;
+                        }
                     }
                     break;
                 }
                 
                 //(Default movement, zero)
                 case RaccoonState.Search:
-                case RaccoonState.AlertOthers: 
-                    //Etc.
+                case RaccoonState.AlertOthers:
                 {
-
+                    _moveInputVector = Vector3.zero;
+                    _lookInputVector = _moveInputVector;
                     break;
                 }
             }
@@ -331,6 +374,7 @@ namespace KinematicCharacterController.Raccoonv2
         public void BeforeCharacterUpdate(float deltaTime)
         {
             targetPosition = Target.transform.position; //Target's position.
+            pathPosition = pathfinding.targetPathPosition;
             
             switch (CurrentRaccoonState)
             {
@@ -349,6 +393,23 @@ namespace KinematicCharacterController.Raccoonv2
                 case RaccoonState.Default:
                 {
                     homePosition = Home.transform.position; //Home position.
+                    break;
+                }
+                case RaccoonState.Attack:
+                {
+                    switch (CurrentFollowState)
+                    {
+                        case RaccoonFollowTargetState.MoveToTarget:
+                        {
+                            MaxStableMoveSpeed = 9f;
+                            break;
+                        }
+                        case RaccoonFollowTargetState.Reposition:
+                        {
+                            MaxStableMoveSpeed = 3f;
+                            break;
+                        }
+                    }
                     break;
                 }
             }
@@ -549,18 +610,18 @@ namespace KinematicCharacterController.Raccoonv2
                             pathfinding.CheckIfCanFollowPath(targetPosition);
                         }
 
-                        if (!pathfinding.PathIsActive)
+                        if (pathfinding.PathIsActive)
                         {
-                            _shouldMoveToHome = false;
+                            _shouldMoveToHome = true;
                         }
                         else
                         {
-                            _shouldMoveToHome = true;
+                            _shouldMoveToHome = false;
                         }
                     }
                     else
                     {
-                        if (homeDirection.sqrMagnitude < Mathf.Pow(homeMaxDistance, 2))
+                        if (homeDirection.sqrMagnitude > Mathf.Pow(homeMaxDistance, 2))
                         {
                             _shouldMoveToHome = true;
                         }
@@ -674,6 +735,7 @@ namespace KinematicCharacterController.Raccoonv2
                             //Pathfinding when the player is no longer seen
                             if (!_lineOfSightToTarget)
                             {
+                                CurrentFollowState = RaccoonFollowTargetState.MoveToTarget;
                                 if (_canCheckPathfinding)
                                 {
                                     _canCheckPathfinding = false;
