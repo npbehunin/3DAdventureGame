@@ -84,7 +84,7 @@ public class UnitFollowNew : MonoBehaviour {
 			//UpdateThePath = StartCoroutine(UpdatePath());
 			while (true)
 			{
-				//Debug.Log(Vector3.Distance(Vector3.ProjectOnPlane(currentWaypoint, transform.position), motorUpDirection));
+				Debug.Log(Vector3.Distance(Vector3.ProjectOnPlane(currentWaypoint, transform.position), motorUpDirection));
 				if (Vector3.Distance(Vector3.ProjectOnPlane(currentWaypoint, motorUpDirection), transform.position) < .75f)
 				{
 					targetIndex++;

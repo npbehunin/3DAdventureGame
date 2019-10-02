@@ -402,7 +402,7 @@ public class PetMovement3D : MonoBehaviour
 		if (FollowPath && CanFollowPath.initialBool)
 		{
 			CanFollowPath.initialBool = false;
-			path.CheckIfCanFollowPath(TargetTransform.initialPos);
+			//path.CheckIfCanFollowPath(TargetTransform.initialPos); //Needs motor up direction.
 		}
 		
 		if (!FollowPath)

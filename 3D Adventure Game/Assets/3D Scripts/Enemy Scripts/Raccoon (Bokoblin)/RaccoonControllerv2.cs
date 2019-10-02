@@ -105,8 +105,8 @@ namespace KinematicCharacterController.Raccoonv2
         private Vector3 targetPosition;
         private Vector3 homePosition;
         private Vector3 pathPosition;
-        private bool _lineOfSightToTarget;
-        private bool _lineOfSightToHome;
+        public bool _lineOfSightToTarget;
+        public bool _lineOfSightToHome;
         private float fieldOfView;
         private float timeWhileTargetSeen = 0;
         private float maxAlertedTime = .75f;
@@ -117,7 +117,7 @@ namespace KinematicCharacterController.Raccoonv2
         private bool _canChooseRandomAttack;
         private bool _canAttack;
         private bool _canCheckPathfinding;
-        private bool _canReposition;
+        public bool _canReposition;
         private bool _shouldMoveToHome;
 
         public UnitFollowNew pathfinding;
@@ -234,6 +234,7 @@ namespace KinematicCharacterController.Raccoonv2
                     timesRepositioned = 0;
                     timesWaitedInPlace = 0;
                     StopActiveCoroutine(AttackTimeCoroutine);
+                    StopActiveCoroutine(RepositionTimeCoroutine);
                     break;
                 }
                 case RaccoonState.Alerted:
@@ -325,10 +326,12 @@ namespace KinematicCharacterController.Raccoonv2
                                 {
                                     //Move to a spot near the player.
                                     _lookInputVector = _moveInputVector;
+                                    MaxStableMoveSpeed = 1f;
                                     break;
                                 }
                                 case RaccoonFollowTargetState.Wait:
                                 {
+                                    MaxStableMoveSpeed = 0f;
                                     _moveInputVector = Vector3.zero;
                                     _lookInputVector = playerLookDirection;
                                     //Do nuthin.
@@ -339,16 +342,19 @@ namespace KinematicCharacterController.Raccoonv2
                         }
                         case RaccoonAttackState.SwordAttack:
                         {
+                            MaxStableMoveSpeed = 2f; //For testing
                             //Sword attack.
                             break;
                         }
                         case RaccoonAttackState.JumpAttack:
                         {
+                            MaxStableMoveSpeed = 4f; //For testing
                             //Jump attack.
                             break;
                         }
                         case RaccoonAttackState.RockAttack:
                         {
+                            MaxStableMoveSpeed = 0f; //For testing
                             //Rock attack.
                             break;
                         }
@@ -362,6 +368,12 @@ namespace KinematicCharacterController.Raccoonv2
                 {
                     _moveInputVector = Vector3.zero;
                     _lookInputVector = _moveInputVector;
+                    break;
+                }
+
+                case RaccoonState.Alerted:
+                {
+                    _lookInputVector = playerLookDirection;
                     break;
                 }
             }
@@ -401,7 +413,7 @@ namespace KinematicCharacterController.Raccoonv2
                     {
                         case RaccoonFollowTargetState.MoveToTarget:
                         {
-                            MaxStableMoveSpeed = 9f;
+                            MaxStableMoveSpeed = 6f;
                             break;
                         }
                         case RaccoonFollowTargetState.Reposition:
@@ -579,12 +591,18 @@ namespace KinematicCharacterController.Raccoonv2
                     //Enemy should be able to transition back to the last state without anything screwing up.
                 }
             }
-            
+
+            if (pathfinding.PathIsActive)
+            {
+                pathfinding.motorUpDirection = Motor.CharacterUp;
+            }
+
             //Check line of sight to the target.
-            _lineOfSightToTarget = LineOfSightToTarget(targetPosition);
+            _lineOfSightToTarget = LineOfSightToTarget(targetPosition, fieldOfView);
 
             //float maxDistance = 12f;
             Vector3 targetDirection = targetPosition - Motor.Transform.position;
+            //Debug.Log(targetDirection);
 
             //State checking
             switch (CurrentRaccoonState)
@@ -596,12 +614,13 @@ namespace KinematicCharacterController.Raccoonv2
                         TransitionToState(RaccoonState.Alerted);
                     }
 
-                    _lineOfSightToHome = LineOfSightToTarget(homePosition);
+                    _lineOfSightToHome = LineOfSightToTarget(homePosition, 360f);
                     
                     //If the home position is too far away...
                     Vector3 homeDirection = homePosition - Motor.Transform.position;
                     float homeMaxDistance = 1f;
 
+                    //Debug.Log(homeDirection);
                     if (!_lineOfSightToHome)
                     {
                         if (_canCheckPathfinding) //(Reset this)
@@ -676,6 +695,7 @@ namespace KinematicCharacterController.Raccoonv2
                             //If the target is ever outside the reposition distance...
                             if (targetDirMagnitude > Mathf.Pow(RepositionDistance, 2))
                             {
+                                //Debug.Log(targetDirMagnitude / targetDirection.magnitude);
                                 CurrentFollowState = RaccoonFollowTargetState.MoveToTarget; //**
                                 //If 1 hand is free...
                                     //Random chance to throw rocks.
@@ -693,6 +713,7 @@ namespace KinematicCharacterController.Raccoonv2
                                         //Reposition (up to 2)
                                         if ((rand > 50 && rand <= 75) || timesWaitedInPlace > 0)
                                         {
+                                            Debug.Log("Repositioning.");
                                             timesRepositioned += 1;
                                             CurrentFollowState = RaccoonFollowTargetState.Reposition;
                                             RepositionTimeCoroutine = StartCoroutine(RepositionTime(.65f, .95f));
@@ -700,6 +721,7 @@ namespace KinematicCharacterController.Raccoonv2
                                         //Wait (up to 1)
                                         else if ((rand > 75 && rand <= 100) && timesWaitedInPlace == 0)
                                         {
+                                            Debug.Log("Waiting.");
                                             timesWaitedInPlace += 1;
                                             CurrentFollowState = RaccoonFollowTargetState.Wait;
                                             RepositionTimeCoroutine = StartCoroutine(RepositionTime(.85f, 1.15f));
@@ -710,6 +732,7 @@ namespace KinematicCharacterController.Raccoonv2
                                     if (timesRepositioned + timesWaitedInPlace > 3 || rand <= 50)
                                     {
                                         //(Moves towards the target here in moveInputVector)
+                                        Debug.Log("Continuing movement.");
                                         CurrentFollowState = RaccoonFollowTargetState.MoveToTarget; //**
                                     }
                                 }
@@ -723,6 +746,7 @@ namespace KinematicCharacterController.Raccoonv2
                                     if (targetDirMagnitude < Mathf.Pow(AttackDistance, 2)) //**
                                     {
                                         //Sword Attack.
+                                        Debug.Log("Sword attack");
                                         CurrentAttackState = RaccoonAttackState.SwordAttack;
                                         AttackTimeCoroutine = StartCoroutine(AttackTime(1.2f));
                                         timesRepositioned = 0;
@@ -777,13 +801,13 @@ namespace KinematicCharacterController.Raccoonv2
         }
 
         //Check line of sight to target.
-        public bool LineOfSightToTarget(Vector3 targetPos)
+        public bool LineOfSightToTarget(Vector3 targetPos, float fieldOfViewToTarget)
         {
             //Check line of sight to the target.
             float maxDistance = 12f;
             Vector3 targetDirection = targetPos - Motor.Transform.position;
 
-            if (targetDirection.sqrMagnitude < Mathf.Pow(maxDistance, 2) && Vector3.Angle(targetDirection, Motor.CharacterForward) <= fieldOfView)
+            if (targetDirection.sqrMagnitude < Mathf.Pow(maxDistance, 2) && Vector3.Angle(targetDirection, Motor.CharacterForward) <= fieldOfViewToTarget)
             {
                 if (!Physics.Linecast(Motor.Transform.position, targetPos, WallLayerMask))
                 {
@@ -883,6 +907,7 @@ namespace KinematicCharacterController.Raccoonv2
         private IEnumerator AttackTime(float time)
         {
             yield return CustomTimer.Timer(time);
+            _canReposition = true;
             CurrentAttackState = RaccoonAttackState.FollowTarget;
         }
 
@@ -904,17 +929,15 @@ namespace KinematicCharacterController.Raccoonv2
 
 //--------------------------------------------------------------------------------------------------------------------
 //LAST TIME ON DRAGONBALL Z:
-//Attempted implementing pathfinding to followTarget and default states.
+//Added small fixes to move input, look input, and bool resetting.
+//Enemy now seems to transition and (for the most part) move and look properly.
 
 //TO DO NEXT
-//Finish/Clean up pathfinding. (Just check followTarget's and default's pathfinding)
-//Implement moveInputVector for each state.
-//(Eventually, add group based decisions / alerting.)
+//Implement repositioning around the player.
+//Implement a temporary sword attack movement.
+//Make adjustments to the default movement so it rotates and positions itself properly.
+//General clean up.
 
-//(Transition to followTarget when entering the attack state or after an attack is performed.)
-//(Set canAttack to true when the position is within the distance of the associated random attack.)
-//(Once the attack is executed, canAttack is false and the attack state is followTarget.)
-
-//CURRENT SCRIPT NOTES
+//NOTES
 //REMEMBER TO STOP COROUTINES AND RESET BOOLS ON STATE EXIT
 

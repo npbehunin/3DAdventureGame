@@ -62,15 +62,15 @@
       <list>
         <option value="$PROJECT_DIR$/Assets/3D Scripts/NOTES/EnemyMovementNotes.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/NOTES/EnemyAINotes.cs" />
-        <option value="$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonInputs.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/NOTES/EnemyRaccoonNotes.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NateCharacterController.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/Raccon State Transition Outlining.txt" />
         <option value="$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/14- Climbing Ladders/Scripts/MyLadder.cs" />
-        <option value="$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonController.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/AIGroupManagement/AIGroupManager.cs" />
-        <option value="$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/UnitFollowNew.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonInputs.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetMovement3D.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonController.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/UnitFollowNew.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonControllerv2.cs" />
       </list>
     </option>

@@ -4,14 +4,14 @@ using UnityEngine;
 using KinematicCharacterController;
 using KinematicCharacterController.Examples;
 using KinematicCharacterController.Nate;
-using KinematicCharacterController.Raccoon;
+using KinematicCharacterController.Raccoonv2;
 
 //Script that handles the Player's inputs.
 namespace KinematicCharacterController.Nate
 {
     public class RaccoonInputs : MonoBehaviour
     {
-        public RaccoonController Character;
+        public RaccoonControllerv2 Character;
 //
         //private const string HorizontalInput = "Horizontal";
         //private const string VerticalInput = "Vertical";
