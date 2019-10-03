@@ -96,7 +96,7 @@ namespace KinematicCharacterController.Raccoonv2
         //private DetectionState CurrentDetectionState;
         public RaccoonFollowTargetState CurrentFollowState;
 
-        private float RepositionDistance = 4f;
+        private float RepositionDistance = 6f;
         private float AttackDistance = 2f;
 
         public LayerMask WallLayerMask;
@@ -326,7 +326,15 @@ namespace KinematicCharacterController.Raccoonv2
                                 {
                                     //Move to a spot near the player.
                                     _lookInputVector = _moveInputVector;
-                                    MaxStableMoveSpeed = 1f;
+                                    MaxStableMoveSpeed = 4f;
+
+                                    //Rotates around the player's position.
+                                    Vector3 rightDir1 = Vector3.Cross(playerLookDirection, Motor.CharacterUp);
+                                    //Vector3 rightDir2 = Vector3.ProjectOnPlane(playerLookDirection - rightDir1, Motor.CharacterUp);
+                                    //Vector3 rightDir3 = Vector3.Cross(rightDir2, Motor.CharacterUp);
+                                    _moveInputVector = rightDir1.normalized;
+                                    
+                                    Debug.DrawRay(Motor.Transform.position, rightDir1);
                                     break;
                                 }
                                 case RaccoonFollowTargetState.Wait:
@@ -717,6 +725,7 @@ namespace KinematicCharacterController.Raccoonv2
                                             timesRepositioned += 1;
                                             CurrentFollowState = RaccoonFollowTargetState.Reposition;
                                             RepositionTimeCoroutine = StartCoroutine(RepositionTime(.65f, .95f));
+                                            //RepositionTimeCoroutine = StartCoroutine(RepositionTime(, 10f));
                                         }
                                         //Wait (up to 1)
                                         else if ((rand > 75 && rand <= 100) && timesWaitedInPlace == 0)
