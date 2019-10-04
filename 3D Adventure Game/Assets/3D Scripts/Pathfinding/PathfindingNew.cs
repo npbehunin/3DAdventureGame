@@ -25,7 +25,8 @@ public class PathfindingNew : MonoBehaviour {
 		NodeNew startNode = grid.NodeFromWorldPoint(startPos);
 		NodeNew targetNode = grid.NodeFromWorldPoint(targetPos);
 
-		if (startNode.walkable && targetNode.walkable) {
+		//if (startNode.walkable && targetNode.walkable) {
+		if (targetNode.walkable) { //Removed startNode (under the assumption objects will never be inside a wall, which is unwalkable.)
 			HeapNew<NodeNew> openSet = new HeapNew<NodeNew>(grid.MaxSize);
 			HashSet<NodeNew> closedSet = new HashSet<NodeNew>();
 			openSet.Add(startNode);

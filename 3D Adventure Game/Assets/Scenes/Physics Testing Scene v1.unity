@@ -1962,7 +1962,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c585670b0653a8f47864b97d5496d6fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayGridGizmos: 0
+  displayGridGizmos: 1
   unwalkableMask:
     serializedVersion: 2
     m_Bits: 512
@@ -3237,7 +3237,6 @@ MonoBehaviour:
   Home: {fileID: 1347334229}
   _lineOfSightToTarget: 0
   _lineOfSightToHome: 0
-  _canReposition: 0
   pathfinding: {fileID: 1222896217}
 --- !u!114 &1222896221
 MonoBehaviour:

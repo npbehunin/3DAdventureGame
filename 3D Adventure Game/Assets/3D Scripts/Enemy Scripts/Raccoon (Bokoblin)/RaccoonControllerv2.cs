@@ -105,6 +105,7 @@ namespace KinematicCharacterController.Raccoonv2
         private Vector3 targetPosition;
         private Vector3 homePosition;
         private Vector3 pathPosition;
+        private Vector3 startDirection;
         public bool _lineOfSightToTarget;
         public bool _lineOfSightToHome;
         private float fieldOfView;
@@ -117,7 +118,7 @@ namespace KinematicCharacterController.Raccoonv2
         private bool _canChooseRandomAttack;
         private bool _canAttack;
         private bool _canCheckPathfinding;
-        public bool _canReposition;
+        private bool _canReposition;
         private bool _shouldMoveToHome;
 
         public UnitFollowNew pathfinding;
@@ -141,6 +142,7 @@ namespace KinematicCharacterController.Raccoonv2
     
             // Assign the characterController to the motor
             Motor.CharacterController = this;
+            startDirection = Motor.CharacterForward;
         }
 
         /// <summary>
@@ -257,6 +259,7 @@ namespace KinematicCharacterController.Raccoonv2
         /// </summary>
         public void SetInputs(ref RaccoonCharacterInputs inputs) //AI
         {
+            //Debug.Log(_moveInputVector);
             //USE THIS AREA TO SET MOVE INPUT AND LOOK DIRECTION.
             //AVOID SETTING STATE TRANSITIONS HERE.
             Vector3 playerLookDirection = Vector3.ProjectOnPlane(targetPosition - Motor.Transform.position, Motor.CharacterUp);
@@ -267,6 +270,7 @@ namespace KinematicCharacterController.Raccoonv2
                 {
                     if (_shouldMoveToHome)
                     {
+                        _lookInputVector = _moveInputVector;
                         if (pathfinding.PathIsActive)
                         {
                             Vector3 pathDirection = pathPosition - Motor.transform.position;
@@ -281,9 +285,8 @@ namespace KinematicCharacterController.Raccoonv2
                     else
                     {
                         _moveInputVector = Vector3.zero;
-                        //Do nothin'.
+                        _lookInputVector = startDirection; //Look in the direction it starts the game in. (For non-patrolling default states)
                     }
-                    _lookInputVector = _moveInputVector;
                     break;
                 }
                 //Follow target movement
@@ -626,7 +629,7 @@ namespace KinematicCharacterController.Raccoonv2
                     
                     //If the home position is too far away...
                     Vector3 homeDirection = homePosition - Motor.Transform.position;
-                    float homeMaxDistance = 1f;
+                    float homeMaxDistance = 2f;
 
                     //Debug.Log(homeDirection);
                     if (!_lineOfSightToHome)
@@ -634,7 +637,7 @@ namespace KinematicCharacterController.Raccoonv2
                         if (_canCheckPathfinding) //(Reset this)
                         {
                             _canCheckPathfinding = false;
-                            pathfinding.CheckIfCanFollowPath(targetPosition);
+                            pathfinding.CheckIfCanFollowPath(homePosition);
                         }
 
                         if (pathfinding.PathIsActive)
@@ -938,12 +941,11 @@ namespace KinematicCharacterController.Raccoonv2
 
 //--------------------------------------------------------------------------------------------------------------------
 //LAST TIME ON DRAGONBALL Z:
-//Added small fixes to move input, look input, and bool resetting.
-//Enemy now seems to transition and (for the most part) move and look properly.
+//Added fixes to default movement and pathfinding to home position.
 
 //TO DO NEXT
-//Implement repositioning around the player.
-//Implement a temporary sword attack movement.
+//Adjust the pathfinding script to ignore the start node.
+//Adjust the pathfinding to allow two optional parameters: Leniency and amount. (See script for details)
 //Make adjustments to the default movement so it rotates and positions itself properly.
 //General clean up.
 

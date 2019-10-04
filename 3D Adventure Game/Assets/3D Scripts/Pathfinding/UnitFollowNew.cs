@@ -27,7 +27,7 @@ public class UnitFollowNew : MonoBehaviour {
 
 	void Update()
 	{
-		//Debug.Log(targetIndex);
+		//Debug.Log(PathIsActive);
 	}
 
 	public void StopFollowPath()
@@ -84,7 +84,7 @@ public class UnitFollowNew : MonoBehaviour {
 			//UpdateThePath = StartCoroutine(UpdatePath());
 			while (true)
 			{
-				Debug.Log(Vector3.Distance(Vector3.ProjectOnPlane(currentWaypoint, transform.position), motorUpDirection));
+				//Debug.Log(Vector3.Distance(Vector3.ProjectOnPlane(currentWaypoint, transform.position), motorUpDirection));
 				if (Vector3.Distance(Vector3.ProjectOnPlane(currentWaypoint, motorUpDirection), transform.position) < .75f)
 				{
 					targetIndex++;
@@ -105,6 +105,7 @@ public class UnitFollowNew : MonoBehaviour {
 		else
 		{
 			Debug.Log("AAGUh");
+			StopFollowPath();
 		}
 	}
 
@@ -131,10 +132,11 @@ public class UnitFollowNew : MonoBehaviour {
 	}
 }
 //TO DO
-//The pathfinding will still create a path on slopes the pet can't traverse over. We either need to check the slope on our
-//raycast hit (which would still only give us the normal of the direct point right below the node), or create something like
-//a new collider or layer on slides called "slideable" or something that returns an unwalkable gridpoint (better? because it
-//checks a collision instead of a raycast.
+//Ignore the starting node. Under the assumption objects can't start a path inside a wall, this node doesn't matter.
+//Implement a "Leniency" parameter. This allows the pathfinding to move to a nearby node if the target node can't
+//be accessed.
+//"If the path can't be reached, check if canMoveToNearbyNodes is true. If so, check the next closest node. Repeat
+//until x amount of times. If the other nodes can't be reached, return false.
 
 //KNOWN ISSUES
 //If the player is inside red points on the grid, the pet will teleport. This means even if the player isn't colliding
