@@ -193,6 +193,10 @@
             <e p="NodeNew.cs" t="Include" />
             <e p="PathfindingNew.cs" t="Include" />
             <e p="PathRequestManagerNew.cs" t="Include" />
+            <e p="Player Info" t="Include">
+              <e p="EquipItemController.cs" t="Include" />
+              <e p="PlayerStats.cs" t="Include" />
+            </e>
             <e p="Sebastian" t="Include">
               <e p="Grid3D.cs" t="Include" />
               <e p="Heap3D.cs" t="Include" />
@@ -204,16 +208,13 @@
               <e p="Unit3D.cs" t="Include" />
             </e>
             <e p="UnitFollowNew.cs" t="Include" />
+            <e p="UpdatePathTesting.cs" t="Include" />
           </e>
           <e p="Pet Scripts" t="Include">
             <e p="PetMovement3D.cs" t="Include" />
           </e>
           <e p="Player Scripts" t="Include">
             <e p="ItemEquippingInfo.txt" t="Include" />
-            <e p="Player Info" t="Include">
-              <e p="EquipItemController.cs" t="Include" />
-              <e p="PlayerStats.cs" t="Include" />
-            </e>
             <e p="Player Movement" t="Include">
               <e p="NateCharacterController.cs" t="Include" />
               <e p="NatePlayer.cs" t="Include" />

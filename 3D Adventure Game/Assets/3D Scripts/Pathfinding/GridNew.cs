@@ -26,7 +26,7 @@ public class GridNew : MonoBehaviour {
 		}
 	}
 
-	void CreateGrid() {
+	public void CreateGrid() {
 		grid = new NodeNew[gridSizeX,gridSizeY];
 		Vector3 worldBottomLeft = transform.position - Vector3.right * gridWorldSize.x/2 - Vector3.forward * gridWorldSize.y/2; //*** Vector3 forward to up
 
@@ -79,7 +79,7 @@ public class GridNew : MonoBehaviour {
 		return grid[x, y];
 	}
 
-	void OnDrawGizmos() {
+	public void OnDrawGizmos() {
 		Gizmos.DrawWireCube(transform.position,new Vector3(gridWorldSize.x,1,gridWorldSize.y)); //*** swap positions for y
 		if (grid != null && displayGridGizmos) {
 			foreach (NodeNew n in grid) {

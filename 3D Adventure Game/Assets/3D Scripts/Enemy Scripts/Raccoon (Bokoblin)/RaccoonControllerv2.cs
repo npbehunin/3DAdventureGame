@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using KinematicCharacterController;
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using UnityEditor.Experimental.GraphView;
+using Debug = UnityEngine.Debug;
 using Random = System.Random;
 
 namespace KinematicCharacterController.Raccoonv2
@@ -101,8 +103,10 @@ namespace KinematicCharacterController.Raccoonv2
 
         public LayerMask WallLayerMask;
         public Transform Target;
+        //public Transform TargetCenter; //Mesh root center of target
         public Transform Home;
         private Vector3 targetPosition;
+        private Vector3 targetPositionCenter;
         private Vector3 homePosition;
         private Vector3 pathPosition;
         private Vector3 startDirection;
@@ -131,6 +135,8 @@ namespace KinematicCharacterController.Raccoonv2
         private bool canStartAttackDelayTime;
         private Coroutine AttackTimeCoroutine;
         private Coroutine RepositionTimeCoroutine;
+        private Coroutine RockThrowCoroutine;
+        private bool canThrowRock;
 
         //Coroutine
         //bool
@@ -200,6 +206,7 @@ namespace KinematicCharacterController.Raccoonv2
                     _canCheckPathfinding = true;
                     timesAlerted = 0;
                     _canReposition = true;
+                    canThrowRock = true;
                     CurrentAttackState = RaccoonAttackState.FollowTarget;
                     break;
                 }
@@ -233,10 +240,12 @@ namespace KinematicCharacterController.Raccoonv2
                     _canCheckPathfinding = true;
                     canStartAttackDelayTime = true;
                     _canAttack = false;
+                    canThrowRock = true;
                     timesRepositioned = 0;
                     timesWaitedInPlace = 0;
                     StopActiveCoroutine(AttackTimeCoroutine);
                     StopActiveCoroutine(RepositionTimeCoroutine);
+                    StopActiveCoroutine(RockThrowCoroutine);
                     break;
                 }
                 case RaccoonState.Alerted:
@@ -300,11 +309,13 @@ namespace KinematicCharacterController.Raccoonv2
                             {
                                 case RaccoonFollowTargetState.MoveToTarget:
                                 {
+                                    _lookInputVector = _moveInputVector;
                                     //Follow target movement.
-                                    if (!_lineOfSightToTarget && pathfinding.PathIsActive) //If both false, goes to search state. (Taken care of below)
+                                    if (pathfinding.PathIsActive) //If both false, goes to search state. (Taken care of below)
                                     {
                                         Vector3 pathDirection = pathPosition - Motor.transform.position;
                                         _moveInputVector = Vector3.ProjectOnPlane(pathDirection, Motor.CharacterUp).normalized;
+                                        //Debug.Log(_moveInputVector);
                                         //Move towards path.
                                     }
                                     else
@@ -315,14 +326,14 @@ namespace KinematicCharacterController.Raccoonv2
                                     }
                                     
                                     //Follow target rotation.
-                                    if (_lineOfSightToTarget)
-                                    {
-                                        _lookInputVector = playerLookDirection;
-                                    }
-                                    else
-                                    {
-                                        _lookInputVector = _moveInputVector;
-                                    }
+                                    //if (_lineOfSightToTarget)
+                                    //{
+                                    //    _lookInputVector = playerLookDirection;
+                                    //}
+                                    //else
+                                    //{
+                                    //    _lookInputVector = _moveInputVector;
+                                    //}
                                     break;
                                 }
                                 case RaccoonFollowTargetState.Reposition:
@@ -366,6 +377,7 @@ namespace KinematicCharacterController.Raccoonv2
                         case RaccoonAttackState.RockAttack:
                         {
                             MaxStableMoveSpeed = 0f; //For testing
+                            _lookInputVector = playerLookDirection;
                             //Rock attack.
                             break;
                         }
@@ -385,6 +397,7 @@ namespace KinematicCharacterController.Raccoonv2
                 case RaccoonState.Alerted:
                 {
                     _lookInputVector = playerLookDirection;
+                    _moveInputVector = Vector3.zero;
                     break;
                 }
             }
@@ -397,6 +410,7 @@ namespace KinematicCharacterController.Raccoonv2
         public void BeforeCharacterUpdate(float deltaTime)
         {
             targetPosition = Target.transform.position; //Target's position.
+            //targetPositionCenter = TargetCenter.position;
             pathPosition = pathfinding.targetPathPosition;
             
             switch (CurrentRaccoonState)
@@ -702,53 +716,77 @@ namespace KinematicCharacterController.Raccoonv2
                         case RaccoonAttackState.FollowTarget:
                         {
                             float targetDirMagnitude = targetDirection.sqrMagnitude;
+                            
+                            //Check the player's height
+                            float MaxHeightDistance = 2f;
+                            Vector3 targetDistOnPlane = Vector3.ProjectOnPlane(targetPosition, Motor.CharacterUp);
+                            float targetHeight = (targetPosition - targetDistOnPlane).sqrMagnitude;
+                            //Debug.Log(Mathf.Sqrt(targetHeight));
+                            bool targetIsWithinHeight = (targetHeight < Mathf.Pow(MaxHeightDistance, 2));
 
-                            //If the target is ever outside the reposition distance...
-                            if (targetDirMagnitude > Mathf.Pow(RepositionDistance, 2))
+                            //Repositioning stuff
+                            if (targetIsWithinHeight)
                             {
-                                //Debug.Log(targetDirMagnitude / targetDirection.magnitude);
-                                CurrentFollowState = RaccoonFollowTargetState.MoveToTarget; //**
-                                //If 1 hand is free...
-                                    //Random chance to throw rocks.
-                            }
-                            else
-                            {
-                                if (_canReposition) //Remember to reset this, timesRepositioned, AND timesWaited.
+                                if (!canThrowRock)
                                 {
-                                    _canReposition = false;
-                                    int rand = UnityEngine.Random.Range(0, 100);
-
-                                    //If repositioned/waited up to 3 times...
-                                    if (timesRepositioned + timesWaitedInPlace <= 3)
+                                    canThrowRock = true;
+                                }
+                                StopActiveCoroutine(RockThrowCoroutine);
+                                if (targetDirMagnitude > Mathf.Pow(RepositionDistance, 2))
+                                {
+                                    //Debug.Log(targetDirMagnitude / targetDirection.magnitude);
+                                    CurrentFollowState = RaccoonFollowTargetState.MoveToTarget; //**
+                                    //If 1 hand is free...
+                                        //Random chance to throw rocks.
+                                }
+                                else
+                                {
+                                    if (_canReposition) //Remember to reset this, timesRepositioned, AND timesWaited.
                                     {
-                                        //Reposition (up to 2)
-                                        if ((rand > 50 && rand <= 75) || timesWaitedInPlace > 0)
+                                        _canReposition = false;
+                                        int rand = UnityEngine.Random.Range(0, 100);
+    
+                                        //If repositioned/waited up to 3 times...
+                                        if (timesRepositioned + timesWaitedInPlace <= 3)
                                         {
-                                            Debug.Log("Repositioning.");
-                                            timesRepositioned += 1;
-                                            CurrentFollowState = RaccoonFollowTargetState.Reposition;
-                                            RepositionTimeCoroutine = StartCoroutine(RepositionTime(.65f, .95f));
-                                            //RepositionTimeCoroutine = StartCoroutine(RepositionTime(, 10f));
+                                            //Reposition (up to 2)
+                                            if ((rand > 50 && rand <= 75) || timesWaitedInPlace > 0)
+                                            {
+                                                Debug.Log("Repositioning.");
+                                                timesRepositioned += 1;
+                                                CurrentFollowState = RaccoonFollowTargetState.Reposition;
+                                                RepositionTimeCoroutine = StartCoroutine(RepositionTime(.65f, .95f));
+                                                //RepositionTimeCoroutine = StartCoroutine(RepositionTime(, 10f));
+                                            }
+                                            //Wait (up to 1)
+                                            else if ((rand > 75 && rand <= 100) && timesWaitedInPlace == 0)
+                                            {
+                                                Debug.Log("Waiting.");
+                                                timesWaitedInPlace += 1;
+                                                CurrentFollowState = RaccoonFollowTargetState.Wait;
+                                                RepositionTimeCoroutine = StartCoroutine(RepositionTime(.85f, 1.15f));
+                                            }
                                         }
-                                        //Wait (up to 1)
-                                        else if ((rand > 75 && rand <= 100) && timesWaitedInPlace == 0)
+    
+                                        //If over the reposition amount OR rand <= 50...
+                                        if (timesRepositioned + timesWaitedInPlace > 3 || rand <= 50)
                                         {
-                                            Debug.Log("Waiting.");
-                                            timesWaitedInPlace += 1;
-                                            CurrentFollowState = RaccoonFollowTargetState.Wait;
-                                            RepositionTimeCoroutine = StartCoroutine(RepositionTime(.85f, 1.15f));
+                                            //(Moves towards the target here in moveInputVector)
+                                            Debug.Log("Continuing movement.");
+                                            CurrentFollowState = RaccoonFollowTargetState.MoveToTarget; //**
                                         }
-                                    }
-
-                                    //If over the reposition amount OR rand <= 50...
-                                    if (timesRepositioned + timesWaitedInPlace > 3 || rand <= 50)
-                                    {
-                                        //(Moves towards the target here in moveInputVector)
-                                        Debug.Log("Continuing movement.");
-                                        CurrentFollowState = RaccoonFollowTargetState.MoveToTarget; //**
                                     }
                                 }
                             }
+                            //else if (_lineOfSightToTarget && !pathfinding.PathIsActive)
+                            //{
+                                //if (canThrowRock)
+                                //{
+                                //    canThrowRock = false;
+                                //    CurrentFollowState = RaccoonFollowTargetState.Wait;
+                                //    RockThrowCoroutine = StartCoroutine(RockThrowTime());
+                                //}
+                            //}
 
                             //Transition to sword attack
                             switch (CurrentFollowState)
@@ -768,7 +806,7 @@ namespace KinematicCharacterController.Raccoonv2
                                 }
                             }
                             
-                            //Pathfinding when the player is no longer seen
+                            //Pathfinding (line of sight)
                             if (!_lineOfSightToTarget)
                             {
                                 CurrentFollowState = RaccoonFollowTargetState.MoveToTarget;
@@ -785,7 +823,26 @@ namespace KinematicCharacterController.Raccoonv2
                                     TransitionToState(RaccoonState.Search);
                                 }
                             }
-                            else
+                            //Pathfinding (target height check)
+                            else if (!targetIsWithinHeight)
+                            {
+                                if (_canCheckPathfinding)
+                                {
+                                    _canCheckPathfinding = false;
+                                    pathfinding.CheckIfCanFollowPath(targetPosition);
+                                }
+                                
+                                if (!pathfinding.PathIsActive && !pathfinding.CheckingPath)
+                                {
+                                    if (canThrowRock)
+                                    {
+                                        canThrowRock = false;
+                                        CurrentFollowState = RaccoonFollowTargetState.Wait;
+                                        RockThrowCoroutine = StartCoroutine(RockThrowTime());
+                                    }
+                                }
+                            }
+                            else //*Make sure no other code interrupts this section.
                             {
                                 _canCheckPathfinding = true;
                                 pathfinding.StopFollowPath();
@@ -817,11 +874,14 @@ namespace KinematicCharacterController.Raccoonv2
         {
             //Check line of sight to the target.
             float maxDistance = 12f;
-            Vector3 targetDirection = targetPos - Motor.Transform.position;
+            
+            Vector3 adjustedPosition = targetPos + Motor.CharacterUp; //Check slightly above the transform position.
+            Vector3 targetDirection = adjustedPosition - Motor.Transform.position;
 
+            //Debug.DrawLine(Motor.transform.position, adjustedPosition);
             if (targetDirection.sqrMagnitude < Mathf.Pow(maxDistance, 2) && Vector3.Angle(targetDirection, Motor.CharacterForward) <= fieldOfViewToTarget)
             {
-                if (!Physics.Linecast(Motor.Transform.position, targetPos, WallLayerMask))
+                if (!Physics.Linecast(Motor.Transform.position, adjustedPosition, WallLayerMask))
                 {
                     return true;
                 }
@@ -902,6 +962,17 @@ namespace KinematicCharacterController.Raccoonv2
         
         //Attack time
 
+        private IEnumerator RockThrowTime()
+        {
+            float rand = UnityEngine.Random.Range(1f, 2.5f);
+            yield return CustomTimer.Timer(rand);
+            Debug.Log("Throwing a rock.");
+            CurrentAttackState = RaccoonAttackState.RockAttack;
+            yield return CustomTimer.Timer(2.5f);
+            CurrentAttackState = RaccoonAttackState.FollowTarget;
+            canThrowRock = true;
+        }
+
         private IEnumerator RepositionTime(float range1, float range2)
         {
             float rand = UnityEngine.Random.Range(range1, range2);
@@ -941,10 +1012,15 @@ namespace KinematicCharacterController.Raccoonv2
 
 //--------------------------------------------------------------------------------------------------------------------
 //LAST TIME ON DRAGONBALL Z:
-//Added fixes to default movement and pathfinding to home position.
+//Worked more on height checking.
+//Enemy now throws rocks if the maxHeightDistance isnt' met AND it can't use pathfinding to the player.
 
 //TO DO NEXT
-//Adjust the pathfinding script to ignore the start node.
+//Fix issue where the enemy is stuck in the wait position (while standing on a pathfinding point on the ramp.
+//Fix issue where the enemy constantly moves towards the path point.
+//More bugtesting on pathfinding and state transitioning.
+
+//Randomly switches between throwing debris (most likely), covering eyes to see, or getting angry and stomping foot (rare).
 //Adjust the pathfinding to allow two optional parameters: Leniency and amount. (See script for details)
 //Make adjustments to the default movement so it rotates and positions itself properly.
 //General clean up.
