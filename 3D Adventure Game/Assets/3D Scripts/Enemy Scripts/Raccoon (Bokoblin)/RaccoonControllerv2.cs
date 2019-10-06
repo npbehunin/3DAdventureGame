@@ -718,11 +718,19 @@ namespace KinematicCharacterController.Raccoonv2
                             float targetDirMagnitude = targetDirection.sqrMagnitude;
                             
                             //Check the player's height
+                            //ISSUE: ONLY WORKS ON GROUND PLANE. NEEDS TO WORK WHILE THE ENEMY IS ALSO UP HIGH.
                             float MaxHeightDistance = 2f;
-                            Vector3 targetDistOnPlane = Vector3.ProjectOnPlane(targetPosition, Motor.CharacterUp);
-                            float targetHeight = (targetPosition - targetDistOnPlane).sqrMagnitude;
-                            //Debug.Log(Mathf.Sqrt(targetHeight));
-                            bool targetIsWithinHeight = (targetHeight < Mathf.Pow(MaxHeightDistance, 2));
+                            Vector3 targetDistOnPlane = Vector3.ProjectOnPlane(targetPosition, Motor.CharacterUp); //*Projects targetPosition on ground plane.
+                            float targetHeight = (targetPosition - targetDistOnPlane).sqrMagnitude; //Direction between target's position and it's point on the ground.
+                            Vector3 enemyDistOnPlane =
+                                Vector3.ProjectOnPlane(Motor.transform.position, Motor.CharacterUp);
+                            float enemyHeight = (Motor.transform.position - enemyDistOnPlane).sqrMagnitude;
+                            float heightDifference = targetHeight - enemyHeight;
+                            Debug.Log(Mathf.Sqrt(Mathf.Abs(heightDifference)));
+                            bool targetIsWithinHeight = Mathf.Abs(heightDifference) < Mathf.Pow(MaxHeightDistance, 2);
+                            
+                            //The issue here is that we're comparing the player's height to it's point on the ground plane. We need to take the enemy's position into account
+                            //as well. (Ex: Repeat the process to get the enemy's height, then get the difference from both the player's height and enemy's height.
 
                             //Repositioning stuff
                             if (targetIsWithinHeight)

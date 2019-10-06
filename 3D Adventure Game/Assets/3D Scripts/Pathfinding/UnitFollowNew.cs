@@ -85,9 +85,13 @@ public class UnitFollowNew : MonoBehaviour {
 			while (true)
 			{
 				//This crap
-				Vector3 distance = Vector3.ProjectOnPlane(currentWaypoint, (transform.position + motorUpDirection));
-				Debug.DrawLine(distance, transform.position, Color.yellow);
-				if (Vector3.Distance(distance, transform.position) < .75f)
+				Vector3 dir = currentWaypoint - transform.position;
+				//Vector3 distance = Vector3.ProjectOnPlane(currentWaypoint, (motorUpDirection));
+				Vector3 test = Vector3.ProjectOnPlane(dir, motorUpDirection);
+				//Debug.DrawLine(distance, transform.position, Color.yellow);
+				//Debug.DrawRay(test, test, Color.blue);
+				//Debug.Log(test.magnitude);
+				if (test.magnitude < .75f)
 				{
 					targetIndex++;
 					if (targetIndex >= path.Length)
