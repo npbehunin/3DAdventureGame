@@ -86,11 +86,7 @@ public class UnitFollowNew : MonoBehaviour {
 			{
 				//This crap
 				Vector3 dir = currentWaypoint - transform.position;
-				//Vector3 distance = Vector3.ProjectOnPlane(currentWaypoint, (motorUpDirection));
 				Vector3 test = Vector3.ProjectOnPlane(dir, motorUpDirection);
-				//Debug.DrawLine(distance, transform.position, Color.yellow);
-				//Debug.DrawRay(test, test, Color.blue);
-				//Debug.Log(test.magnitude);
 				if (test.magnitude < .75f)
 				{
 					targetIndex++;
@@ -115,12 +111,6 @@ public class UnitFollowNew : MonoBehaviour {
 		}
 	}
 
-	//IEnumerator UpdatePath()
-	//{
-	//	yield return new WaitForSeconds(.2f);
-	//	StopFollowPath();
-	//}
-
 	public void OnDrawGizmos() {
 		if (path != null) {
 			for (int i = targetIndex; i < path.Length; i ++) {
@@ -137,16 +127,20 @@ public class UnitFollowNew : MonoBehaviour {
 		}
 	}
 }
+
 //TO DO
-//Ignore the starting node. Under the assumption objects can't start a path inside a wall, this node doesn't matter.
-//Implement a "Leniency" parameter. This allows the pathfinding to move to a nearby node if the target node can't
-//be accessed.
-//"If the path can't be reached, check if canMoveToNearbyNodes is true. If so, check the next closest node. Repeat
-//until x amount of times. If the other nodes can't be reached, return false.
+//Nothing for now, unless a "leniency" option is needed.
 
 //KNOWN ISSUES
-//If the player is inside red points on the grid, the pet will teleport. This means even if the player isn't colliding
-//with the wall, the player can still be in the red point on the grid.
+//Areas underneath bridges or other floors will be affected by the areas above it (Since we raycast downwards.)
+	//Idea 1:
+	//Ignore it and just be aware of it when designing rooms.
+	//Idea 2:
+	//Have a second grid that the pathfinder will check (or "swap out") depending how close each individual enemy is.
+//Since a path can run diagonally, it will sometimes "cut through" a wall with two neighboring diagonal unwalkable
+	//points. This can be fixed by either making the walls thicker or adjusting the pathfinding to make sure there's
+	//at least 1 direct neighbor.
+
 
 //NOTES
 //I added a second check on followpath to make sure the length of the array is greater than 0, that way if the path

@@ -137,6 +137,7 @@ namespace KinematicCharacterController.Raccoonv2
         private Coroutine RepositionTimeCoroutine;
         private Coroutine RockThrowCoroutine;
         private bool canThrowRock;
+        private Coroutine forceSearchStateCoroutine;
 
         //Coroutine
         //bool
@@ -643,6 +644,7 @@ namespace KinematicCharacterController.Raccoonv2
                     
                     //If the home position is too far away...
                     Vector3 homeDirection = homePosition - Motor.Transform.position;
+                    Vector3 projectedHomeDirection = Vector3.ProjectOnPlane(homeDirection, Motor.CharacterUp);
                     float homeMaxDistance = 2f;
 
                     //Debug.Log(homeDirection);
@@ -665,7 +667,8 @@ namespace KinematicCharacterController.Raccoonv2
                     }
                     else
                     {
-                        if (homeDirection.sqrMagnitude > Mathf.Pow(homeMaxDistance, 2))
+                        //Debug.Log(projectedHomeDirection.magnitude);
+                        if (projectedHomeDirection.sqrMagnitude > Mathf.Pow(homeMaxDistance, 2))
                         {
                             _shouldMoveToHome = true;
                         }
@@ -726,7 +729,7 @@ namespace KinematicCharacterController.Raccoonv2
                                 Vector3.ProjectOnPlane(Motor.transform.position, Motor.CharacterUp);
                             float enemyHeight = (Motor.transform.position - enemyDistOnPlane).sqrMagnitude;
                             float heightDifference = targetHeight - enemyHeight;
-                            Debug.Log(Mathf.Sqrt(Mathf.Abs(heightDifference)));
+                            //Debug.Log(Mathf.Sqrt(Mathf.Abs(heightDifference)));
                             bool targetIsWithinHeight = Mathf.Abs(heightDifference) < Mathf.Pow(MaxHeightDistance, 2);
                             
                             //The issue here is that we're comparing the player's height to it's point on the ground plane. We need to take the enemy's position into account
@@ -967,9 +970,15 @@ namespace KinematicCharacterController.Raccoonv2
         }
     
         // COROUTINES
-        
-        //Attack time
 
+        //Force the search state if pathfinding to player takes longer than 5 seconds.
+        private IEnumerator ForceSearchStateTime()
+        {
+            yield return CustomTimer.Timer(5f);
+            TransitionToState(RaccoonState.Search);
+        }
+
+        //Rock throw timing
         private IEnumerator RockThrowTime()
         {
             float rand = UnityEngine.Random.Range(1f, 2.5f);
@@ -981,6 +990,7 @@ namespace KinematicCharacterController.Raccoonv2
             canThrowRock = true;
         }
 
+        //Random time between each reposition.
         private IEnumerator RepositionTime(float range1, float range2)
         {
             float rand = UnityEngine.Random.Range(range1, range2);
@@ -988,13 +998,15 @@ namespace KinematicCharacterController.Raccoonv2
             _canReposition = true;
         }
 
-        private IEnumerator AttackDelayTime()
-        {
-            float rand = UnityEngine.Random.Range(.35f, 1.35f);
-            yield return CustomTimer.Timer(rand);
-            _canAttack = true;
-            canStartAttackDelayTime = true;
-        }
+        //private IEnumerator AttackDelayTime()
+        //{
+        //    float rand = UnityEngine.Random.Range(.35f, 1.35f);
+        //    yield return CustomTimer.Timer(rand);
+        //    _canAttack = true;
+        //    canStartAttackDelayTime = true;
+        //}
+        
+        //Attack time before going back to followTarget.
         private IEnumerator AttackTime(float time)
         {
             yield return CustomTimer.Timer(time);
@@ -1002,14 +1014,14 @@ namespace KinematicCharacterController.Raccoonv2
             CurrentAttackState = RaccoonAttackState.FollowTarget;
         }
 
-        //Alert state to search state transition time
+        //Alert < Search
         private IEnumerator AlertToSearchTransitionTime()
         {
             yield return CustomTimer.Timer(.75f);
             TransitionToState(RaccoonState.Search);
         }
 
-        //Search state time before transition to default
+        //Search < Default
         private IEnumerator SearchStateTime()
         {
             yield return CustomTimer.Timer(2f);
