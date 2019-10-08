@@ -211,6 +211,7 @@
             <e p="UpdatePathTesting.cs" t="Include" />
           </e>
           <e p="Pet Scripts" t="Include">
+            <e p="PetController.cs" t="Include" />
             <e p="PetMovement3D.cs" t="Include" />
           </e>
           <e p="Player Scripts" t="Include">

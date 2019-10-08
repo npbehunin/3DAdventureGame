@@ -4,103 +4,53 @@ using UnityEngine;
 using KinematicCharacterController;
 using System;
 
-namespace KinematicCharacterController.Nate
+//Movement controller for the fox.
+
+namespace KinematicCharacterController.PetController
 {
-    public enum CharacterState //Character states (Walking, crouching, attacking, etc)
+    public enum PetState //Character states (Walking, crouching, attacking, etc)
     {
         Default, 
         Walk, 
         Crouched, 
-        SwordAttack,
-        Slide,
-        BowAttack,
+        SwordAttack
     }
 
-    public enum SwordAttackState
-    {
-        SwingStart,
-        SwingEnd
-    }
-
-    public enum OrientationMethod
-    {
-        TowardsCamera,
-        TowardsMovement,
-    }
-
-    public struct PlayerCharacterInputs
-    {
-        public float MoveAxisForward;
-        public float MoveAxisRight;
-        public Quaternion CameraRotation;
-        public bool JumpDown;
-        public bool CrouchDown;
-        public bool CrouchUp;
-        public bool SwordSwing;
-        public bool ToggleTargetingMode;
-    }
-
-    public struct AICharacterInputs
-    {
-        public Vector3 MoveVector;
-        public Vector3 LookVector;
-    }
-
-    public class NateCharacterController : MonoBehaviour, ICharacterController
+    public class NPCCharacterController : MonoBehaviour, ICharacterController
     {
         public KinematicCharacterMotor Motor;
-        public NewTempSwordCoroutine swordCoroutineScript;
-
+        
         [Header("Stable Movement")] public float MaxStableMoveSpeed = 10f;
         public float StableMovementSharpness = 15f;
         public float OrientationSharpness = 10f;
-        public OrientationMethod OrientationMethod = OrientationMethod.TowardsCamera;
 
         [Header("Air Movement")] public float MaxAirMoveSpeed = 100f;
         public float AirAccelerationSpeed = 15f;
         public float Drag = 0.1f;
 
-        //[Header("Jumping")] public bool AllowJumpingWhenSliding = false;
-        //public float JumpUpSpeed = 10f;
-        //public float JumpScalableForwardSpeed = 10f;
-        //public float JumpPreGroundingGraceTime = 0f;
-        //public float JumpPostGroundingGraceTime = 0f;
-
         [Header("Misc")] public List<Collider> IgnoredColliders = new List<Collider>();
         public bool OrientTowardsGravity = false;
-        //public BoolValue TargetingModeActive;
-        public CameraFollowPlayer camera; //Change to target mode manager later
         public Vector3 Gravity = new Vector3(0, -30f, 0);
         public Transform MeshRoot;
-        public Transform CameraFollowPoint;
 
-        public CharacterState CurrentCharacterState { get; private set; }
-        public SwordAttackState CurrentSwordAttackState;
+        public PetState CurrentPetState { get; private set; }
 
         private Collider[] _probedColliders = new Collider[8];
         private Vector3 _moveInputVector;
 
         private Vector3 _lookInputVector;
-
-        //private Vector3 _targetVector;
-        private bool _jumpRequested = false;
-        private bool _jumpConsumed = false;
-        private bool _jumpedThisFrame = false;
-        private float _timeSinceJumpRequested = Mathf.Infinity;
-        private float _timeSinceLastAbleToJump = 0f;
-        public float _accelerationSpeed = .1f;
-        public float _decelerationSpeed = .1f;
-        private float testLerp = 0f;
+        
         private Vector3 _internalVelocityAdd = Vector3.zero;
         private bool _shouldBeCrouching = false;
         private bool _isCrouching = false;
-        
-        public Coroutine _tempSwordCoroutine;
+
+        private Vector3 lastInnerNormal = Vector3.zero;
+        private Vector3 lastOuterNormal = Vector3.zero;
 
         private void Start()
         {
             //Handle initial state
-            TransitionToState(CharacterState.Default);
+            TransitionToState(PetState.Default);
 
             // Assign the characterController to the motor
             Motor.CharacterController = this;
@@ -109,22 +59,22 @@ namespace KinematicCharacterController.Nate
         /// <summary>
         /// Handles movement state transitions and enter/exit callbacks
         /// </summary>
-        public void TransitionToState(CharacterState newState)
+        public void TransitionToState(PetState newState)
         {
-            CharacterState tmpInitialState = CurrentCharacterState; //Get current state.
+            PetState tmpInitialState = CurrentPetState; //Get current state.
             OnStateExit(tmpInitialState, newState); //Do the OnStateExit stuff from current state to new state.
-            CurrentCharacterState = newState; //Current state = new state.
+            CurrentPetState = newState; //Current state = new state.
             OnStateEnter(newState, tmpInitialState); //Do the OnStateEnter stuff to new state from the last state.
         }
 
         /// <summary>
         /// Event when entering a state
         /// </summary>
-        public void OnStateEnter(CharacterState state, CharacterState fromState)
+        public void OnStateEnter(PetState state, PetState fromState)
         {
             switch (state)
             {
-                case CharacterState.Default:
+                case PetState.Default:
                 {
                     break;
                 }
@@ -134,11 +84,11 @@ namespace KinematicCharacterController.Nate
         /// <summary>
         /// Event when exiting a state
         /// </summary>
-        public void OnStateExit(CharacterState state, CharacterState toState)
+        public void OnStateExit(PetState state, PetState toState)
         {
             switch (state)
             {
-                case CharacterState.Default:
+                case PetState.Default:
                 {
                     break;
                 }
@@ -148,130 +98,53 @@ namespace KinematicCharacterController.Nate
         /// <summary>
         /// This is called every frame by [NatePlayer] in order to tell the character what its inputs are
         /// </summary>
-        public void SetInputs(ref PlayerCharacterInputs inputs)
+        //public void SetInputs(ref PlayerCharacterInputs inputs)
+        public void SetInputs()
         {
-            // Clamp input (in this case we just do it by 1f)
-            Vector3 moveInputVector =
-                Vector3.ClampMagnitude(new Vector3(inputs.MoveAxisRight, 0f, inputs.MoveAxisForward), 1f);
-
-            // Calculate camera direction and rotation on the character plane
-            Vector3 cameraPlanarDirection =
-                Vector3.ProjectOnPlane(inputs.CameraRotation * Vector3.forward, Motor.CharacterUp).normalized;
-            if (cameraPlanarDirection.sqrMagnitude == 0f)
+            switch (CurrentPetState)
             {
-                cameraPlanarDirection = Vector3.ProjectOnPlane(inputs.CameraRotation * Vector3.up, Motor.CharacterUp)
-                    .normalized;
-            }
-            
-            Quaternion cameraPlanarRotation = Quaternion.LookRotation(cameraPlanarDirection, Motor.CharacterUp);
-
-            //Inputs while grounded
-            if (Motor.GroundingStatus.IsStableOnGround)
-            {
-                if (inputs.SwordSwing) //Temp
+                case PetState.Default:
+                case PetState.Crouched:
                 {
-                    swordCoroutineScript.StartSwordSwing(); //Temporary, to start coroutine for canSwing check.
-                }
-
-                if (inputs.ToggleTargetingMode) //Temp target mode activation
-                {
-                    if (!camera.TargetingModeActive)
-                    {
-                        camera.TargetingModeActive = true;
-                    }
-                    else
-                    {
-                        camera.TargetingModeActive = false;
-                    }
-                }
-            }
-            else
-            {
-                camera.TargetingModeActive = false;
-            }
-
-            switch (CurrentCharacterState)
-            {
-                case CharacterState.Default:
-                case CharacterState.Crouched:
-                {
-                    //canSwing = true; //Temp
                     // Move and look inputs
-                    _moveInputVector = cameraPlanarRotation * moveInputVector;
                     StableMovementSharpness = 7f;
 
-                    switch (OrientationMethod)
-                    {
-                        //case OrientationMethod.TowardsCamera:
-                        //    _lookInputVector = cameraPlanarDirection;
-                        //    break;
-                        case OrientationMethod.TowardsMovement:
-                            _lookInputVector = _moveInputVector.normalized;
-                            break;
-                    }
-
                     // Crouching input
-                    if (inputs.CrouchDown)
-                    {
-                        _shouldBeCrouching = true;
-
-                        if (!_isCrouching)
-                        {
-                            _isCrouching = true;
-                            Motor.SetCapsuleDimensions(0.5f, 1f, 0.5f); //Scales the hitbox.
-                            MeshRoot.localScale = new Vector3(1f, 0.5f, 1f); //Scales the mesh root.
-
-                            if (CurrentCharacterState == CharacterState.Default)
-                            {
-                                TransitionToState(CharacterState.Crouched);
-                                //Transition to crouch
-                            }
-                        }
-                    }
-                    else if (inputs.CrouchUp)
-                    {
-                        _shouldBeCrouching = false;
-                    }
-
+                    //if (inputs.CrouchDown)
+                    //{
+                    //    _shouldBeCrouching = true;
+//
+                    //    if (!_isCrouching)
+                    //    {
+                    //        _isCrouching = true;
+                    //        Motor.SetCapsuleDimensions(0.5f, 1f, 0.5f); //Scales the hitbox.
+                    //        MeshRoot.localScale = new Vector3(1f, 0.5f, 1f); //Scales the mesh root.
+//
+                    //        if (CurrentPetState == PetState.Default)
+                    //        {
+                    //            TransitionToState(PetState.Crouched);
+                    //            //Transition to crouch
+                    //        }
+                    //    }
+                    //}
+                    //else if (inputs.CrouchUp)
+                    //{
+                    //    _shouldBeCrouching = false;
+                    //}
+//
                     break;
                 }
-                case CharacterState.SwordAttack: //Temp
-                {
-                    _moveInputVector = Vector3.ClampMagnitude(Motor.CharacterForward, 1f);
-
-                    switch (CurrentSwordAttackState)
-                    {
-                        case SwordAttackState.SwingStart:
-                        {
-                            StableMovementSharpness = 10f;
-                            break;
-                        }
-                        case SwordAttackState.SwingEnd:
-                        {
-                            StableMovementSharpness = 10f;
-                            break;
-                        }
-                    }
-                    break;
-                }
-                
             }
-        }
-
-        public void RunSwordSwingMovement()
-        {
-            //Debug.Log("Hi");
-            _tempSwordCoroutine = StartCoroutine(SwordMovementCoroutine(.5f));
         }
 
         /// <summary>
         /// This is called every frame by the AI script in order to tell the character what its inputs are
         /// </summary>
-        public void SetInputs(ref AICharacterInputs inputs) //AI
-        {
-            _moveInputVector = inputs.MoveVector;
-            _lookInputVector = inputs.LookVector;
-        }
+        //public void SetInputs(ref AICharacterInputs inputs) //AI
+        //{
+        //    _moveInputVector = inputs.MoveVector;
+        //    _lookInputVector = inputs.LookVector;
+        //}
 
         /// <summary>
         /// (Called by KinematicCharacterMotor during its update cycle)
@@ -279,52 +152,16 @@ namespace KinematicCharacterController.Nate
         /// </summary>
         public void BeforeCharacterUpdate(float deltaTime)
         {
-            switch (CurrentCharacterState)
+            switch (CurrentPetState)
             {
-                case CharacterState.Default:
+                case PetState.Default:
                 {
                     MaxStableMoveSpeed = 7f;
                     break;
                 }
-                case CharacterState.Crouched:
+                case PetState.Crouched:
                 {
                     MaxStableMoveSpeed = 3f;
-                    break;
-                }
-                case CharacterState.SwordAttack:
-                {
-                    switch (CurrentSwordAttackState)
-                    {
-                        case SwordAttackState.SwingStart:
-                        {
-                            MaxStableMoveSpeed = 10f;
-                            break;
-                        }
-                        case SwordAttackState.SwingEnd:
-                        {
-                            MaxStableMoveSpeed = 0f;
-                            break;
-                        }
-                    }
-                    
-                    break;
-                }
-                case CharacterState.Slide:
-                {
-                    //At high velocities, the MaxSlopeAngle will decrease until 0, causing the player to slide on everything and even go off ramps.
-                    //Could also just set MaxStableSlopeAngle to 0 until magnitude is under a certain point.
-                    float velocitySlidingPoint = 15f;
-                    float maxAngle = 60f;
-                    if (Motor.Velocity.magnitude > velocitySlidingPoint)
-                    {
-                        float percentage = Motor.Velocity.magnitude / 35f;
-                        Motor.MaxStableSlopeAngle = Mathf.Lerp(maxAngle, 0, percentage);
-                    }
-                    else
-                    {
-                        Motor.MaxStableSlopeAngle = maxAngle;
-                    }
-
                     break;
                 }
             }
@@ -337,45 +174,28 @@ namespace KinematicCharacterController.Nate
         /// </summary>
         public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
         {
-            switch (CurrentCharacterState)
+            switch (CurrentPetState)
             {
-                case CharacterState.Default:
-                case CharacterState.Crouched:
-                case CharacterState.SwordAttack:
-                case CharacterState.BowAttack:
+                case PetState.Default:
+                case PetState.Crouched:
                 {
-                    if (camera.TargetingModeActive)
+                    if (_lookInputVector.sqrMagnitude > 0f && OrientationSharpness > 0f)
                     {
-                        //Look towards the target.
-                        Vector3 targetDir = Vector3.ProjectOnPlane((camera.target.position - transform.position).normalized, Motor.CharacterUp);
-                        Vector3 reorientedTargetDir = Vector3.Slerp(Motor.CharacterForward, targetDir,1 - Mathf.Exp(-OrientationSharpness * deltaTime)).normalized;
+                        // Smoothly interpolate from current to target look direction
+                        Vector3 smoothedLookInputDirection = Vector3.Slerp(Motor.CharacterForward, _lookInputVector,
+                            1 - Mathf.Exp(-OrientationSharpness * deltaTime)).normalized;
 
-                        currentRotation = Quaternion.LookRotation(reorientedTargetDir, Motor.CharacterUp);
+                        // Set the current rotation (which will be used by the KinematicCharacterMotor)
+                        currentRotation = Quaternion.LookRotation(smoothedLookInputDirection, Motor.CharacterUp);
                     }
-                    else
+
+                    if (OrientTowardsGravity)
                     {
-                        if (_lookInputVector.sqrMagnitude > 0f && OrientationSharpness > 0f)
-                        {
-                            // Smoothly interpolate from current to target look direction
-                            Vector3 smoothedLookInputDirection = Vector3.Slerp(Motor.CharacterForward, _lookInputVector,
-                                1 - Mathf.Exp(-OrientationSharpness * deltaTime)).normalized;
-
-                            // Set the current rotation (which will be used by the KinematicCharacterMotor)
-                            currentRotation = Quaternion.LookRotation(smoothedLookInputDirection, Motor.CharacterUp);
-                        }
-
-                        if (OrientTowardsGravity)
-                        {
-                            // Rotate from current up to invert gravity
-                            currentRotation = Quaternion.FromToRotation((currentRotation * Vector3.up), -Gravity) *
-                                              currentRotation;
-                        }
+                        // Rotate from current up to invert gravity
+                        currentRotation = Quaternion.FromToRotation((currentRotation * Vector3.up), -Gravity) *
+                                          currentRotation;
                     }
-                    break;
-                }
-                case CharacterState.Slide:
-                {
-                    //currentRotation = Quaternion.FromToRotation(Motor.GroundingStatus.GroundPoint, Motor.CharacterUp);
+
                     break;
                 }
 
@@ -491,10 +311,10 @@ namespace KinematicCharacterController.Nate
         /// </summary>
         public void AfterCharacterUpdate(float deltaTime)
         {
-            switch (CurrentCharacterState)
+            switch (CurrentPetState)
             {
-                case CharacterState.Default:
-                case CharacterState.Crouched:
+                case PetState.Default:
+                case PetState.Crouched:
                 {
                     // Handle uncrouching
                     if (_isCrouching && !_shouldBeCrouching
@@ -517,7 +337,7 @@ namespace KinematicCharacterController.Nate
                             // If no obstructions, uncrouch
                             MeshRoot.localScale = new Vector3(1f, 1f, 1f);
                             _isCrouching = false;
-                            TransitionToState(CharacterState.Default);
+                            TransitionToState(PetState.Default);
                         }
                     }
 
@@ -528,7 +348,7 @@ namespace KinematicCharacterController.Nate
             //Switch to default state if in midair
             if (!Motor.GroundingStatus.IsStableOnGround)
             {
-                if (CurrentCharacterState != CharacterState.Default)
+                if (CurrentPetState != PetState.Default)
                 {
                     //_timeBeforeFallingStateCoroutine = StartCoroutine(TimeBeforeFallingStateCoroutine());
                     StartCoroutine(TimeBeforeFallingStateCoroutine());
@@ -576,9 +396,9 @@ namespace KinematicCharacterController.Nate
 
         public void AddVelocity(Vector3 velocity)
         {
-            switch (CurrentCharacterState)
+            switch (CurrentPetState)
             {
-                case CharacterState.Default:
+                case PetState.Default:
                 {
                     _internalVelocityAdd += velocity;
                     break;
@@ -605,32 +425,25 @@ namespace KinematicCharacterController.Nate
 
         // COROUTINES
 
-        private IEnumerator SwordMovementCoroutine(float time) //Temp
-        {
-            float timeStart = time * .35f;
-            float timeEnd = timeStart - time;
-            CurrentSwordAttackState = SwordAttackState.SwingStart; //Start swing movement
-            yield return CustomTimer.Timer(timeStart);
-            CurrentSwordAttackState = SwordAttackState.SwingEnd; //End swing movement
-            yield return CustomTimer.Timer(timeEnd);
-            //canSwing.initialBool = true;
-            //TransitionToState(CharacterState.Default);
-        }
-
         private IEnumerator TimeBeforeFallingStateCoroutine()
         {
             yield return CustomTimer.Timer(.1f);
-            TransitionToState(CharacterState.Default);
+            TransitionToState(PetState.Default);
         }
 
 }
 }
-//TO FIX:
-//(Currently nothing)
+//NOTES
+//Pet should be a separate controller from the player.
+//Pet should reference the player script and simply check for what the current player states are.
 
-//TO DO:
-//1. Implement states.
+//State transitioning.
+//For most states, the pet should have a slight delay before setting it to the player's.
+//Sword attack should have only a VERY slight delay.
+//Attacks such as sword spin and roll attack should happen at the same time.
 
-//ISSUES:
-//Depending on the height and the direction the player is facing, sometimes the player will gain a bit of velocity after touching the ground. Seems to be a
-//very specific case where the shortest block in our scene causes this after jumping off. (It doesn't seem to be an issue if we don't use jumping at all)
+//Pet's movement should only lag slightly behind to feel like a separate object, but close enough that its attacks
+//feel congruent with the player.
+
+//Precise timing attacks (such as the roll attack) should check to make sure the pet is in position right before the 
+//roll animation plays. If the pet isn't in position, the pet should teleport immediately to the player.
