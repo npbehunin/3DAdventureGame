@@ -160,7 +160,7 @@ namespace KinematicCharacterController.Raccoonv2
             RaccoonState tmpInitialState = CurrentRaccoonState; //Get current state.
             OnStateExit(tmpInitialState, newState); //Do the OnStateExit stuff from current state to new state.
             CurrentRaccoonState = newState; //Current state = new state.
-            Debug.Log("State set to " + newState + ".");
+            //Debug.Log("State set to " + newState + ".");
             OnStateEnter(newState, tmpInitialState); //Do the OnStateEnter stuff to new state from the last state.
         }
     

@@ -14,6 +14,8 @@ namespace KinematicCharacterController.Nate
         SwordAttack,
         Slide,
         BowAttack,
+        SpinAttack,
+        RollAttack,
     }
 
     public enum SwordAttackState
@@ -126,6 +128,9 @@ namespace KinematicCharacterController.Nate
             {
                 case CharacterState.Default:
                 {
+                    _isCrouching = false; //Reset
+                    Motor.SetCapsuleDimensions(0.5f, 2f, 1f);
+                    MeshRoot.localScale = new Vector3(1f, 1f, 1f);
                     break;
                 }
             }
@@ -192,26 +197,21 @@ namespace KinematicCharacterController.Nate
 
             switch (CurrentCharacterState)
             {
+                //Default inputs
                 case CharacterState.Default:
-                case CharacterState.Crouched:
                 {
-                    //canSwing = true; //Temp
-                    // Move and look inputs
                     _moveInputVector = cameraPlanarRotation * moveInputVector;
                     StableMovementSharpness = 7f;
 
                     switch (OrientationMethod)
                     {
-                        //case OrientationMethod.TowardsCamera:
-                        //    _lookInputVector = cameraPlanarDirection;
-                        //    break;
                         case OrientationMethod.TowardsMovement:
                             _lookInputVector = _moveInputVector.normalized;
                             break;
                     }
-
-                    // Crouching input
-                    if (inputs.CrouchDown)
+                    
+                    //Transition to crouching
+                    if (inputs.CrouchDown && Motor.GroundingStatus.IsStableOnGround)
                     {
                         _shouldBeCrouching = true;
 
@@ -220,21 +220,34 @@ namespace KinematicCharacterController.Nate
                             _isCrouching = true;
                             Motor.SetCapsuleDimensions(0.5f, 1f, 0.5f); //Scales the hitbox.
                             MeshRoot.localScale = new Vector3(1f, 0.5f, 1f); //Scales the mesh root.
-
-                            if (CurrentCharacterState == CharacterState.Default)
-                            {
-                                TransitionToState(CharacterState.Crouched);
-                                //Transition to crouch
-                            }
+                            TransitionToState(CharacterState.Crouched);
                         }
                     }
-                    else if (inputs.CrouchUp)
+
+                    break;
+                }
+                //Crouched inputs
+                case CharacterState.Crouched:
+                {
+                    _moveInputVector = cameraPlanarRotation * moveInputVector;
+                    StableMovementSharpness = 7f;
+
+                    switch (OrientationMethod)
+                    {
+                        case OrientationMethod.TowardsMovement:
+                            _lookInputVector = _moveInputVector.normalized;
+                            break;
+                    }
+
+                    // Stop crouching
+                    if (inputs.CrouchUp)
                     {
                         _shouldBeCrouching = false;
                     }
 
                     break;
                 }
+                //Sword attack inputs
                 case CharacterState.SwordAttack: //Temp
                 {
                     _moveInputVector = Vector3.ClampMagnitude(Motor.CharacterForward, 1f);
@@ -494,6 +507,9 @@ namespace KinematicCharacterController.Nate
             switch (CurrentCharacterState)
             {
                 case CharacterState.Default:
+                {
+                    break;
+                }
                 case CharacterState.Crouched:
                 {
                     // Handle uncrouching
@@ -626,7 +642,7 @@ namespace KinematicCharacterController.Nate
 }
 }
 //TO FIX:
-//(Currently nothing)
+//Player needs to be forced out of crouch while falling.
 
 //TO DO:
 //1. Implement states.

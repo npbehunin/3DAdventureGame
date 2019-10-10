@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using KinematicCharacterController;
 using System;
+using KinematicCharacterController.Nate;
 
 //Movement controller for the fox.
 
@@ -13,10 +14,12 @@ namespace KinematicCharacterController.PetController
         Default, 
         Walk, 
         Crouched, 
-        SwordAttack
+        SwordAttack,
+        SpinAttack,
+        RollAttack,
     }
 
-    public class NPCCharacterController : MonoBehaviour, ICharacterController
+    public class PetController : MonoBehaviour, ICharacterController
     {
         public KinematicCharacterMotor Motor;
         
@@ -34,6 +37,8 @@ namespace KinematicCharacterController.PetController
         public Transform MeshRoot;
 
         public PetState CurrentPetState { get; private set; }
+        public NateCharacterController player;
+        public CharacterState NewCharacterState;
 
         private Collider[] _probedColliders = new Collider[8];
         private Vector3 _moveInputVector;
@@ -43,9 +48,14 @@ namespace KinematicCharacterController.PetController
         private Vector3 _internalVelocityAdd = Vector3.zero;
         private bool _shouldBeCrouching = false;
         private bool _isCrouching = false;
+        private bool _cannotUncrouch = false;
 
         private Vector3 lastInnerNormal = Vector3.zero;
         private Vector3 lastOuterNormal = Vector3.zero;
+        
+        //Coroutines
+        private Coroutine StateTransitionDelayCoroutine;
+        private bool canStartTransition = true;
 
         private void Start()
         {
@@ -56,6 +66,11 @@ namespace KinematicCharacterController.PetController
             Motor.CharacterController = this;
         }
 
+        private void Update()
+        {
+            SetInputs(); //Temp
+        }
+
         /// <summary>
         /// Handles movement state transitions and enter/exit callbacks
         /// </summary>
@@ -64,8 +79,11 @@ namespace KinematicCharacterController.PetController
             PetState tmpInitialState = CurrentPetState; //Get current state.
             OnStateExit(tmpInitialState, newState); //Do the OnStateExit stuff from current state to new state.
             CurrentPetState = newState; //Current state = new state.
+            Debug.Log("Pet's state set to " + newState + ".");
             OnStateEnter(newState, tmpInitialState); //Do the OnStateEnter stuff to new state from the last state.
         }
+        
+        //public void GetPlayerState()
 
         /// <summary>
         /// Event when entering a state
@@ -92,6 +110,12 @@ namespace KinematicCharacterController.PetController
                 {
                     break;
                 }
+                case PetState.Crouched:
+                {
+                    Motor.SetCapsuleDimensions(0.5f, 1f, .25f); //Scales the hitbox.
+                    MeshRoot.localScale = new Vector3(1f, .5f, 1.2f); //Scales the mesh root.
+                    break;
+                }
             }
         }
 
@@ -104,47 +128,21 @@ namespace KinematicCharacterController.PetController
             switch (CurrentPetState)
             {
                 case PetState.Default:
+                {
+                    
+                    break;
+                }
                 case PetState.Crouched:
                 {
-                    // Move and look inputs
                     StableMovementSharpness = 7f;
-
-                    // Crouching input
-                    //if (inputs.CrouchDown)
-                    //{
-                    //    _shouldBeCrouching = true;
-//
-                    //    if (!_isCrouching)
-                    //    {
-                    //        _isCrouching = true;
-                    //        Motor.SetCapsuleDimensions(0.5f, 1f, 0.5f); //Scales the hitbox.
-                    //        MeshRoot.localScale = new Vector3(1f, 0.5f, 1f); //Scales the mesh root.
-//
-                    //        if (CurrentPetState == PetState.Default)
-                    //        {
-                    //            TransitionToState(PetState.Crouched);
-                    //            //Transition to crouch
-                    //        }
-                    //    }
-                    //}
-                    //else if (inputs.CrouchUp)
-                    //{
-                    //    _shouldBeCrouching = false;
-                    //}
-//
+                    
+                    //Set dimensions and scale
+                    Motor.SetCapsuleDimensions(0.5f, 1f, 0.25f); //Scales the hitbox.
+                    MeshRoot.localScale = new Vector3(1f, 0.35f, 1.2f); //Scales the mesh root.
                     break;
                 }
             }
         }
-
-        /// <summary>
-        /// This is called every frame by the AI script in order to tell the character what its inputs are
-        /// </summary>
-        //public void SetInputs(ref AICharacterInputs inputs) //AI
-        //{
-        //    _moveInputVector = inputs.MoveVector;
-        //    _lookInputVector = inputs.LookVector;
-        //}
 
         /// <summary>
         /// (Called by KinematicCharacterMotor during its update cycle)
@@ -161,6 +159,21 @@ namespace KinematicCharacterController.PetController
                 }
                 case PetState.Crouched:
                 {
+                    //Run overlap test
+                    if (Motor.CharacterOverlap(
+                            Motor.TransientPosition,
+                            Motor.TransientRotation,
+                            _probedColliders,
+                            Motor.CollidableLayers,
+                            QueryTriggerInteraction.Ignore) > 0)
+                    {
+                        _cannotUncrouch = true;
+                    }
+                    else
+                    {
+                        _cannotUncrouch = false;
+                    }
+                    
                     MaxStableMoveSpeed = 3f;
                     break;
                 }
@@ -311,36 +324,51 @@ namespace KinematicCharacterController.PetController
         /// </summary>
         public void AfterCharacterUpdate(float deltaTime)
         {
+            if (!_cannotUncrouch) //Temporary check to make sure the pet can uncrouch before transitioning.
+            {
+                if (NewCharacterState != player.CurrentCharacterState) //WHEN THE PLAYER STATE CHANGES...
+                {
+                    canStartTransition = true; //Allow pet state transitioning (once)
+                    NewCharacterState = player.CurrentCharacterState;
+                }
+
+                if (canStartTransition)
+                {
+                    canStartTransition = false;
+                    switch (player.CurrentCharacterState)
+                    {
+                        case CharacterState.Default:
+                        {
+                            StateTransitionDelayCoroutine = StartCoroutine(StateTransitionDelay(PetState.Default, .12f));
+                            break;
+                        }
+                        case CharacterState.Crouched:
+                        {
+                            StateTransitionDelayCoroutine = StartCoroutine(StateTransitionDelay(PetState.Crouched, .12f));
+                            break;
+                        }
+                        case CharacterState.SwordAttack:
+                        {
+                            StateTransitionDelayCoroutine = StartCoroutine(StateTransitionDelay(PetState.SwordAttack, .12f));
+                            break;
+                        }
+                        case CharacterState.RollAttack:
+                        {
+                            TransitionToState(PetState.RollAttack); //Instant
+                            break;
+                        }
+                    } 
+                }
+                //Check the player's state.
+                
+            }
+            
             switch (CurrentPetState)
             {
                 case PetState.Default:
                 case PetState.Crouched:
                 {
-                    // Handle uncrouching
-                    if (_isCrouching && !_shouldBeCrouching
-                    ) //If currently crouching and there's no more crouch input...
-                    {
-                        // Do an overlap test with the character's standing height to see if there are any obstructions
-                        Motor.SetCapsuleDimensions(0.5f, 2f, 1f);
-                        if (Motor.CharacterOverlap(
-                                Motor.TransientPosition,
-                                Motor.TransientRotation,
-                                _probedColliders,
-                                Motor.CollidableLayers,
-                                QueryTriggerInteraction.Ignore) > 0)
-                        {
-                            // If obstructions, just stick to crouching dimensions
-                            Motor.SetCapsuleDimensions(0.5f, 1f, 0.5f);
-                        }
-                        else
-                        {
-                            // If no obstructions, uncrouch
-                            MeshRoot.localScale = new Vector3(1f, 1f, 1f);
-                            _isCrouching = false;
-                            TransitionToState(PetState.Default);
-                        }
-                    }
-
+                    
                     break;
                 }
             }
@@ -424,6 +452,12 @@ namespace KinematicCharacterController.PetController
         }
 
         // COROUTINES
+
+        private IEnumerator StateTransitionDelay(PetState petState, float time)
+        {
+            yield return CustomTimer.Timer(time);
+            TransitionToState(petState);
+        }
 
         private IEnumerator TimeBeforeFallingStateCoroutine()
         {

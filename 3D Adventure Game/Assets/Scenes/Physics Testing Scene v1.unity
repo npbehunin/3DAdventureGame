@@ -1006,7 +1006,7 @@ GameObject:
   - component: {fileID: 273831340}
   - component: {fileID: 273831339}
   - component: {fileID: 273831338}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Sword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1256,7 +1256,7 @@ GameObject:
   - component: {fileID: 329190734}
   - component: {fileID: 329190733}
   - component: {fileID: 329190732}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: PetCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1291,27 +1291,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 329190731}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76e32c6fe82dd1c4a8186fb30cd6bb87, type: 3}
+  m_Script: {fileID: 11500000, guid: 43e927ea1e492a343a327d7479f6ca9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Motor: {fileID: 329190734}
-  swordCoroutineScript: {fileID: 0}
   MaxStableMoveSpeed: 7
   StableMovementSharpness: 7
   OrientationSharpness: 20
-  OrientationMethod: 1
   MaxAirMoveSpeed: 7
   AirAccelerationSpeed: 50
   Drag: 0.1
   IgnoredColliders: []
   OrientTowardsGravity: 0
-  camera: {fileID: 2110758471}
   Gravity: {x: 0, y: -30, z: 0}
   MeshRoot: {fileID: 1705080753}
-  CameraFollowPoint: {fileID: 0}
-  CurrentSwordAttackState: 0
-  _accelerationSpeed: 4
-  _decelerationSpeed: 0.1
+  player: {fileID: 2079106473}
+  NewCharacterState: 0
 --- !u!114 &329190734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1327,7 +1322,7 @@ MonoBehaviour:
   Capsule: {fileID: 329190735}
   CapsuleRadius: 0.5
   CapsuleHeight: 1
-  CapsuleYOffset: 0.5
+  CapsuleYOffset: 0.25
   CapsulePhysicsMaterial: {fileID: 0}
   GroundDetectionExtraDistance: 0
   MaxStableSlopeAngle: 60
@@ -1338,9 +1333,9 @@ MonoBehaviour:
   StepHandling: 1
   MaxStepHeight: 0.5
   AllowSteppingWithoutStableGrounding: 0
-  MinRequiredStepDepth: 0.1
+  MinRequiredStepDepth: 0
   LedgeAndDenivelationHandling: 1
-  MaxStableDistanceFromLedge: 0.5
+  MaxStableDistanceFromLedge: 0
   MaxVelocityForLedgeSnap: 0
   MaxStableDenivelationAngle: 180
   InteractiveRigidbodyHandling: 1
@@ -1361,7 +1356,7 @@ CapsuleCollider:
   m_Radius: 0.5
   m_Height: 1
   m_Direction: 1
-  m_Center: {x: 0, y: 0.5, z: 0}
+  m_Center: {x: 0, y: 0.25, z: 0}
 --- !u!4 &329190736
 Transform:
   m_ObjectHideFlags: 0
@@ -1370,7 +1365,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 329190731}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: -22.423023, y: 0.13, z: -19.734606}
+  m_LocalPosition: {x: -22.268, y: 0.566, z: -19.497}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1705080753}
@@ -1958,7 +1953,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 631620688}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: CameraFollowPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2604,7 +2599,7 @@ GameObject:
   - component: {fileID: 765623352}
   - component: {fileID: 765623354}
   - component: {fileID: 765623353}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2620,7 +2615,7 @@ Transform:
   m_GameObject: {fileID: 765623351}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.747, z: 0}
-  m_LocalScale: {x: 1, y: 0.73059, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1705080753}
   m_RootOrder: 0
@@ -3032,7 +3027,7 @@ GameObject:
   - component: {fileID: 871161656}
   - component: {fileID: 871161658}
   - component: {fileID: 871161657}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4329,7 +4324,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 998463176}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4729,7 +4724,7 @@ GameObject:
   - component: {fileID: 1135695122}
   - component: {fileID: 1135695121}
   - component: {fileID: 1135695120}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Sword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5112,7 +5107,7 @@ GameObject:
   - component: {fileID: 1197704629}
   - component: {fileID: 1197704632}
   - component: {fileID: 1197704631}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6109,7 +6104,7 @@ GameObject:
   - component: {fileID: 1423051590}
   - component: {fileID: 1423051592}
   - component: {fileID: 1423051591}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6607,7 +6602,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1585332626}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: CameraFollowPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6847,7 +6842,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1705080753}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6862,8 +6857,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1705080752}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.053863, y: -0.085, z: 0.054}
+  m_LocalScale: {x: 1, y: 0.5, z: 1.2}
   m_Children:
   - {fileID: 765623352}
   - {fileID: 871161656}
@@ -8576,8 +8571,8 @@ GameObject:
   - component: {fileID: 2079106479}
   - component: {fileID: 2079106478}
   - component: {fileID: 2079106477}
-  m_Layer: 0
-  m_Name: Character
+  m_Layer: 10
+  m_Name: PlayerCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8671,7 +8666,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2079106472}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -15.63, y: 3.67, z: -20.15}
+  m_LocalPosition: {x: -23.76, y: 0.184, z: -20.15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 998463176}
