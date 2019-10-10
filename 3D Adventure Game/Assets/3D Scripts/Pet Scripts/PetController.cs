@@ -129,8 +129,44 @@ namespace KinematicCharacterController.PetController
             {
                 case PetState.Default:
                 {
+                    Vector3 playerCharUp = player.Motor.CharacterUp;
+                    Vector3 playerCharForward = player.Motor.CharacterForward;
+                    Vector3 playerCharRight = player.Motor.CharacterRight;
+                    Vector3 playerCharLeft = -playerCharRight;
+                    Vector3 playerPosition = player.Motor.transform.position;
+                    //Vector3 nextToPlayer = Vector3.ClampMagnitude(Vector3.Cross(playerCharForward, playerCharUp), 1);
+                    //OR...
+                    //Vector3 position always below the player...
+                    Vector3 rightSideOfPlayer = Vector3.ClampMagnitude(
+                        Vector3.ProjectOnPlane(playerCharRight, playerCharUp), 1);
+                    Vector3 leftSideOfPlayer = -rightSideOfPlayer;
+                    Vector3 belowPlayer = Vector3.ClampMagnitude(
+                        Vector3.ProjectOnPlane(Vector3.back, playerCharUp), 1);
+                        //Vector3 dir = (playerPosition + nextToPlayer) - Motor.transform.position;
+                        Vector3 dir = (playerPosition + rightSideOfPlayer) - Motor.transform.position;
                     
+                    Debug.DrawRay(Motor.transform.position, dir, Color.yellow);
+                    float maxDist = .5f;
+                    if (dir.sqrMagnitude > Mathf.Pow(maxDist, 2))
+                    {
+                        _moveInputVector = Vector3.ProjectOnPlane(dir.normalized, Motor.CharacterUp);
+                        _lookInputVector = Vector3.ProjectOnPlane(_moveInputVector, Motor.CharacterUp);
+                    }
+                    else
+                    {
+                        _moveInputVector = Vector3.zero;
+                        _lookInputVector = Vector3.ProjectOnPlane(player.Motor.CharacterForward, Motor.CharacterUp);
+                    }
                     break;
+                    
+                    //TO DO:
+                    //QUESTION: Should the pet always remain on the right side of the player?
+                    //REASON: First off, the pet's movement will feel consistent and the player will
+                    //know where the pet will be instinctively. Second, it would follow correctly with the sword swing
+                    //under the assumption the player model will be right-handed. Lastly, it would simplify animations
+                    //that requires the pet to be on a certain side, such as the pet holding the arrow pouch while the 
+                    //player shoots and reloads.
+                    //Set up pathfinding or teleportation if pet is out of reach.
                 }
                 case PetState.Crouched:
                 {
