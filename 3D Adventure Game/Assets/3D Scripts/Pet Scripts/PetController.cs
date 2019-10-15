@@ -153,10 +153,20 @@ namespace KinematicCharacterController.PetController
                     Vector3 playerCharRight = player.Motor.CharacterRight;
                     Vector3 playerPosition = player.Motor.transform.position;
 
-                    Vector3 rightSideOfPlayer = Vector3.ClampMagnitude(
-                        Vector3.ProjectOnPlane(playerCharRight, playerCharUp), 1);
-                    //Vector3 belowPlayer = Vector3.ClampMagnitude(Vector3.ProjectOnPlane(Vector3.back, playerCharUp), 1);
-                    Vector3 dir = (playerPosition + rightSideOfPlayer) - Motor.transform.position;
+                    Vector3 rightPos = Vector3.ClampMagnitude(
+                        Vector3.ProjectOnPlane(playerCharRight, playerCharUp), 1); //Right of player
+                    Vector3 leftPos = -rightPos; //Left of player
+                    Vector3 behindPos = Vector3.ClampMagnitude(Vector3.ProjectOnPlane(Vector3.back, 
+                        playerCharUp), 1); //Behind the player
+                    Vector3 leftBehindPos = Vector3.Cross(leftPos, behindPos); //Left-back corner of player
+                    Vector3 rightBehindPos = Vector3.Cross(rightPos, behindPos); //Right-back corner of player
+                    //Vector3 dir = (playerPosition + rightPos) - Motor.transform.position; //Direction to check
+                    Vector3 dir = playerPosition - Motor.transform.position; //Player's general position. Is this needed?
+                    
+                    //Random number between 0-4.
+                    //Number will choose one of the 5 positions.
+                    //Set the direction to be between this pet and the movePoint.
+                    //Run the distance check below.
                     
                     Debug.DrawRay(Motor.transform.position, dir, Color.yellow);
                     float maxDist = .5f;
@@ -566,9 +576,43 @@ namespace KinematicCharacterController.PetController
 
 }
 }
-//NOTES
-//Pet should be a separate controller from the player.
-//Pet should reference the player script and simply check for what the current player states are.
+//TO DO
+//PET MOVEMENT
+//1. Allow the pet to hover around 1 of 5 points around the player. (Left, right, left-down, right-down, and down.)
+//2. The pet will randomly choose a new position after x amount of time has passed AND the pet is outside x distance.
+//3. If one of the points is obstructed by a wall, too close to a ledge, OR too low below the player's height, the pet
+//will also choose a new point.
+    //(Is (spherecast) from movePoint colliding with a wall?
+    //(Is movePoint too high up from the ground?) (Take the point and raycast down until step height, OR extend the
+    //movePoint outwards over a nearby ledge, then cast down.
+    //(Is the up distance between movePoint and the player's point too big?)
+//4. Each point will have a slight variation the pet can move towards, so it's not always moving to the exact point.
+    //Take the point and look towards a random direction within x random distance.
+    //Might make the pet feel more real and fluid.
+//5. Use pathfinding as needed.
+
+//PET ATTACK
+//1. When the player swings a sword, the pet will make sure it's within x distance of the player. If false, continue
+//moving to the player. If true, dash forward towards attack position 1 or 2. Once reached, the pet will swing its tail
+//very quickly. (The dash should act as part of the pet's attack.)
+//2. Check for a target. This target is determined by 1: An enemy with the most damage taken in a short amount of time,
+//and 2: an enemy within the player's attack range. If no target is found, the pet will look in the player's direction.
+//Otherwise, it will turn inward towards the targeted enemy.
+    //Note: The pet's attack WILL be offset slightly by the player's sword attack.
+
+//OTHER FUTURE IMPLEMENTATIONS
+//Bow and arrow attack.
+    //When the player equips the bow and arrow, the pet will grab the quiver from the player's back and hold it next to
+    //the player's hand. Note: Think about how the player grabs the arrows. Grabbing arrows from a quiver on your back
+    //transitions quickly to loading the arrow. How should the pet be holding the quiver bag?
+//Roll attack.
+    //When the player activates a roll, if the pet is within x distance, the pet will jump from its current position
+    //towards the top of the "roll" position. Once reached, the pet will rotate around the outside of the player.
+    //Once the roll ends, the pet will fly out from the direction it was rolling. If the pet is not within x distance,
+    //the pet will teleport to the top of the roll position.
+//Charged swing attack.
+    //If within x distance, the pet will crouch down and start charging its tail. Once the charge is released, the pet
+    //spins around underneath the player while the player jumps in a swinging motion.
 
 //State transitioning.
 //For most states, the pet should have a slight delay before setting it to the player's.
