@@ -1256,6 +1256,7 @@ GameObject:
   - component: {fileID: 329190734}
   - component: {fileID: 329190733}
   - component: {fileID: 329190732}
+  - component: {fileID: 329190737}
   m_Layer: 11
   m_Name: PetCharacter
   m_TagString: Untagged
@@ -1296,7 +1297,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Motor: {fileID: 329190734}
   MaxStableMoveSpeed: 7
-  StableMovementSharpness: 7
+  StableMovementSharpness: 14
   OrientationSharpness: 20
   MaxAirMoveSpeed: 7
   AirAccelerationSpeed: 50
@@ -1307,6 +1308,10 @@ MonoBehaviour:
   MeshRoot: {fileID: 1705080753}
   player: {fileID: 2079106473}
   NewCharacterState: 0
+  pathfinding: {fileID: 329190737}
+  WallLayerMask:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!114 &329190734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1372,6 +1377,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &329190737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329190731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d3c8b17e0f0f3442a6506991f173312, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  path: []
+  targetIndex: 0
+  PathIsActive: 0
+  CheckingPath: 0
+  motorUpDirection: {x: 0, y: 0, z: 0}
+  targetPathPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &380922274
 GameObject:
   m_ObjectHideFlags: 0

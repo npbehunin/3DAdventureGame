@@ -78,9 +78,9 @@
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/GridNew.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/UpdatePathTesting.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/PathfindingNew.cs" />
-        <option value="$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/UnitFollowNew.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonControllerv2.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NateCharacterController.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/UnitFollowNew.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetController.cs" />
       </list>
     </option>
@@ -91,7 +91,7 @@
     <property name="Discover.Launch.Via.Unity" value="true" />
     <property name="Rider.DefaultBreakpoints.AreToggled" value="true" />
     <property name="Rider.ProjectViewActivator.IsNotFirstRun" value="true" />
-    <property name="settings.editor.selected.configurable" value="reference.settings.ide.settings.file-colors" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Language Defaults" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -147,8 +147,10 @@
     <state x="88" y="273" key="#Inspection_severity/1920.1080/1920.1080/1920.1080" />
     <state x="398" y="173" key="#com.intellij.execution.impl.EditConfigurationsDialog" />
     <state x="398" y="173" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.1080/1920.1080/1920.1080" />
-    <state x="437" y="159" key="SettingsEditor" />
-    <state x="437" y="159" key="SettingsEditor/1920.1080/1920.1080/1920.1080" />
+    <state x="732" y="258" key="FileChooserDialogImpl" />
+    <state x="732" y="258" key="FileChooserDialogImpl/1920.1080/1920.1080/1920.1080" />
+    <state x="797" y="253" width="1022" height="716" key="SettingsEditor" />
+    <state x="797" y="253" width="1022" height="716" key="SettingsEditor/1920.1080/1920.1080/1920.1080" />
     <state x="626" y="268" width="672" height="678" key="search.everywhere.popup" />
     <state x="626" y="268" width="672" height="678" key="search.everywhere.popup/1920.1080/1920.1080/1920.1080" />
   </component>

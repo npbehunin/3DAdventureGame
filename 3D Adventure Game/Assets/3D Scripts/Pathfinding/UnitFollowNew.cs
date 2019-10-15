@@ -52,7 +52,6 @@ public class UnitFollowNew : MonoBehaviour {
 	}
 	
 	public void OnPathFound(Vector3[] newPath, bool pathSuccessful) { //When a path is found...
-		CheckingPath = false;
 		if (pathSuccessful)
 		{
 			//CanReachTarget = true;
@@ -73,6 +72,7 @@ public class UnitFollowNew : MonoBehaviour {
 			Debug.Log("Can't reach target");
 			StopFollowPath();
 		}
+		CheckingPath = false;
 	}
 
 	IEnumerator FollowPath()

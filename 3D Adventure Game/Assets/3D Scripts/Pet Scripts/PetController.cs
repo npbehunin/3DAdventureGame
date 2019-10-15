@@ -13,6 +13,7 @@ namespace KinematicCharacterController.PetController
     {
         Default, 
         Walk, 
+        FollowPath,
         Crouched, 
         SwordAttack,
         SpinAttack,
@@ -49,9 +50,13 @@ namespace KinematicCharacterController.PetController
         private bool _shouldBeCrouching = false;
         private bool _isCrouching = false;
         private bool _cannotUncrouch = false;
+        private bool _canCheckPathfinding = true;
 
         private Vector3 lastInnerNormal = Vector3.zero;
         private Vector3 lastOuterNormal = Vector3.zero;
+
+        public UnitFollowNew pathfinding;
+        public LayerMask WallLayerMask;
         
         //Coroutines
         private Coroutine StateTransitionDelayCoroutine;
@@ -96,6 +101,15 @@ namespace KinematicCharacterController.PetController
                 {
                     break;
                 }
+                case PetState.Crouched:
+                {
+                    StableMovementSharpness = 7f;
+                    
+                    //Set dimensions and scale
+                    Motor.SetCapsuleDimensions(0.5f, 1f, 0.25f); //Scales the hitbox.
+                    MeshRoot.localScale = new Vector3(1f, 0.35f, 1.2f); //Scales the mesh root.
+                    break;
+                }
             }
         }
 
@@ -116,6 +130,11 @@ namespace KinematicCharacterController.PetController
                     MeshRoot.localScale = new Vector3(1f, .5f, 1.2f); //Scales the mesh root.
                     break;
                 }
+                case PetState.FollowPath:
+                {
+                    _canCheckPathfinding = true;
+                    break;
+                }
             }
         }
 
@@ -128,22 +147,16 @@ namespace KinematicCharacterController.PetController
             switch (CurrentPetState)
             {
                 case PetState.Default:
+                case PetState.Crouched:
                 {
                     Vector3 playerCharUp = player.Motor.CharacterUp;
-                    Vector3 playerCharForward = player.Motor.CharacterForward;
                     Vector3 playerCharRight = player.Motor.CharacterRight;
-                    Vector3 playerCharLeft = -playerCharRight;
                     Vector3 playerPosition = player.Motor.transform.position;
-                    //Vector3 nextToPlayer = Vector3.ClampMagnitude(Vector3.Cross(playerCharForward, playerCharUp), 1);
-                    //OR...
-                    //Vector3 position always below the player...
+
                     Vector3 rightSideOfPlayer = Vector3.ClampMagnitude(
                         Vector3.ProjectOnPlane(playerCharRight, playerCharUp), 1);
-                    Vector3 leftSideOfPlayer = -rightSideOfPlayer;
-                    Vector3 belowPlayer = Vector3.ClampMagnitude(
-                        Vector3.ProjectOnPlane(Vector3.back, playerCharUp), 1);
-                        //Vector3 dir = (playerPosition + nextToPlayer) - Motor.transform.position;
-                        Vector3 dir = (playerPosition + rightSideOfPlayer) - Motor.transform.position;
+                    //Vector3 belowPlayer = Vector3.ClampMagnitude(Vector3.ProjectOnPlane(Vector3.back, playerCharUp), 1);
+                    Vector3 dir = (playerPosition + rightSideOfPlayer) - Motor.transform.position;
                     
                     Debug.DrawRay(Motor.transform.position, dir, Color.yellow);
                     float maxDist = .5f;
@@ -157,6 +170,7 @@ namespace KinematicCharacterController.PetController
                         _moveInputVector = Vector3.zero;
                         _lookInputVector = Vector3.ProjectOnPlane(player.Motor.CharacterForward, Motor.CharacterUp);
                     }
+                    
                     break;
                     
                     //TO DO:
@@ -168,13 +182,11 @@ namespace KinematicCharacterController.PetController
                     //player shoots and reloads.
                     //Set up pathfinding or teleportation if pet is out of reach.
                 }
-                case PetState.Crouched:
+                case PetState.FollowPath:
                 {
-                    StableMovementSharpness = 7f;
-                    
-                    //Set dimensions and scale
-                    Motor.SetCapsuleDimensions(0.5f, 1f, 0.25f); //Scales the hitbox.
-                    MeshRoot.localScale = new Vector3(1f, 0.35f, 1.2f); //Scales the mesh root.
+                    Vector3 pathPosition = pathfinding.targetPathPosition;
+                    _moveInputVector = Vector3.ProjectOnPlane(pathPosition, Motor.CharacterUp);
+                    _lookInputVector = _moveInputVector;
                     break;
                 }
             }
@@ -227,6 +239,7 @@ namespace KinematicCharacterController.PetController
             {
                 case PetState.Default:
                 case PetState.Crouched:
+                case PetState.FollowPath:
                 {
                     if (_lookInputVector.sqrMagnitude > 0f && OrientationSharpness > 0f)
                     {
@@ -247,7 +260,6 @@ namespace KinematicCharacterController.PetController
 
                     break;
                 }
-
             }
         }
 
@@ -360,7 +372,8 @@ namespace KinematicCharacterController.PetController
         /// </summary>
         public void AfterCharacterUpdate(float deltaTime)
         {
-            if (!_cannotUncrouch) //Temporary check to make sure the pet can uncrouch before transitioning.
+            //Player state checking.
+            if (!_cannotUncrouch && CurrentPetState != PetState.FollowPath) //Temporary check to make sure the pet can uncrouch before transitioning.
             {
                 if (NewCharacterState != player.CurrentCharacterState) //WHEN THE PLAYER STATE CHANGES...
                 {
@@ -395,16 +408,46 @@ namespace KinematicCharacterController.PetController
                         }
                     } 
                 }
-                //Check the player's state.
-                
             }
             
+            //Pet state checking.
+            Vector3 playerPosition = player.Motor.transform.position;
             switch (CurrentPetState)
             {
                 case PetState.Default:
                 case PetState.Crouched:
                 {
-                    
+                    //Check pathfinding.
+                    //Debug.Log(LineOfSightToTarget(playerPosition));
+                    if (!LineOfSightToTarget(playerPosition))
+                    {
+                        if (_canCheckPathfinding)
+                        {
+                            _canCheckPathfinding = false;
+                            pathfinding.CheckIfCanFollowPath(playerPosition);
+                        }
+                        
+                        //If the player can't be reached...
+                        if (!pathfinding.CheckingPath && !pathfinding.PathIsActive)
+                        {
+                            //WARP!
+                            Motor.transform.position = playerPosition; //*Fix this here so the pet will teleport.
+                        }
+
+                        if (pathfinding.PathIsActive)
+                        {
+                            TransitionToState(PetState.FollowPath);
+                        }
+                    }
+                    break;
+                }
+                case PetState.FollowPath:
+                {
+                    if (LineOfSightToTarget(playerPosition))
+                    {
+                        pathfinding.StopFollowPath();
+                        TransitionToState(PetState.Default);
+                    }
                     break;
                 }
             }
@@ -417,6 +460,26 @@ namespace KinematicCharacterController.PetController
                     //_timeBeforeFallingStateCoroutine = StartCoroutine(TimeBeforeFallingStateCoroutine());
                     StartCoroutine(TimeBeforeFallingStateCoroutine());
                 }
+            }
+        }
+        
+        //Check line of sight to target.
+        public bool LineOfSightToTarget(Vector3 playerPos)
+        {
+            //Check line of sight to the target.
+            float maxDistance = 12f;
+            
+            //Vector3 adjustedPosition = targetPos + Motor.CharacterUp; //Check slightly above the transform position.
+            Vector3 targetDirection = playerPos - Motor.Transform.position;
+
+            //Debug.DrawLine(Motor.transform.position, playerPos);
+            if (!Physics.Linecast(Motor.Transform.position, playerPos, WallLayerMask))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
