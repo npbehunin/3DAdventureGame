@@ -11,13 +11,19 @@ namespace KinematicCharacterController.PetController
 {
     public enum PetState //Character states (Walking, crouching, attacking, etc)
     {
-        Default, 
-        Walk, 
+        Default,
         FollowPath,
         Crouched, 
         SwordAttack,
         SpinAttack,
         RollAttack,
+    }
+
+    public enum PetDefaultState
+    {
+        Idle,
+        Walk,
+        Run
     }
 
     public class PetController : MonoBehaviour, ICharacterController
@@ -42,15 +48,24 @@ namespace KinematicCharacterController.PetController
         public CharacterState NewCharacterState;
 
         private Collider[] _probedColliders = new Collider[8];
-        private Vector3 _moveInputVector;
-
-        private Vector3 _lookInputVector;
         
+        private Vector3 _moveInputVector;
+        private Vector3 _lookInputVector;
         private Vector3 _internalVelocityAdd = Vector3.zero;
+        private Vector3 playerPosDelayed;
+        private Vector3 transformPosition;
+        private Vector3 targetDirection;
+
         private bool _shouldBeCrouching = false;
         private bool _isCrouching = false;
         private bool _cannotUncrouch = false;
         private bool _canCheckPathfinding = true;
+        private bool _canSetFollowPoint;
+
+        private float playerFollowDistance;
+        private float radiusSize;
+
+        private int randPlayerMovePoint;
 
         private Vector3 lastInnerNormal = Vector3.zero;
         private Vector3 lastOuterNormal = Vector3.zero;
@@ -58,9 +73,13 @@ namespace KinematicCharacterController.PetController
         public UnitFollowNew pathfinding;
         public LayerMask WallLayerMask;
         
+        //Enums
+        public PetDefaultState currentDefaultState;
+        
         //Coroutines
         private Coroutine StateTransitionDelayCoroutine;
         private bool canStartTransition = true;
+        private Coroutine TestPlayerPositionDelayCoroutine;
 
         private void Start()
         {
@@ -69,11 +88,14 @@ namespace KinematicCharacterController.PetController
 
             // Assign the characterController to the motor
             Motor.CharacterController = this;
+
+            playerPosDelayed = player.transform.position;
         }
 
         private void Update()
         {
             SetInputs(); //Temp
+            transformPosition = Motor.transform.position;
         }
 
         /// <summary>
@@ -99,10 +121,16 @@ namespace KinematicCharacterController.PetController
             {
                 case PetState.Default:
                 {
+                    _canSetFollowPoint = true;
+                    radiusSize = 5f;
+                    currentDefaultState = PetDefaultState.Idle;
                     break;
                 }
                 case PetState.Crouched:
                 {
+                    _canSetFollowPoint = true;
+                    radiusSize = 5f;
+                    currentDefaultState = PetDefaultState.Idle;
                     StableMovementSharpness = 7f;
                     
                     //Set dimensions and scale
@@ -149,48 +177,155 @@ namespace KinematicCharacterController.PetController
                 case PetState.Default:
                 case PetState.Crouched:
                 {
-                    Vector3 playerCharUp = player.Motor.CharacterUp;
-                    Vector3 playerCharRight = player.Motor.CharacterRight;
                     Vector3 playerPosition = player.Motor.transform.position;
+                    Vector3 playerDir = playerPosition - Motor.transform.position;
+                    float distanceToPlayer = playerDir.sqrMagnitude;
 
-                    Vector3 rightPos = Vector3.ClampMagnitude(
-                        Vector3.ProjectOnPlane(playerCharRight, playerCharUp), 1); //Right of player
-                    Vector3 leftPos = -rightPos; //Left of player
-                    Vector3 behindPos = Vector3.ClampMagnitude(Vector3.ProjectOnPlane(Vector3.back, 
-                        playerCharUp), 1); //Behind the player
-                    Vector3 leftBehindPos = Vector3.Cross(leftPos, behindPos); //Left-back corner of player
-                    Vector3 rightBehindPos = Vector3.Cross(rightPos, behindPos); //Right-back corner of player
-                    //Vector3 dir = (playerPosition + rightPos) - Motor.transform.position; //Direction to check
-                    Vector3 dir = playerPosition - Motor.transform.position; //Player's general position. Is this needed?
-                    
-                    //Random number between 0-4.
-                    //Number will choose one of the 5 positions.
-                    //Set the direction to be between this pet and the movePoint.
-                    //Run the distance check below.
-                    
-                    Debug.DrawRay(Motor.transform.position, dir, Color.yellow);
-                    float maxDist = .5f;
-                    if (dir.sqrMagnitude > Mathf.Pow(maxDist, 2))
+                    if (distanceToPlayer > Mathf.Pow(radiusSize, 2))
                     {
-                        _moveInputVector = Vector3.ProjectOnPlane(dir.normalized, Motor.CharacterUp);
-                        _lookInputVector = Vector3.ProjectOnPlane(_moveInputVector, Motor.CharacterUp);
+                        radiusSize = 2f; //If the pet is outside the radius, radius becomes 2.
+                        _moveInputVector = Vector3.ProjectOnPlane(playerDir, Motor.CharacterUp).normalized; //*Change
+                        _lookInputVector = _moveInputVector;
+                        
+                        //DO NOT mimic the player's exact input. See below. Once the distance is close enough between
+                        //the move point and the pet, the pet can stop moving.
                     }
                     else
                     {
-                        _moveInputVector = Vector3.zero;
-                        _lookInputVector = Vector3.ProjectOnPlane(player.Motor.CharacterForward, Motor.CharacterUp);
+                        radiusSize = 5f; //While within the radius, it's set to 5.
+
+                        //Get directions of the player.
+                        Vector3 playerCharUp = player.Motor.CharacterUp;
+                        Vector3 playerCharRight = player.Motor.CharacterRight;
+                        Vector3 playerRightDir = Vector3.ClampMagnitude(Vector3.ProjectOnPlane(
+                            playerCharRight, playerCharUp), 1);
+                        Vector3 playerLeftDir = -playerRightDir;
+
+                        //Set the player's delayed position.
+                        TestPlayerPositionDelayCoroutine = StartCoroutine(TestPlayerPositionDelay(playerPosition));
+
+                        //Set left and right position based on the delayed position of the player;
+                        Vector3 rightPos = playerPosDelayed + playerRightDir;
+                        Vector3 leftPos = playerPosDelayed + playerLeftDir;
+                        Vector3 rightDir = rightPos - transformPosition;
+                        Vector3 leftdir = leftPos - transformPosition;
+
+                        //Move to the closer side of the player.
+                        if (rightDir.sqrMagnitude < leftdir.sqrMagnitude)
+                        {
+                            targetDirection = rightDir;
+                        }
+                        else
+                        {
+                            targetDirection = leftdir;
+                        }
+
+                        if (targetDirection.sqrMagnitude > Mathf.Pow(.5f, 2)) //* Fix
+                        {
+                            _moveInputVector = Vector3.ProjectOnPlane(targetDirection.normalized, Motor.CharacterUp).normalized;
+                        }
+                        else
+                        {
+                            _moveInputVector = Vector3.zero;
+                        }
+
+                        _lookInputVector = _moveInputVector;
+                        
+                        //Issue: Checking the targetDirection magnitude can have janky results where the pet will stop
+                        //moving, slide past the point, then turn back because it slid too far. Need to run a different
+                        //check. Maybe default states?
+                        
+                        //1st, we want a close distance that the pet hast to move to before setting input to zero.
+                        //2nd, once at zero, it shouldn't accidentally slide past the point and move back to it.
+                        //3rd, when the player moves away, the pet should remain at a close distance.
+
+                        //DO NOT mimic the player's exact input, or else the pet will look funny if the player spazzes
+                        //or something. Instead, follow a point based on the player's position and move towards it in
+                        //front of the pet.
                     }
-                    
+
+                    ////READ NOTES FOR CHANGING THIS SECTION! vvv
+                    //Vector3 playerCharUp = player.Motor.CharacterUp;
+                    //Vector3 playerCharRight = player.Motor.CharacterRight;
+                    //Vector3 playerPosition = player.Motor.transform.position;
+//
+                    //Vector3 rightPos = Vector3.ClampMagnitude(
+                    //    Vector3.ProjectOnPlane(playerCharRight, playerCharUp), 1); //Right of player
+                    //Vector3 leftPos = -rightPos; //Left of player
+                    //Vector3 behindPos = Vector3.ClampMagnitude(Vector3.ProjectOnPlane(-player.Motor.CharacterForward, 
+                    //    playerCharUp), 1); //Behind the player
+                    //Vector3 leftBehindPos = Vector3.Lerp(leftPos, behindPos, .5f); //Left-back corner of player
+                    //Vector3 rightBehindPos = Vector3.Lerp(rightPos, behindPos, .5f); //Right-back corner of player
+                    ////Vector3 dir = (playerPosition + rightPos) - Motor.transform.position; //Direction to check
+                    //Vector3 dir = Vector3.ProjectOnPlane(playerPosition - Motor.transform.position, Motor.CharacterUp); //Player's general position. Is this needed?
+//
+                    ////Change the random position next to the player.
+                    //Vector3 movePoint = new Vector3();
+                    //float resetPosDist = 2.5f;
+                    //if (dir.sqrMagnitude > Mathf.Pow(resetPosDist, 2) && _canSetFollowPoint)
+                    //{
+                    //    _canSetFollowPoint = false;
+                    //    randPlayerMovePoint = UnityEngine.Random.Range(0, 5); //Note: Never chooses 5.
+                    //}
+                    //else if (dir.sqrMagnitude < Mathf.Pow(resetPosDist, 2))
+                    //{
+                    //    _canSetFollowPoint = true;
+                    //}
+//
+                    //Debug.Log(randPlayerMovePoint);
+                    ////Set the move point next to the player.
+                    //switch (randPlayerMovePoint)
+                    //{
+                    //    case 0:
+                    //    {
+                    //        movePoint = rightPos;
+                    //        break;
+                    //    }
+                    //    case 1:
+                    //    {
+                    //        movePoint = leftPos;
+                    //        break;
+                    //    }
+                    //    case 2:
+                    //    {
+                    //        movePoint = behindPos;
+                    //        break;
+                    //    }
+                    //    case 3:
+                    //    {
+                    //        movePoint = leftBehindPos;
+                    //        break;
+                    //    }
+                    //    case 4:
+                    //    {
+                    //        movePoint = rightBehindPos;
+                    //        break;
+                    //    }
+                    //}
+                    //
+                    ////READ NOTES FOR CHANGING THIS SECTION! ^^^
+//
+                    //    Vector3 movePointDir = (movePoint + playerPosition) - Motor.transform.position;
+                    //
+                    ////Random number between 0-4.
+                    ////Number will choose one of the 5 positions.
+                    ////Set the direction to be between this pet and the movePoint.
+                    ////Run the distance check below.
+                    //
+                    //Debug.DrawRay(Motor.transform.position, movePointDir, Color.yellow);
+                    //float maxDist = .5f;
+                    //if (movePointDir.sqrMagnitude > Mathf.Pow(maxDist, 2))
+                    //{
+                    //    _moveInputVector = Vector3.ProjectOnPlane(movePointDir.normalized, Motor.CharacterUp);
+                    //    _lookInputVector = Vector3.ProjectOnPlane(_moveInputVector, Motor.CharacterUp);
+                    //}
+                    //else
+                    //{
+                    //    _moveInputVector = Vector3.zero;
+                    //    _lookInputVector = Vector3.ProjectOnPlane(player.Motor.CharacterForward, Motor.CharacterUp);
+                    //}
+
                     break;
-                    
-                    //TO DO:
-                    //QUESTION: Should the pet always remain on the right side of the player?
-                    //REASON: First off, the pet's movement will feel consistent and the player will
-                    //know where the pet will be instinctively. Second, it would follow correctly with the sword swing
-                    //under the assumption the player model will be right-handed. Lastly, it would simplify animations
-                    //that requires the pet to be on a certain side, such as the pet holding the arrow pouch while the 
-                    //player shoots and reloads.
-                    //Set up pathfinding or teleportation if pet is out of reach.
                 }
                 case PetState.FollowPath:
                 {
@@ -561,7 +696,11 @@ namespace KinematicCharacterController.PetController
         }
 
         // COROUTINES
-
+        private IEnumerator TestPlayerPositionDelay(Vector3 position)
+        {
+            yield return CustomTimer.Timer(.25f);
+            playerPosDelayed = position;
+        }
         private IEnumerator StateTransitionDelay(PetState petState, float time)
         {
             yield return CustomTimer.Timer(time);
@@ -577,7 +716,19 @@ namespace KinematicCharacterController.PetController
 }
 }
 //TO DO
+//Instead of literal points, simply run a distance check and stop moving/walk once close enough. Moving to specific
+    //points seems to make the pet feel too static.
+//Two ranges: While the pet is close, the distance check will be large before moving directly to
+    //the player. While within this large distance, the pet will run ALONGSIDE the player, not
+    //directly towards. However, once the pet is outside the large distance, it will begin moving
+    //directly towards the player until short range has been met.
+//Run another check while within small range to allow variation. If distance is outside x, allow variation in movement
+    //slightly towards the player. If within x, allow variation moving slightly away from the player. 
+//Also try applying a SLIGHT delay to the pet's movements.
+
+//TO DO
 //PET MOVEMENT
+//(OLD)
 //1. Allow the pet to hover around 1 of 5 points around the player. (Left, right, left-down, right-down, and down.)
 //2. The pet will randomly choose a new position after x amount of time has passed AND the pet is outside x distance.
 //3. If one of the points is obstructed by a wall, too close to a ledge, OR too low below the player's height, the pet

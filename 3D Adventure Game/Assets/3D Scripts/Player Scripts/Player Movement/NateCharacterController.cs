@@ -80,7 +80,7 @@ namespace KinematicCharacterController.Nate
         public SwordAttackState CurrentSwordAttackState;
 
         private Collider[] _probedColliders = new Collider[8];
-        private Vector3 _moveInputVector;
+        public Vector3 _moveInputVector;
 
         private Vector3 _lookInputVector;
 
