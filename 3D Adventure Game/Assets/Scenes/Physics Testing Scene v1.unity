@@ -1312,6 +1312,7 @@ MonoBehaviour:
   WallLayerMask:
     serializedVersion: 2
     m_Bits: 512
+  currentDefaultState: 0
 --- !u!114 &329190734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8629,6 +8630,7 @@ MonoBehaviour:
   MeshRoot: {fileID: 998463176}
   CameraFollowPoint: {fileID: 0}
   CurrentSwordAttackState: 0
+  _moveInputVector: {x: 0, y: 0, z: 0}
   _accelerationSpeed: 4
   _decelerationSpeed: 0.1
 --- !u!114 &2079106474
