@@ -282,6 +282,7 @@ namespace KinematicCharacterController.PetController
                                         MaxStableMoveSpeed -= 8f * Time.deltaTime;
                                     }
                                 }
+                                Debug.Log(MaxStableMoveSpeed);
                             }
                             //If the player's velocity is within walking speed...
                             else if (playerVelocity.sqrMagnitude < Mathf.Pow(4f, 2) &&
@@ -297,16 +298,18 @@ namespace KinematicCharacterController.PetController
                                 if (distanceToPlayer > Mathf.Pow(stopRadius, 2))
                                 {
                                     //Enable walking.
+                                    //Debug.Log("Here");
                                     _moveInputVector = Vector3.ProjectOnPlane(playerVelocity, Motor.CharacterUp).normalized;
                                     MaxStableMoveSpeed = 3f;
+                                    Debug.Log("Walking");
                                 }
                                 else
                                 {
                                     //Stop moving.
                                     _moveInputVector = Vector3.zero;
+                                    Debug.Log("Stopped");
                                 }
                             }
-                            Debug.Log(MaxStableMoveSpeed);
                             //Debug.Log(playerSideDir.magnitude);
 
                             Vector3 moveInputPerpendicular = Vector3.Cross(_moveInputVector, Motor.CharacterUp);
@@ -389,6 +392,10 @@ namespace KinematicCharacterController.PetController
                     
                     //Eventually, switch move input and look input.
                     //Eventually, run checks on walls, ramps, and ledges.
+                    
+                    //ISSUES:
+                    //Is the pet not walking when close enough to the player? Seems to stop instead.
+                    
                     
                     break;
                 }
