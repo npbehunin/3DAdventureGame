@@ -55,7 +55,9 @@ namespace KinematicCharacterController.PetController
         private Vector3 playerPosDelayed;
         private Vector3 transformPosition;
         private Vector3 targetDirection;
-        private Vector3 targetPos;
+
+        private Vector3 deviationDir;
+        //private Vector3 targetPos;
         //private Vector3 _moveInputVectorWithDeviation;
 
         //private Vector3 _targetMoveInputVector;
@@ -66,19 +68,18 @@ namespace KinematicCharacterController.PetController
         private bool _cannotUncrouch = false;
         private bool _canCheckPathfinding = true;
         private bool _canSetFollowPoint;
-        private bool _shouldStopMoving;
-        private bool _canSetMoveInput;
-        private bool onRightSide;
+        private bool _canGetLastMoveInput;
 
         private float moveInputDeviationValue;
         private float lastMoveInputDeviationValue;
-        private float playerFollowDistance;
+        //private float playerFollowDistance;
         private float walkRadius;
+        private float targetMoveSpeed;
 
         //private float incrementedMoveSpeed;
         //private float randDeviationDir;
 
-        private int randPlayerMovePoint;
+        //private int randPlayerMovePoint;
 
         private Vector3 lastInnerNormal = Vector3.zero;
         private Vector3 lastOuterNormal = Vector3.zero;
@@ -143,6 +144,7 @@ namespace KinematicCharacterController.PetController
                     canChangeDeviationDirection = true;
                     _canForceDeviation = true;
                     MaxStableMoveSpeed = 7f;
+                    targetMoveSpeed = 7f;
                     _canSetFollowPoint = true;
                     //radiusSize = 5f;
                     currentDefaultState = PetDefaultState.Idle;
@@ -209,32 +211,23 @@ namespace KinematicCharacterController.PetController
                     Vector3 playerPosition = player.Motor.transform.position;
                     Vector3 playerDir = playerPosition - Motor.transform.position;
                     float distanceToPlayer = playerDir.sqrMagnitude;
-                    //float walkRadius = 3f; //Minimum distance before walking.
 
                     //Get directions of the player.
                     Vector3 playerCharUp = player.Motor.CharacterUp;
                     Vector3 playerCharRight = player.Motor.CharacterRight;
                     Vector3 playerCharLeft = -playerCharRight;
                     Vector3 playerCharForward = player.Motor.CharacterForward;
-                    //Vector3 playerRightDir = Vector3.ClampMagnitude(Vector3.ProjectOnPlane(
-                        //playerCharRight, playerCharUp), 1);
-                    //Vector3 playerLeftDir = -playerRightDir;
-
+                    
                     //Set left and right position based on the delayed position of the player;
-                    //Vector3 targetPos = new Vector3();
                     Vector3 rightPos = playerPosition + playerCharRight;
                     Vector3 leftPos = playerPosition + playerCharLeft;;
                     Vector3 rightDir = Vector3.ProjectOnPlane(rightPos - transformPosition, Motor.CharacterUp);
                     Vector3 leftdir = Vector3.ProjectOnPlane(leftPos - transformPosition, Motor.CharacterUp);
                     
                     Vector3 playerSideDir = Vector3.ProjectOnPlane(playerDir, playerCharRight);
-                    //Vector3 distanceToSideDir =
-                        //Vector3.ProjectOnPlane(playerSideDir - Motor.transform.position, Motor.CharacterUp);
-
+                    
                     float stopRadius = 1f; //Minimum distance before stopping.
-
-                    //TestPlayerPositionDelayCoroutine = StartCoroutine(TestPlayerPositionDelay(playerPosition));
-
+                    
                     Vector3 playerVelocity = player.Motor.Velocity;
                     //While outside the radius...
                     
@@ -253,6 +246,7 @@ namespace KinematicCharacterController.PetController
                             targetDirection = leftdir;
                         }
                         
+                        Debug.Log("Moving directly to player");
                         _moveInputVector = Vector3.ProjectOnPlane(targetDirection.normalized, Motor.CharacterUp)
                             .normalized;
                         _lookInputVector = _moveInputVector;
@@ -261,9 +255,11 @@ namespace KinematicCharacterController.PetController
                     //While inside the radius...
                     else
                     {
-                        walkRadius = 3.2f;
+                        Vector3 projectedPlayerVelocity =
+                            Vector3.ProjectOnPlane(playerVelocity, Motor.CharacterUp).normalized;
+                        walkRadius = 3.75f; //3.2f
                         //Check if the pet is in front of the player. *FIX
-                        float angleComparison = Vector3.Dot(playerCharForward, playerDir.normalized);
+                        float angleComparison = Vector3.Dot(projectedPlayerVelocity, playerDir.normalized);
                         
                         //If true, stop moving.
                         if (angleComparison <= -.35f)
@@ -277,30 +273,34 @@ namespace KinematicCharacterController.PetController
                             {
                                 //MaxStableMoveSpeed = 7f;
                                 //Enable running.
-                                _moveInputVector = Vector3.ProjectOnPlane(playerVelocity, Motor.CharacterUp).normalized;
+                                //_moveInputVector = Vector3.ProjectOnPlane(playerVelocity, Motor.CharacterUp).normalized;
 
                                 //Change speed depending how close the pet is to the side point.
                                 if (playerSideDir.sqrMagnitude >= Mathf.Pow(2.5f, 2))
                                 {
-                                    if (MaxStableMoveSpeed < 8.5f)
+                                    if (targetMoveSpeed < 8.5f)
                                     {
-                                        MaxStableMoveSpeed += 8f * Time.deltaTime;
+                                        targetMoveSpeed += 8f * Time.deltaTime;
                                     }
                                 }
                                 else if (playerSideDir.sqrMagnitude < Mathf.Pow(1.5f, 2))
                                 {
-                                    if (MaxStableMoveSpeed > 7f)
+                                    if (targetMoveSpeed > 7f)
                                     {
-                                        MaxStableMoveSpeed -= 8f * Time.deltaTime;
+                                        targetMoveSpeed -= 8f * Time.deltaTime;
                                     }
                                 }
+
+                                //In the case that the pet is inbetween both of the above checks, we still want to set
+                                    //the movespeed to something.
+                                MaxStableMoveSpeed = targetMoveSpeed;
                             }
                             //If the player's velocity is within walking speed...
                             else if (playerVelocity.sqrMagnitude < Mathf.Pow(4f, 2) &&
                                      playerVelocity.sqrMagnitude > Mathf.Pow(2.5f, 2))
                             {
                                 //Enable walking.
-                                _moveInputVector = Vector3.ProjectOnPlane(playerVelocity, Motor.CharacterUp).normalized;
+                                //_moveInputVector = Vector3.ProjectOnPlane(playerVelocity, Motor.CharacterUp).normalized;
                                 MaxStableMoveSpeed = 3f;
                             }
                             //Otherwise...
@@ -310,8 +310,8 @@ namespace KinematicCharacterController.PetController
                                 {
                                     //Enable walking.
                                     //Debug.Log("Here");
-                                    _moveInputVector = Vector3.ProjectOnPlane(playerVelocity, Motor.CharacterUp)
-                                        .normalized;
+                                    //_moveInputVector = Vector3.ProjectOnPlane(playerVelocity, Motor.CharacterUp)
+                                        //.normalized;
                                     MaxStableMoveSpeed = 3f;
                                 }
                                 else
@@ -321,103 +321,80 @@ namespace KinematicCharacterController.PetController
                                 }
                             }
                             //Debug.Log(playerSideDir.magnitude);
-
-                            Vector3 moveInputPerpendicular = Vector3.Cross(_moveInputVector, Motor.CharacterUp);
-                            Vector3 maxDeviation = Vector3.Lerp(_moveInputVector, moveInputPerpendicular, .25f);
-                            Vector3 minDeviation = Vector3.Lerp(_moveInputVector, -moveInputPerpendicular, .25f);
-                            Vector3 projectedPlayerVelocity =
-                                Vector3.ProjectOnPlane(playerVelocity, Motor.CharacterUp).normalized;
-                            Vector3 playerFrontAndBackDir = Vector3.ProjectOnPlane(playerDir, playerCharForward);
-
+                            
+                            Vector3 test = Vector3.ProjectOnPlane(playerDir, playerCharForward);
+                            Vector3 playerFrontAndBackDir = Vector3.ProjectOnPlane(test, Motor.CharacterUp);
                             //TO DO: RUN A DISTANCE CHECK FROM THE PLAYER TO THE PET.
                             //If the distance is over x, run two more checks:
                             //If the playerFrontAndBackDir > x, deviate towards the player.
                             //If the playerSideDir > x, increase the movespeed.
-                            Debug.Log(angleComparison);
-                            
+                            //Debug.Log(Mathf.Sqrt(distanceToPlayer));
+
                             //If the player distance is near the walk radius...
+                            //Debug.Log(angleComparison);
                             if (distanceToPlayer > Mathf.Pow(3f, 2))
                             {
+                                //Debug.Log("Far away");
                                 //Angle check for increasing moveSpeed. (Make sure to have it last shortly after coming in.)
-                                //TO DO: CHANGE THE ANGLE WE'RE COMPARING REEEE.
-                                if (angleComparison >= -1f && angleComparison < -.5f)
+                                //Check the moveSpeed angle.
+                                if (angleComparison <= 1f && angleComparison > .5f)
                                 {
                                     if (MaxStableMoveSpeed < 8.5f)
                                     {
+                                        Debug.Log("Increasing Movespeed");
                                         MaxStableMoveSpeed += 8f * Time.deltaTime;
                                     }
                                 }
-                                else if (angleComparison >= .5f && angleComparison < 0 && _canForceDeviation)
+                                //Check the deviation angle (*Tidy up this code to combine it with the other code below)
+                                if (angleComparison <= .7f && angleComparison >= -.7f && _canForceDeviation)
                                 {
-                                    Debug.Log("Forcing deviation.");
+                                    Debug.Log("Forcing move closer.");
                                     _canForceDeviation = false;
+                                    lastMoveInputDeviationValue = 0f;
                                     StopActiveCoroutine(ChangeDeviationDirectionCoroutine);
                                     ForceDeviationChangeCoroutine = StartCoroutine(ForceDeviationChange());
-                                    canChangeDeviationDirection = true;
+                                    float randTime = UnityEngine.Random.Range(.85f, 1.5f);
+                                    deviationDir = Vector3.Slerp(playerFrontAndBackDir, playerCharForward, .75f);
+                                    ChangeDeviationDirectionCoroutine = StartCoroutine(ChangeDeviationDirection(randTime));
                                 }
                             }
-
-                            //Get y from the circle.
-                            //float value = Mathf.Pow(3 - playerSideDir.sqrMagnitude, .5f);
-                            //Debug.Log(value);
-
-                            //float newValue = Mathf.Abs(value - playerFrontAndBackDir.magnitude);
-                            //Vector3 test = Vector3.ClampMagnitude(-playerFrontAndBackDir, newValue);
-                            //Vec
-
-                            //if (playerFrontAndBackDir.sqrMagnitude > Mathf.Pow(2.7f, 2) && _canForceDeviation)
-                            //{
-                            //    Debug.Log("Forcing deviation.");
-                            //    _canForceDeviation = false;
-                            //    StopActiveCoroutine(ChangeDeviationDirectionCoroutine);
-                            //    canChangeDeviationDirection = true;
-                            //}
+                            
                             //Check if deviation can occur after the coroutine ends.
                             if (canChangeDeviationDirection)
                             {
+                                _canGetLastMoveInput = true;
                                 canChangeDeviationDirection = false;
-                                lastMoveInputDeviationValue = moveInputDeviationValue;
+                                lastMoveInputDeviationValue = 0f;
+                                
+                                float randDeviateAmount = UnityEngine.Random.Range(.75f, .95f);
                                 //If too close to the player, deviate away.
                                 if (playerFrontAndBackDir.sqrMagnitude < Mathf.Pow(1.5f, 2))
                                 {
-                                    moveInputDeviationValue = UnityEngine.Random.Range(0f, 1f);
+                                    Debug.Log("Moving AWAY");
+                                    deviationDir = Vector3.Slerp(-playerFrontAndBackDir, playerCharForward, randDeviateAmount);
                                 }
                                 //If too far away to the player, deviate closer.
                                 else if (playerFrontAndBackDir.sqrMagnitude > Mathf.Pow(2.5f, 2))
                                 {
                                     Debug.Log("Moving closer.");
-                                    moveInputDeviationValue = UnityEngine.Random.Range(-1f, 0f);
+                                    deviationDir = Vector3.Slerp(playerFrontAndBackDir, playerCharForward, randDeviateAmount);
                                 }
                                 //Otherwise, deviate anywhere.
                                 else
                                 {
-                                    moveInputDeviationValue = UnityEngine.Random.Range(-1f, 1f);
+                                    Debug.Log("Moving away anyway cuz middle");
+                                    deviationDir = Vector3.Slerp(-playerFrontAndBackDir, playerCharForward, randDeviateAmount);
                                 }
+                                Debug.Log(randDeviateAmount);
 
                                 //Debug.Log(moveInputDeviationValue);
-                                float randTime = UnityEngine.Random.Range(.5f, 1.15f);
+                                float randTime = UnityEngine.Random.Range(.85f, 1.5f);
                                 StopActiveCoroutine(ChangeDeviationDirectionCoroutine);
                                 ChangeDeviationDirectionCoroutine = StartCoroutine(ChangeDeviationDirection(randTime));
                             }
 
-                            //Current issue is that the deviation runs a check for the distance from the player's front
-                            //and back, but it doesn't take into account the walk radius. If the pet gets too close
-                            //to the walk radius, it can still deviate away if it's close to the player.
-
-                            //Solutions:
-                            //1. Increase the size of the walk radius once inside.
-                            //2. Run the player front and back check WITH walk radius as well.
-                            //(Check distance between player and pet AND radius and pet. If the pet is too close
-                            //to the radius, it shouldn't deviate away from the player.
-
-                            //Debug.DrawRay(Motor.transform.position, Motor.CharacterRight, Color.red);
-                            //Debug.DrawRay(Motor.transform.position, playerSideDir, Color.yellow);
-                            //Debug.DrawRay(Motor.transform.position, playerFrontAndBackDir, Color.green);
-                            //TO DO HERE:
-                            //Force movement away if the pet gets too close to the edge.
-
-                            //Smoothly move between deviation values.
-                            if (lastMoveInputDeviationValue < moveInputDeviationValue)
+                            //Smoothly (and randomly) move between deviation values.
+                            if (lastMoveInputDeviationValue < 1f)
                             {
                                 lastMoveInputDeviationValue += Time.deltaTime;
                             }
@@ -426,51 +403,34 @@ namespace KinematicCharacterController.PetController
                                 lastMoveInputDeviationValue -= Time.deltaTime;
                             }
 
-                            //If the deviation value is above 0... (between 0 and 1)
-                            if (moveInputDeviationValue >= 0)
-                            {
-                                _moveInputVector = Vector3.Lerp(projectedPlayerVelocity, maxDeviation,
-                                    lastMoveInputDeviationValue);
-                            }
-                            //Otherwise, if it's below 0... (between -1 and 0)
-                            else
-                            {
-                                _moveInputVector = Vector3.Lerp(projectedPlayerVelocity, minDeviation,
-                                    Mathf.Abs(lastMoveInputDeviationValue));
-                            }
+                            _moveInputVector = Vector3.Slerp(_moveInputVector, deviationDir, lastMoveInputDeviationValue).normalized;
+                            Debug.DrawRay(playerPosition, Vector3.ClampMagnitude(-playerDir, 3f));
+
                             _lookInputVector = _moveInputVector;
                         }
-                    }
-                    
-                    //WHAT WE DID LAST TIME:
-                    //We implemented mimicking the player's velocity instead of following points or mimicking input.\
-                    //We added deviation so the pet can move from side to side slightly during a coroutine.
-                    //The pet will (OR AT LEAST SHOULD, DOUBLE CHECK!) deviate away or towards the player depending
-                        //how close it is to the player's 
-                    //The pet will not move while being looked at by the player.
+                        //WHAT WE DID LAST TIME: We replaced LERP with SLERP because lerp takes a direct linear path from
+                        //point a to b (which gave us directions we didn't want), but slerp interpolates between
+                        //directions. ALWAYS USE SLERP. We also changed the force deviation to always move closer
+                        //instead of check the code below it, because the code didn't care about the angleComparison
+                        //which caused the pet to move away anyways.
 
-                    //WHAT WE NEED TO DO:
-                    //Make sure stable move speed changes depending how close the pet is to the side position of the
-                    //player.
-                    //Fix jitteriness caused by the pet getting stuck between the walk radius.
-                    //Fix jitteriness caused by the pet constantly being looked at by the player while turning.
-                    //Force the pet to move away from the walking radius and clean up walk radius detection in general.
-                    //Eventually, add delay.
-                    
-                    //Eventually, switch move input and look input.
-                    //Eventually, run checks on walls, ramps, and ledges.
-                    
-                    //ISSUES:
-                    //Is the pet not walking when close enough to the player? Seems to stop instead.
-                    
-                    
+                        //TO DO:
+                        //1. Organize the code so the deviation moveInput is ONLY called when we want it to.
+                            //(currently, the pet always moves to the deviation point.)
+                        //2. Make sure a deviationDir is always set before telling the pet to slerp between moveINput
+                            //and the deviationDir (so the pet won't try to move towards vector3.zero).
+                        //3. Honestly, just make sure each moveInput occurs when it should.
+                        //4. Eventually, add delay.
+                    }
+
+
                     break;
                 }
                 case PetState.FollowPath:
                 {
-                    Vector3 pathPosition = pathfinding.targetPathPosition;
-                    _moveInputVector = Vector3.ProjectOnPlane(pathPosition, Motor.CharacterUp);
-                    _lookInputVector = _moveInputVector;
+                    //Vector3 pathPosition = pathfinding.targetPathPosition;
+                    //_moveInputVector = Vector3.ProjectOnPlane(pathPosition, Motor.CharacterUp);
+                    //_lookInputVector = _moveInputVector;
                     break;
                 }
             }
@@ -895,6 +855,11 @@ namespace KinematicCharacterController.PetController
 //PET MOVEMENT
 //MIMICKING PLAYER MOVEMENT WILL NOT WORK. If the player was in a unique movement state and we still wanted the pet to
     //follow normally, it wouldn't work. It needs to be done based on distance checks.
+
+//PET WARPING
+//Choose one of 4 pet warp positions: Sides, behind, or right on the player.
+    //For each position, send a raycast down to make sure it would teleport the pet on a viable spot.
+    //If none are open, teleport right on top of the player.
 
 
 //PET ATTACK
