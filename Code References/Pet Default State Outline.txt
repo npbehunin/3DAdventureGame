@@ -1,0 +1,35 @@
+GENERAL
+- Avoid any checks that deal with the player's forward and side directions and focus on dealing with velocity.
+- Keep as close as possible!
+
+FOLLOW STATE
+- "If the pet is outside the walk radius, run towards the player directly."
+- Do a slerp from the current move input towards the player.
+
+"While the pet is inside the walk radius..."
+
+RUNNING STATE
+- Deviation is allowed.
+- Always use a slerp from the current direction to the new one.
+- Increase move speed if too far away and decrease if too close.
+
+WALKING STATE
+- "If the player's velocity is below x, set the speed to something low."
+- "Otherwise, transition to running state."
+- Deviate towards the player until close enough, then move straight with the player.
+- Increase move speed if too far away and decrease if too close.
+
+IDLE STATE
+- Transition to idle if the player's velocity is below x and the pet is within the stop radius.
+- Remain idle until the player reaches running speed OR gets too far away.
+- Remain idle if directly in front of the player.
+
+WARP STATE
+- If the pet leaves the stable radius, teleport to the player's position.
+- Make sure x amount of time passes before trying to teleport again.
+
+OBSTACLE CHECKS
+- If the player's velocity is above x AND there's an obstacle x distance away from the pet's velocity AND there's NO obstacle
+	x distance away from the player's velocity, deviate towards the middle of the player.
+- If there's a large drop that extends x height below the pet nearby (unclimbable) and the player's x height is within the pet's, then avoid deviating towards it.
+- If there's a wall that extends x height next to the pet (unclimbable) then avoid deviating towards it.

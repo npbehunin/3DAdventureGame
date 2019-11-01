@@ -381,16 +381,6 @@ namespace KinematicCharacterController.PetController
     
                             _moveInputVector = Vector3.Slerp(_moveInputVector, deviationDir, lastMoveInputDeviationValue).normalized;
                             Debug.DrawRay(playerPosition, Vector3.ClampMagnitude(-playerDir, 3f));
-                            //WHAT WE DID LAST TIME: We replaced LERP with SLERP because lerp takes a direct linear path from
-                            //point a to b (which gave us directions we didn't want), but slerp interpolates between
-                            //directions. ALWAYS USE SLERP. We also changed the force deviation to always move closer
-                            //instead of check the code below it, because the code didn't care about the angleComparison
-                            //which caused the pet to move away anyways.
-    
-                            //TO DO:
-                            //1. While inside the walk radius, organize by velocity:
-                                //At walking-running speed, allow deviation.
-                                //While stopped, set moveInput to 0.
                         }
                         else if (playerVelocity.sqrMagnitude < Mathf.Pow(2.5f, 2))
                         {

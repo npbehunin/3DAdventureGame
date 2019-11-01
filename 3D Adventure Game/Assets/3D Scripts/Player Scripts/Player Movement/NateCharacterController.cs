@@ -95,7 +95,7 @@ namespace KinematicCharacterController.Nate
         private float testLerp = 0f;
         private Vector3 _internalVelocityAdd = Vector3.zero;
         private bool _shouldBeCrouching = false;
-        private bool _isCrouching = false;
+        public bool _isCrouching = false;
         
         public Coroutine _tempSwordCoroutine;
 
