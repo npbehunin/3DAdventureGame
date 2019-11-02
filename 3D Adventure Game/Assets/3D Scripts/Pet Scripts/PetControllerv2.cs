@@ -147,24 +147,10 @@ namespace KinematicCharacterController.PetControllerv2
                 case PetState.Default:
                 {
                     currentDefaultState = PetDefaultState.Idle;
-                    switch (currentDefaultState)
-                    {
-                        case PetDefaultState.Run:
-                        {
-                            canChangeDeviationDirection = true;
-                            stateMaxStableMoveSpeed = playerMaxStableMoveSpeed;
-                            break;
-                        }
-                        case PetDefaultState.Walk:
-                        {
-                            stateMaxStableMoveSpeed = playerMaxStableMoveSpeed * .45f;
-                            break;
-                        }
-                        case PetDefaultState.Idle:
-                        {
-                            break;
-                        }
-                    }
+                    break;
+                }
+                case PetState.Crouched:
+                {
                     break;
                 }
                 case PetState.MoveToPlayer:
@@ -661,27 +647,43 @@ namespace KinematicCharacterController.PetControllerv2
                         case PetDefaultState.Run:
                         {
                             //Transition to walk if speed goes below x.
-                            //If is crouching...
-                                //Transition to crouchedwalk.
+                            //Set crouched sub-state to crouchedRun.
                             break;
                         }
                         case PetDefaultState.Walk:
                         {
                             //Transition to run if speed goes above x, OR...
                             //Transition to idle if close enough.
-                            //If is crouching...
-                                //Transition to crouchedwalk.
+                            //Set crouched sub-state to crouchedRun.
                             break;
                         }
                         case PetDefaultState.Idle:
                         {
                             //Transition to run once x distance is met OR player's velocity goes above x.
-                            //If is crouching...
-                                //Transition to crouchedidle.
+                            //Set crouched sub-state to crouchedIdle.
                             break;
                         }
                     }
 
+                    break;
+                }
+                case PetState.Crouched:
+                {
+                    switch (currentCrouchedState)
+                    {
+                        case PetCrouchedState.Run:
+                        {
+                            //Set default sub-state to walk.
+                            //Transition to crouchedIdle if close enough.
+                            break;
+                        }
+                        case PetCrouchedState.Idle:
+                        {
+                            //Transition to crouchedRun if player goes above x distance or x velocity.
+                            //Set default sub-state to idle.
+                            break;
+                        }
+                    }
                     break;
                 }
                 case PetState.MoveToPlayer:
@@ -819,12 +821,56 @@ namespace KinematicCharacterController.PetControllerv2
     }
 }
 
-//TO DO:
-//After thinking about crouching and state transitions, I've decided the best method is to just leave a separate
-    //crouched state apart from the default state. The reason for this is because it would be a much easier process
-    //to just tell both the crouched and default states to run an obstacleCheck function, changeMoveSpeed function, etc.
-    //instead of trying to minimize work by bunching them together with smaller sub-states. Plus, we get the luxury of
-    //using OnStateEnter and OnStateExit.
-//The downside to a crouched/uncrouched default state with smaller sub-states like walk, run, idle, crouchedwalk,
-    //crouchedIdle, etc. is that there are too many differences such as permissions and movement that seem to
-    //encourage having them in the same default state.
+//OBSTACLE AVOIDANCE SYSTEM
+//1. Avoiding walls.
+//METHOD 1
+    //Send out a bunch of rays from the player's position outwards towards the left and right side of the player's
+        //velocity. (Kind of like a "whisker" shape.)
+    //If any of the rays detects a wall, the pet will avoid moving on that side of the player.
+    //If both sides detect a wall, the pet will move behind the player.
+//(NOTE: Make sure the rays extend out from the middle of the player and ignore climbable slopes.)
+//METHOD 2
+    //Send out a ray from the pet's velocity.
+    //If the ray intersects with a wall, lerp towards the player's direction until the ray isn't intersecting anymore.
+        //(Going no further than the playerDir.) (If the ray is still blocked at playerDir, then followPath should
+        //automatically take over and use pathfinding.)
+//NOTES:
+    //Under the assumption the player can be surrounded by walls on both sides, the pet would still move and look
+    //directly at the player, causing the pet to move relatively straight.
+
+//2. Avoiding ledges.
+//METHOD 1
+    //Send out a bunch of rays from the pet's position that extend downwards x distance until they detect ground.
+    //If up to 2-3 adjacent rays don't detect any ground, the pet will avoid that area.
+    //Store the distance from the ledge by storing the dropoff point the moment no ground is detected.
+    //If the player is jumping off a ledge or the player's position is below the dropoff point, the pet will ignore
+        //ledges.
+    //(If we want the pet to jump when going off a ledge, get the distance from the ledge until x away and jump off.)
+//METHOD 2
+    //Just store the velocity ray from the pet's position and extend downwards x distance until it detects ground.
+    //Run similar checks as before without needing multiple rays.
+
+//3. Recognizing slopes.
+//METHOD 1
+    //Send a ray out from the pet's velocity and player's velocity.
+    //If the contact point normal is within x degrees (can be walked on) and large compared to the pet's normal,
+        //move to the player.
+    //...OR, if the player's height compared to the pet's is too high (just under step height) move to the player.
+    
+//REMEMBER TO PONDER ABOUT ANY POTENTIAL ISSUES WITH THESE CHECKS.    
+
+//SETTING THE MOVE INPUT
+//These obstacle checks will run (or SHOULD be able to run) in any default state.
+//Under the assumption the pet will only move while behind the player, we can override the moveInput and always lerp
+    //from the current moveInput towards the player until there's no longer an obstacle.
+//We could also set our own unique move input to tell the pet to not only move towards the player, but to mimic
+    //movement (following instead of moving towards) until no obstacles are present. It would have a very similar
+    //effect, but it could have a cleaner feel to it. I dunno.    
+    
+//IN A FEW WORDS...
+//1. Send a ray out from the pet's velocity. Is there a wall? Move towards the player until there isn't a wall.
+//2. Send a ray out from the pet's velocity. Is there ground detection? Move towards the player if ground can't be
+    //detected.
+//3. Send a ray out from the pet's velocity and player's velocity. Does each normal bounce in a similar direction? Is
+    //the player too high compared to the pet? Move towards the player.
+//Never move further than the direction of the player. 
