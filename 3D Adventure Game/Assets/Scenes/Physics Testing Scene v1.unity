@@ -1438,6 +1438,7 @@ GameObject:
   - component: {fileID: 329190736}
   - component: {fileID: 329190735}
   - component: {fileID: 329190734}
+  - component: {fileID: 329190739}
   - component: {fileID: 329190738}
   - component: {fileID: 329190733}
   - component: {fileID: 329190732}
@@ -1588,7 +1589,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 329190731}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8efff94360e93d548a495173b8c215d7, type: 3}
   m_Name: 
@@ -1612,6 +1613,37 @@ MonoBehaviour:
     m_Bits: 0
   currentDefaultState: 0
   currentCrouchedState: 0
+--- !u!114 &329190739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329190731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcaeb31142f4b094e9ec02476640986b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Motor: {fileID: 329190734}
+  MaxStableMoveSpeed: 7
+  StableMovementSharpness: 14
+  OrientationSharpness: 20
+  MaxAirMoveSpeed: 7
+  AirAccelerationSpeed: 50
+  Drag: 0.1
+  IgnoredColliders: []
+  OrientTowardsGravity: 0
+  Gravity: {x: 0, y: -30, z: 0}
+  MeshRoot: {fileID: 1705080753}
+  player: {fileID: 2079106473}
+  NewCharacterState: 0
+  pathfinding: {fileID: 329190737}
+  WallLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  currentDefaultState: 0
+  currentDeviationState: 0
 --- !u!1 &362962778
 GameObject:
   m_ObjectHideFlags: 0

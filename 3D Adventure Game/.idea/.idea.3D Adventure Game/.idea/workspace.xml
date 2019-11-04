@@ -34,8 +34,8 @@
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/2D Scripts Backup/Enemy Scripts/Forest Temple/Jelly/Jelly.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/HeapNew.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/TargetingMode.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/UnitFollowNew.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NateCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/UnitFollowNew.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NateCharacterController.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Examples/Scripts/PlayableMover.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/NodeNew.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/GridNew.cs" root0="FORCE_HIGHLIGHTING" />
@@ -46,15 +46,16 @@
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Examples/Scripts/ExampleMovingPlatform.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/14- Climbing Ladders/Scripts/MyLadder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/14- Climbing Ladders/Scripts/MyCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetControllerv2.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetControllerv2.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/Sebastian/Pathfinding3D.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetController.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetControllerv3.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetMovement3D.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Walkthrough/15- Root motion example/Scripts/MyCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/AIGroupManagement/AIGroupManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2CE23092-8A98-496B-A12C-A183760FB5F6/3e/031efc7d/Vector3.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/UpdatePathTesting.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonControllerv2.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonControllerv2.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonInputs.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/NPC/NPC Scripts/NPCCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Enemy Scripts/Raccoon (Bokoblin)/RaccoonController.cs" root0="FORCE_HIGHLIGHTING" />
@@ -85,6 +86,7 @@
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetController.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NateCharacterController.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetControllerv2.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetControllerv3.cs" />
       </list>
     </option>
   </component>
