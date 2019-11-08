@@ -1439,6 +1439,7 @@ GameObject:
   - component: {fileID: 329190735}
   - component: {fileID: 329190734}
   - component: {fileID: 329190739}
+  - component: {fileID: 329190740}
   - component: {fileID: 329190738}
   - component: {fileID: 329190733}
   - component: {fileID: 329190732}
@@ -1612,6 +1613,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   currentDefaultState: 0
+  currentDeviationState: 0
   currentCrouchedState: 0
 --- !u!114 &329190739
 MonoBehaviour:
@@ -1644,6 +1646,18 @@ MonoBehaviour:
     m_Bits: 0
   currentDefaultState: 0
   currentDeviationState: 0
+--- !u!114 &329190740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329190731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c407710576b5ace48be8b1fd926a5603, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &362962778
 GameObject:
   m_ObjectHideFlags: 0
