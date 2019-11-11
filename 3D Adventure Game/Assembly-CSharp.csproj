@@ -173,6 +173,7 @@
     <Compile Include="Assets\3D Scripts\Pathfinding\Sebastian\Unit3D.cs" />
     <Compile Include="Assets\3D Scripts\Pathfinding\UnitFollowNew.cs" />
     <Compile Include="Assets\3D Scripts\Pathfinding\UpdatePathTesting.cs" />
+    <Compile Include="Assets\3D Scripts\Pet Scripts\LedgeDetectionCylinder.cs" />
     <Compile Include="Assets\3D Scripts\Pet Scripts\LedgeDetectionNode.cs" />
     <Compile Include="Assets\3D Scripts\Pet Scripts\PetController.cs" />
     <Compile Include="Assets\3D Scripts\Pet Scripts\PetControllerv2.cs" />
