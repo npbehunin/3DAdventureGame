@@ -87,7 +87,7 @@ public class LedgeDetectionNode : MonoBehaviour
                         out groundHit, Mathf.Infinity, groundMask))
                     {
                         float extraRaycastLerp = LerpValueFromGroundNormal(groundHit.normal.normalized);
-                        Debug.Log(extraRaycastLerp);
+                        //Debug.Log(extraRaycastLerp);
                         float extraDistanceCheck = Mathf.Lerp(newHitDistance, newHitDistance + 1f, extraRaycastLerp);
                         //Debug.Log(extraDistanceCheck);
                         Debug.DrawRay(verticalVectorArray[i], Vector3.down * (extraDistanceCheck), Color.blue); //Extra vertical raycast
@@ -103,6 +103,7 @@ public class LedgeDetectionNode : MonoBehaviour
                         {
                             //Ground isn't within its extra distance.
                             ledgeNodeBoolArray[i] = false;
+                            Debug.Log("False");
                         }
                     }
                     else
@@ -181,3 +182,7 @@ public class LedgeDetectionNode : MonoBehaviour
 //2. Similar method for the player.
 //3. Check the distance between the pet and player raycast hitpoint. If the distance becomes too big, move towards
     //the player.
+
+//OPTIMIZATION
+//We can remove the different types of raycastHits and just use one hit that changes for each check.
+//We could try combining the yellow (first) raycast with the second (blue) raycast.
