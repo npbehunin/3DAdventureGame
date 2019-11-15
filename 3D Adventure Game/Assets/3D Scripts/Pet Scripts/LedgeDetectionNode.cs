@@ -8,11 +8,10 @@ public class LedgeDetectionNode : MonoBehaviour
     //Ledge detection testing
     private Vector3[] ledgeNodeVectorArray;
     private bool[] ledgeNodeBoolArray;
-    public float horizontalDetectionDistance = .65f;
-    public float minHitDistance = .65f;
-    public float maxHitDistance = 1.75f; //1.75f
-    public LayerMask groundMask;
-    public LayerMask wallMask;
+    public float horizontalDistance = .65f;
+    public float stepHeight = .55f; //Step height
+    public float maxAngle = 50f;
+    public LayerMask colliderMask;
     public PetControllerv3 pet;
     public Vector3 petPosition;
 
@@ -28,88 +27,78 @@ public class LedgeDetectionNode : MonoBehaviour
         int raycastCount = 8;
         Vector3[] horizontalVectorArray = new Vector3[8];
         Vector3[] verticalVectorArray = new Vector3[8];
+        Vector3[] backwardsVectorArray = new Vector3[8];
+        Vector3[] secondBackwardsVectorArray = new Vector3[8];
         ledgeNodeBoolArray = new bool[8];
-        
-        //Set the first vector.
-        
-        
+
         //Set the directions the raycasts should extend out.
         for (int i = 0; i < horizontalVectorArray.Length; i++)
         {
             //Send out a direction
             if (i == 0)
             {
-                horizontalVectorArray[0] = Vector3.ClampMagnitude((petPosition + Vector3.forward), horizontalDetectionDistance);
+                horizontalVectorArray[0] = Vector3.ClampMagnitude(petPosition + Vector3.forward, horizontalDistance);
                 verticalVectorArray[0] = petPosition + horizontalVectorArray[0];
+                backwardsVectorArray[0] =
+                    verticalVectorArray[0] + Vector3.ClampMagnitude(Vector3.down, stepHeight);
+                secondBackwardsVectorArray[0] = verticalVectorArray[0] + Vector3.ClampMagnitude(Vector3.down, stepHeight / 2);
             }
             else
             {
-                horizontalVectorArray[i] = Vector3.ClampMagnitude(Vector3.Slerp(horizontalVectorArray[i - 1],
-                    Vector3.Cross(horizontalVectorArray[i - 1], Vector3.up), .5f), horizontalDetectionDistance);
+                horizontalVectorArray[i] = (Vector3.ClampMagnitude(Vector3.Slerp(horizontalVectorArray[i - 1],
+                    Vector3.Cross(horizontalVectorArray[i - 1], Vector3.up), .5f), horizontalDistance));
                 verticalVectorArray[i] = petPosition + horizontalVectorArray[i];
+                backwardsVectorArray[i] =
+                    verticalVectorArray[i] + Vector3.ClampMagnitude(Vector3.down, stepHeight);
+                secondBackwardsVectorArray[i] = verticalVectorArray[i] + Vector3.ClampMagnitude(Vector3.down, stepHeight / 2);
             }
-
-            Vector3 normalFromCollider = pet.Motor.GroundingStatus.GroundNormal.normalized;
-            float targetHitDistanceLerp = LerpValueFromGroundNormal(normalFromCollider);
-            float targetHitDistance = Mathf.Lerp(minHitDistance, maxHitDistance, targetHitDistanceLerp);
-
-            //NOW, take the targetHitDistance (which changes ALL the lengths of the verticalVectors depending on the
-                //angle of the ground normal) and apply a new distance individually depending on the dot product of the
-                //direction the normal is facing compared to the horizontalVector.)
-            Vector3 projectedGroundNormal = Vector3.ProjectOnPlane(normalFromCollider, pet.Motor.CharacterUp).normalized;
-            Vector3 projectedHorizontalVector =
-                Vector3.ProjectOnPlane(horizontalVectorArray[i], pet.Motor.CharacterUp).normalized;
-            float normalToVectorComparison = Mathf.Abs(Vector3.Dot(projectedGroundNormal, projectedHorizontalVector));
-            //Closer to 0 = shorter distance, closer to 1 = longer.
-            float newHitDistance = Mathf.Lerp(minHitDistance, targetHitDistance, normalToVectorComparison); //Temp
+            
+            
 
             //Test if the vertical raycast doesn't detect ground within step height.
-            RaycastHit horizontalHitWall;
-            RaycastHit horizontalHitGround;
-            RaycastHit verticalHit;
-            RaycastHit groundHit;
-            RaycastHit extraVerticalHit;
+            RaycastHit hit;
+            RaycastHit hit2;
             Color detectionColor = new Color();
 
-            //Check to make sure there's no wall or ground detection horizontally before checking vertically.
-                //(Prevents checking a vertical raycast inside the ground or in wall.)
-            bool horizontalDetection = Physics.Raycast(petPosition, horizontalVectorArray[i], 
-                                           out horizontalHitGround, horizontalDetectionDistance, groundMask) || Physics.Raycast(petPosition, horizontalVectorArray[i], 
-                                           out horizontalHitWall, horizontalDetectionDistance, wallMask);
+            //Send out a raycast away from the pet, then straight down, then back to the pet.
+            bool horizontalDetection = Physics.Raycast(petPosition, horizontalVectorArray[i],
+                    horizontalDistance, colliderMask);
             bool verticalDetection = Physics.Raycast(verticalVectorArray[i], Vector3.down,
-                    out verticalHit, newHitDistance, groundMask);
+                    stepHeight, colliderMask);
+            bool backwardsDetection = Physics.Raycast(backwardsVectorArray[i], -horizontalVectorArray[i],
+                out hit, horizontalDistance, colliderMask);
+            bool secondBackwardsDetection = Physics.Raycast(secondBackwardsVectorArray[i], -horizontalVectorArray[i],
+                out hit2, horizontalDistance, colliderMask);
+
+            //If the horizontal or vertical ray detect something, return true. Otherwise, check the backwards raycast's
+                //collision normal. If it's within the max angle, return true.
             if (!horizontalDetection)
             {
                 if (!verticalDetection)
                 {
-                    //Check if there's ground below, and if so, get a lerp value from its normal.
-                    if (Physics.Raycast(verticalVectorArray[i], Vector3.down,
-                        out groundHit, Mathf.Infinity, groundMask))
+                    bool angle1Allowed = false;
+                    bool angle2Allowed = false;
+                    if (backwardsDetection)
                     {
-                        float extraRaycastLerp = LerpValueFromGroundNormal(groundHit.normal.normalized);
-                        //Debug.Log(extraRaycastLerp);
-                        float extraDistanceCheck = Mathf.Lerp(newHitDistance, newHitDistance + 1f, extraRaycastLerp);
-                        //Debug.Log(extraDistanceCheck);
-                        Debug.DrawRay(verticalVectorArray[i], Vector3.down * (extraDistanceCheck), Color.blue); //Extra vertical raycast
-
-                        //If the ground is detected within its allowed extra distance...
-                        if (Physics.Raycast(verticalVectorArray[i], Vector3.down,
-                            out extraVerticalHit, extraDistanceCheck, groundMask))
+                        float angle = Vector3.Angle(pet.Motor.CharacterUp, hit.normal);
+                        if (angle < maxAngle)
                         {
-                            //Ground is within its extra distance.
-                            ledgeNodeBoolArray[i] = true;
-                        }
-                        else
-                        {
-                            //Ground isn't within its extra distance.
-                            ledgeNodeBoolArray[i] = false;
-                            Debug.Log("False");
+                            angle1Allowed = true;
                         }
                     }
-                    else
+                    
+                    if (secondBackwardsDetection)
                     {
-                        //No ground detected at all.
-                        ledgeNodeBoolArray[i] = false;
+                        float angle = Vector3.Angle(pet.Motor.CharacterUp, hit2.normal);
+                        if (angle < maxAngle)
+                        {
+                            angle1Allowed = true;
+                        };
+                    }
+
+                    if (angle1Allowed || angle2Allowed)
+                    {
+                        ledgeNodeBoolArray[i] = true;
                     }
                 }
                 else
@@ -126,50 +115,26 @@ public class LedgeDetectionNode : MonoBehaviour
             
             detectionColor = ledgeNodeBoolArray[i] ? Color.yellow : Color.red;
 
-                //Draw the raycasts
+            //Draw the raycasts
             if (i == 0)
             {
-                Debug.DrawRay(petPosition, Vector3.ClampMagnitude(horizontalVectorArray[i], horizontalDetectionDistance), Color.green);
+                Debug.DrawRay(petPosition, Vector3.ClampMagnitude(horizontalVectorArray[i], horizontalDistance), Color.green);
             }
             else
             {
-                Debug.DrawRay(petPosition, Vector3.ClampMagnitude(horizontalVectorArray[i], horizontalDetectionDistance), Color.yellow);
+                Debug.DrawRay(petPosition, Vector3.ClampMagnitude(horizontalVectorArray[i], horizontalDistance), Color.yellow);
             }
             
-            Debug.DrawRay(verticalVectorArray[i], Vector3.down * newHitDistance, detectionColor); //Vertical raycast
-            //Debug.Log(verticalVectorArray[i].magnitude);
+            Debug.DrawRay(verticalVectorArray[i], Vector3.down * stepHeight, detectionColor); //Vertical raycast
+            Debug.DrawRay(backwardsVectorArray[i], -horizontalVectorArray[i], detectionColor); //Backwards raycast
+            Debug.DrawRay(secondBackwardsVectorArray[i], -horizontalVectorArray[i], detectionColor); //Second backwards raycast
         }
-        //Debug.DrawRay(petPosition, Vector3.ProjectOnPlane(pet.Motor.GroundingStatus.GroundNormal, pet.Motor.CharacterUp), Color.blue);
-    }
-
-    private float LerpValueFromGroundNormal(Vector3 groundNormal)
-    {
-        //Calculate a hitDistance based on the ground normal and up direction.
-        Vector3 upDir = pet.Motor.CharacterUp;
-        float comparison = Mathf.Abs(Vector3.Dot(groundNormal, upDir));
-        //Debug.Log(comparison);
-            
-        //Can go up to ~.65 (?) for the dot product. (If max ground angle is 50)
-        float difference = 1 - comparison;
-        float lerpValue = new float();
-
-        //If difference is 0, set to 0. A dot product of ~.65 (or a difference of .35) will return 1.
-        //anything past 1 doesn't matter if the value is being used for a lerp.
-        lerpValue = difference != 0 ? difference / .35f : 0;
-        return lerpValue;
     }
 }
 
-//CURRENT ISSUES (TO DO):
-//The raycasts won't reach approaching downward slopes. (Because the pet is technically on flat ground, making the rays small.)
-//The normal of the ground changes back to straight while moving over a slope. (Again, making the rays small.)
-
-//TO DO: LEDGE DETECTION
-//1. Add a second vertical raycast that extends past the first one until it hits ground.
-    //Get the normal of the ground up until the sliding point (50-90 degrees)
-    //Create an float for the extra distance allowed during the check. This distance gets bigger depending on the normal
-    //of the ground.
-    //"If the first vertical raycast is false, send the second. If the second extra distance collides, return true.
+//SMALL ISSUES:
+//Both raycasts will still return false in the case that the pet is hanging off the edge on a downward 
+    //slope (because the height of the pet is higher than the actual step height of the ledge).
 
 //TO DO: WALL DETECTION
 //1. Send a raycast forward from the pet's velocity up just past stepping height. If it hits a wall, return true for the pet.

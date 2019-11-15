@@ -231,7 +231,7 @@ namespace KinematicCharacterController.PetControllerv3
                 Vector3.ProjectOnPlane(playerVelocity, Motor.CharacterUp).normalized;
             walkRadius = 3.75f; //3.2f
             //Check if the pet is in front of the player. *FIX
-            float angleComparison = Vector3.Dot(projectedPlayerVelocity, playerDir.normalized);
+            float angleComparison = Vector3.Dot(projectedPlayerVelocity, playerDir.normalized); //Replace with Vector3.Angle.
             
             switch (CurrentPetState)
             {

@@ -143,6 +143,7 @@
     <Compile Include="Assets\3D Scripts\2D Scripts Backup\ShootingMechanic.cs" />
     <Compile Include="Assets\3D Scripts\Backups (Unused)\GraphicsDirection.cs" />
     <Compile Include="Assets\3D Scripts\Backups (Unused)\hmm.cs" />
+    <Compile Include="Assets\3D Scripts\Backups (Unused)\LedgeDetectionUnused.cs" />
     <Compile Include="Assets\3D Scripts\Backups (Unused)\PlayerMovement3DNew.cs" />
     <Compile Include="Assets\3D Scripts\Backups (Unused)\PlayerStateClass.cs" />
     <Compile Include="Assets\3D Scripts\Camera\CameraFollowPlayer.cs" />
