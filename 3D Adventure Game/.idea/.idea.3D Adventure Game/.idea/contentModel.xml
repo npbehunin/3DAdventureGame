@@ -217,7 +217,9 @@
             <e p="PetController.cs" t="Include" />
             <e p="PetControllerv2.cs" t="Include" />
             <e p="PetControllerv3.cs" t="Include" />
+            <e p="PetControllerv4.cs" t="Include" />
             <e p="PetMovement3D.cs" t="Include" />
+            <e p="WallDetection.cs" t="Include" />
           </e>
           <e p="Player Scripts" t="Include">
             <e p="ItemEquippingInfo.txt" t="Include" />

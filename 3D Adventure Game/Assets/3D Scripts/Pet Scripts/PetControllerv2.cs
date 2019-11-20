@@ -5,6 +5,7 @@ using KinematicCharacterController;
 using System;
 using System.Diagnostics;
 using KinematicCharacterController.Nate;
+using UnityEditor;
 using Debug = UnityEngine.Debug;
 
 //Movement controller for the fox.
@@ -26,11 +27,12 @@ namespace KinematicCharacterController.PetControllerv2
         Idle,
         Walk,
         Run,
+        StayBehindPlayer,
     }
 
     public enum PetDeviationState
     {
-        Default,
+        NoDeviation,
         MoveCloser,
         MoveAway,
     }
@@ -39,8 +41,7 @@ namespace KinematicCharacterController.PetControllerv2
     {
         Idle,
         Walk,
-        MoveCloser,
-        MoveAway,
+        CrouchBehindPlayer,
     }
 
     public class PetControllerv2 : MonoBehaviour, ICharacterController
@@ -60,7 +61,7 @@ namespace KinematicCharacterController.PetControllerv2
         public Vector3 Gravity = new Vector3(0, -30f, 0);
         public Transform MeshRoot;
 
-        public PetState CurrentPetState { get; private set; }
+        public PetState CurrentPetState;
         public NateCharacterController player;
         public CharacterState NewCharacterState;
 
@@ -69,7 +70,6 @@ namespace KinematicCharacterController.PetControllerv2
         private Vector3 _moveInputVector;
         private Vector3 _lookInputVector;
         private Vector3 _internalVelocityAdd = Vector3.zero;
-        private Vector3 playerPosDelayed;
         private Vector3 transformPosition;
         private Vector3 targetDirection;
 
@@ -79,17 +79,36 @@ namespace KinematicCharacterController.PetControllerv2
         private bool _playerIsCrouching;
         private bool _shouldBeCrouching = false;
         private bool _canCheckPathfinding = true;
-        private bool _shouldForceDeviationCloser;
+        private bool _moveSpeedBasedOnTargetDistance;
+
+        //Obstacle checks
+        private bool _wallDetected;
+        private bool _ledgeDetected;
+        private Vector3 _detectedWallNormal;
+        private Vector3 _detectedLedgeDirection;
 
         private float moveInputDeviationValue;
         private float lastMoveInputDeviationValue;
         private float walkRadius;
+        private float targetMoveSpeed;
         
         //Keep the state's movespeed stored and only change it during a state transition.
-        private float stateMaxStableMoveSpeed;
+        //private float stateMaxStableMoveSpeed;
         
-        //The player's max stableMoveSpeed, updated every frame.
+        //Player information
         private float playerMaxStableMoveSpeed;
+        private Vector3 playerPosition;
+        private Vector3 playerDir;
+        private Vector3 storedDeviationDir;
+        private Vector3 leftDir;
+        private Vector3 rightDir;
+        private Vector3 playerDirTowardsVelocity;
+        private Vector3 playerDirPerpendicularOfVelocity;
+        private Vector3 playerVelocity;
+        private Vector3 projectedPlayerVelocity;
+        private float angleComparison;
+        private float distanceToPlayer;
+        public float moveInputLerpTest;
 
         private Vector3 lastInnerNormal = Vector3.zero;
         private Vector3 lastOuterNormal = Vector3.zero;
@@ -103,38 +122,30 @@ namespace KinematicCharacterController.PetControllerv2
         public PetCrouchedState currentCrouchedState;
 
         //Coroutines
-        private Coroutine StateTransitionDelayCoroutine;
-        private bool canStartTransition = true;
-        private Coroutine TestPlayerPositionDelayCoroutine;
-        private Coroutine TestSetInitialMoveInputDelayCoroutine;
-        private bool canStartMoveInputDelay = true;
+        private Coroutine ForceDeviationStateCoroutine;
+        private bool _forcingMovementTowardsPlayer;
         private Coroutine ChangeDeviationDirectionCoroutine;
-        private bool canChangeDeviationDirection;
-        //private Coroutine ForceDeviationChangeCoroutine;
-        private bool _canForceDeviation;
-        
-        //Ledge detection testing
-        private Vector3[] ledgeNodeVectorArray;
-        private bool[] ledgeNodeBoolArray;
+        private bool _canChangeDeviation;
 
         private void Start()
         {
             //Handle initial state
             TransitionToState(PetState.Default);
+            currentDefaultState = PetDefaultState.Idle;
+            currentDeviationState = PetDeviationState.NoDeviation;
+            _canChangeDeviation = true;
 
             // Assign the characterController to the motor
             Motor.CharacterController = this;
-
-            playerPosDelayed = player.transform.position;
         }
 
         private void Update()
         {
-            //TestLedgeDetection();
             SetInputs(); //Temp
             transformPosition = Motor.transform.position;
             playerMaxStableMoveSpeed = player.MaxStableMoveSpeed;
             _playerIsCrouching = player._isCrouching;
+            Debug.DrawRay(Motor.transform.position, storedDeviationDir, Color.red);
         }
 
         /// <summary>
@@ -158,16 +169,18 @@ namespace KinematicCharacterController.PetControllerv2
             {
                 case PetState.Default:
                 {
-                    currentDefaultState = PetDefaultState.Run;
                     break;
                 }
                 case PetState.Crouched:
                 {
+                    Motor.SetCapsuleDimensions(0.5f, 1f, 0.25f); //Scales the hitbox.
+                    MeshRoot.localScale = new Vector3(1f, 0.35f, 1.2f); //Scales the mesh root.
+                    //MaxStableMoveSpeed = 3f;
                     break;
                 }
-                case PetState.FollowPath:
+                case PetState.MoveStraightToPlayer:
                 {
-                    stateMaxStableMoveSpeed = playerMaxStableMoveSpeed * 1.15f;
+                    //MaxStableMoveSpeed = playerMaxStableMoveSpeed + 1f;
                     break;
                 }
             }
@@ -186,17 +199,19 @@ namespace KinematicCharacterController.PetControllerv2
                     {
                         case PetDefaultState.Run:
                         {
-                            //Turn off deviation changing.
-                            //Turn off speed changing.
-                            canChangeDeviationDirection = false;
                             break;
                         }
                         case PetDefaultState.Walk:
                         {
-                            //Turn off speed changing.
                             break;
                         }
                     }
+                    break;
+                }
+                case PetState.Crouched:
+                {
+                    Motor.SetCapsuleDimensions(0.5f, 1f, .25f); //Scales the hitbox.
+                    MeshRoot.localScale = new Vector3(1f, .5f, 1.2f); //Scales the mesh root.
                     break;
                 }
             }
@@ -208,38 +223,134 @@ namespace KinematicCharacterController.PetControllerv2
         //public void SetInputs(ref PlayerCharacterInputs inputs)
         public void SetInputs()
         {
+            //Change the targetMoveSpeed.
+            if (CurrentPetState == PetState.Default && currentDefaultState == PetDefaultState.Run)
+            {
+                targetMoveSpeed = AdjustSpeedBasedOnTargetDistance(targetMoveSpeed, 2.5f, 1.5f, 3f);
+            }
+            else if (CurrentPetState == PetState.Crouched && currentCrouchedState == PetCrouchedState.Walk)
+            {
+                targetMoveSpeed = AdjustSpeedBasedOnTargetDistance(targetMoveSpeed, 2f, 1f, 2.5f);
+            }
+            else
+            {
+                if (targetMoveSpeed <= MaxStableMoveSpeed)
+                {
+                    targetMoveSpeed += MaxStableMoveSpeed * Time.deltaTime * 5f;
+                }
+                //Debug.Log(targetMoveSpeed);
+            }
+
+            //Set inputs for each pet state.
             switch (CurrentPetState)
             {
+                //Default state inputs.
                 case PetState.Default:
                 {
                     switch (currentDefaultState)
                     {
                         case PetDefaultState.Run:
                         {
+                            MaxStableMoveSpeed = playerMaxStableMoveSpeed;
                             switch (currentDeviationState)
                             {
-                                case PetDeviationState.Default:
+                                case PetDeviationState.NoDeviation:
                                 {
-                                    //Regular running movement.
+                                    _moveInputVector = Vector3.Slerp(_moveInputVector, projectedPlayerVelocity, moveInputLerpTest).normalized;
                                     break;
                                 }
                                 case PetDeviationState.MoveAway:
-                                {
-                                    //Movement away from the player.
-                                    break;
-                                }
                                 case PetDeviationState.MoveCloser:
                                 {
-                                    //Movement closer to the player.
+                                    _moveInputVector = Vector3.Slerp(_moveInputVector, storedDeviationDir, moveInputLerpTest).normalized; //Obvious test
                                     break;
                                 }
                             }
                             break;
                         }
+                        case PetDefaultState.Walk:
+                        {
+                            MaxStableMoveSpeed = 3f;
+                            switch (currentDeviationState)
+                            {
+                                case PetDeviationState.NoDeviation:
+                                {
+                                    _moveInputVector = Vector3.Slerp(_moveInputVector, projectedPlayerVelocity, moveInputLerpTest).normalized;
+                                    break;
+                                }
+                                case PetDeviationState.MoveCloser:
+                                {
+                                    Vector3 dirTowardsPlayer = Vector3.Slerp(playerVelocity, playerDirPerpendicularOfVelocity, 1f);
+                                    _moveInputVector = Vector3.Slerp(_moveInputVector, dirTowardsPlayer, moveInputLerpTest).normalized;
+                                    Debug.DrawRay(Motor.transform.position, dirTowardsPlayer, Color.yellow);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        case PetDefaultState.Idle:
+                        {
+                            MaxStableMoveSpeed = 0f;
+                            _moveInputVector = Vector3.zero;
+                            break;
+                        }
                     }
                     break;
                 }
+                //Crouched state inputs.
+                case PetState.Crouched:
+                {
+                    switch (currentCrouchedState)
+                    {
+                        case PetCrouchedState.Walk:
+                        {
+                            MaxStableMoveSpeed = 3f;
+                            switch (currentDeviationState)
+                            {
+                                case PetDeviationState.NoDeviation:
+                                {
+                                    _moveInputVector = Vector3.Slerp(_moveInputVector, projectedPlayerVelocity, moveInputLerpTest).normalized;
+                                    break;
+                                }
+                                case PetDeviationState.MoveCloser:
+                                {
+                                    Vector3 dirTowardsPlayer = Vector3.Slerp(playerVelocity, -playerDirPerpendicularOfVelocity, .3f);
+                                    _moveInputVector = Vector3.Slerp(_moveInputVector, dirTowardsPlayer, moveInputLerpTest).normalized;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        case PetCrouchedState.Idle:
+                        {
+                            MaxStableMoveSpeed = 0f;
+                            _moveInputVector = Vector3.zero;
+                            break;
+                        }
+                    }
+                    break;
+                }
+                //MoveStraightToPlayer inputs.
+                case PetState.MoveStraightToPlayer:
+                {
+                    MaxStableMoveSpeed = 8f;
+                    if (rightDir.sqrMagnitude < leftDir.sqrMagnitude)
+                    {
+                        targetDirection = rightDir;
+                    }
+                    else
+                    {
+                        targetDirection = leftDir;
+                    }
+                    
+                    _moveInputVector = Vector3.Slerp(_moveInputVector, Vector3.ProjectOnPlane(
+                        targetDirection.normalized, Motor.CharacterUp).normalized, moveInputLerpTest).normalized;
+                    _lookInputVector = _moveInputVector;
+                    break;
+                }
             }
+            //MoveInput = Slerp(moveinput, targetInput, moveInputSlerpValue)
+            _lookInputVector = _moveInputVector;
         }
 
         /// <summary>
@@ -248,132 +359,274 @@ namespace KinematicCharacterController.PetControllerv2
         /// </summary>
         public void BeforeCharacterUpdate(float deltaTime)
         {
+            GetPlayerValues();
+            //Crouch if the player is crouching.
+            _shouldBeCrouching = player._isCrouching;
+            
+            //If the current state is default or crouched...
+            if (CurrentPetState == PetState.Default || CurrentPetState == PetState.Crouched)
+            {
+                //Force the pet to move closer to the player if it goes outside the allowed radius or detects and obstacle.
+                if (!_forcingMovementTowardsPlayer)
+                {
+                    if (distanceToPlayer > Mathf.Pow(3f, 2) && angleComparison <= .7f && 
+                        angleComparison >= -.7f || _wallDetected || _ledgeDetected)
+                    {
+                        _forcingMovementTowardsPlayer = true;
+                        StopActiveCoroutine(ChangeDeviationDirectionCoroutine);
+                        ForceDeviationStateCoroutine = StartCoroutine(ForceDeviationStateTime());
+                        
+                        //Store a deviation direction.
+                        storedDeviationDir = Vector3.Slerp(playerVelocity, -playerDirPerpendicularOfVelocity, .3f);
+                        currentDeviationState = PetDeviationState.MoveCloser;
+                    }
+                }
+
+                //If the pet goes outside the default radius, transition to MoveStraightToPlayer.
+                if (distanceToPlayer > Mathf.Pow(3.5f, 2f))
+                {
+                    TransitionToState(PetState.MoveStraightToPlayer);
+                }
+            }
+            
+            //Check each pet state.
             switch (CurrentPetState)
             {
+                //DEFAULT STATE////////////////////////////////////////////////////////////////////////////////////////
                 case PetState.Default:
                 {
-                    //If (shouldBeCrouching)
-                        //TransitionTo(CrouchedState)
+                    //Transition to crouch.
+                    if (_shouldBeCrouching)
+                    {
+                        TransitionToState(PetState.Crouched);
+                    }
                     
-                    SetDeviationState();
+                    //Check the default sub-states
                     switch (currentDefaultState)
                     {
+                        //Default running state
                         case PetDefaultState.Run:
                         {
-                            //Crouched state = walk.
-                            switch (currentDeviationState)
+                            currentCrouchedState = PetCrouchedState.Walk;
+
+                            //Start deviation if the coroutine ends.
+                            if (_canChangeDeviation && !_forcingMovementTowardsPlayer)
                             {
-                                case PetDeviationState.Default:
-                                {
-                                    //Random deviation
-                                    break;
-                                }
-                                case PetDeviationState.MoveAway:
-                                case PetDeviationState.MoveCloser:
-                                {
-                                    //Wait for x amount of time.
-                                        //Randomly transition to moveAway or moveCloser.
-                                    break;
-                                }
+                                _canChangeDeviation = false;
+                                ChangeDeviationDirectionCoroutine = StartCoroutine(RandomDeviationStateTime());
                                 
+                                //(Store a deviation direction so we can use it for the move input.)
+                                Vector3 dirToMove = new Vector3();
+
+                                //Check the distance towards the player to determine a deviation direction.
+                                if (playerDirPerpendicularOfVelocity.sqrMagnitude < Mathf.Pow(1f, 2))
+                                {
+                                    currentDeviationState = PetDeviationState.MoveAway;
+                                    dirToMove = -playerDirPerpendicularOfVelocity;
+                                }
+                                else if (playerDirPerpendicularOfVelocity.sqrMagnitude > Mathf.Pow(2.5f, 2))
+                                {
+                                    currentDeviationState = PetDeviationState.MoveCloser;
+                                    dirToMove = playerDirPerpendicularOfVelocity;
+                                }
+                                else
+                                {
+                                    currentDeviationState = PetDeviationState.MoveCloser;
+                                    //(Can also randomly deviate here.)
+                                }
+                                storedDeviationDir = Vector3.Slerp( dirToMove, playerVelocity,
+                                    UnityEngine.Random.Range(.75f, .95f));
+                            }
+                            
+                            //If the player starts moving slow, transition to walk.
+                            if (playerVelocity.sqrMagnitude < Mathf.Pow(4f, 2))
+                            {
+                                currentDefaultState = PetDefaultState.Walk;
                             }
                             break;
                         }
+                        //Default walking state
                         case PetDefaultState.Walk:
                         {
-                            //Crouched state = walk.
-                            //if (distanceToPlayerSideDir < x)
-                                //Transition to idle.
-                            //if (playerVelocity > x)
-                                //Transition to run.
-                                
-                            switch (currentDeviationState)
+                            currentCrouchedState = PetCrouchedState.Walk;
+
+                            //If the pet gets close enough to the player, transition to idle.
+                            if (playerDirTowardsVelocity.sqrMagnitude < Mathf.Pow(.5f, 2))
                             {
-                                case PetDeviationState.Default:
+                                currentDefaultState = PetDefaultState.Idle;
+                            }
+                            Debug.Log(playerDirTowardsVelocity.magnitude);
+
+                            //If the player's velocity goes above walking speed, transition to run.
+                            if (playerVelocity.sqrMagnitude > Mathf.Pow(4.2f, 2))
+                            {
+                                currentDefaultState = PetDefaultState.Run;
+                            }
+
+                            if (!_forcingMovementTowardsPlayer)
+                            {
+                                //If the side distance to the player is too far, move closer to the player
+                                if (playerDirPerpendicularOfVelocity.sqrMagnitude > Mathf.Pow(2f, 2))
                                 {
-                                    //(No random switching.)
-                                    break;
+                                    currentDeviationState = PetDeviationState.MoveCloser;
                                 }
-                                case PetDeviationState.MoveAway:
-                                case PetDeviationState.MoveCloser:
+                                else
                                 {
-                                    //Wait for x amount of time OR until angle is met.
-                                    //Transition back to default.
-                                    //Wait for x amount of time and reset canDeviate.
-                                    break;
+                                    currentDeviationState = PetDeviationState.NoDeviation;
                                 }
-                                
                             }
                             break;
                         }
+                        //Default idle state
                         case PetDefaultState.Idle:
                         {
-                            //Crouched state = idle.
-                            //if (distanceToPlayer > x) or (playerVelocity > x)...
-                                //Transition to run state.
+                            currentCrouchedState = PetCrouchedState.Idle;
+
+                            //If the player gets too far or if the player's velocity is too high... (Default)
+                            if (playerDir.sqrMagnitude > Mathf.Pow(2f, 2) ||
+                                playerVelocity.sqrMagnitude > Mathf.Pow(4f, 2f))
+                            {
+                                currentDefaultState = PetDefaultState.Run;
+                            }
+                            
+                            //Debug.Log(playerDir.magnitude + ", " + playerVelocity.magnitude);
                             break;
                         }
                     }
                     break;
                 }
+                //CROUCHED STATE///////////////////////////////////////////////////////////////////////////////////////
                 case PetState.Crouched:
                 {
-                    SetDeviationState();
+                    //Transition to default.
+                    if (!_shouldBeCrouching)
+                    {
+                        TransitionToState(PetState.Default);
+                    }
+                    
                     switch (currentCrouchedState)
                     {
+                        //Crouched walking state
                         case PetCrouchedState.Walk:
                         {
-                            //Crouched state = walk.
-                            //if (checkRequiredToMoveCloser)
-                                //currentDeviationState = moveCloser.
-                            //else if (checkRequiredToMoveAway)
-                                //currentDeviationState = moveAway.
-                            //else
-                                //currentDeviationState = default.
-                                
-                            switch (currentDeviationState)
+                            currentDefaultState = PetDefaultState.Walk;
+
+                            //If the pet gets close enough to the player, transition to idle.
+                            if (playerDirTowardsVelocity.sqrMagnitude < Mathf.Pow(1f, 2f))
                             {
-                                case PetDeviationState.Default:
+                                currentCrouchedState = PetCrouchedState.Idle;
+                            }
+
+                            if (!_forcingMovementTowardsPlayer)
+                            {
+                                //If the player is too far, move closer to the player
+                                if (playerDirPerpendicularOfVelocity.sqrMagnitude > Mathf.Pow(1.5f, 2))
                                 {
-                                    //Nothing for now.
-                                    break;
+                                    currentDeviationState = PetDeviationState.MoveCloser;
                                 }
-                                case PetDeviationState.MoveAway:
-                                case PetDeviationState.MoveCloser:
+                                else
                                 {
-                                    //Wait for x amount of time OR until angle is met.
-                                    //Transition back to default.
-                                    //Wait for x amount of time and reset canDeviate.
-                                    break;
+                                    currentDeviationState = PetDeviationState.NoDeviation;
                                 }
-                                
                             }
                             break;
                         }
+                        //Crouched idle state
                         case PetCrouchedState.Idle:
                         {
-                            //Crouched state = idle.
+                            currentDefaultState = PetDefaultState.Idle;
+                            
+                            //If the player gets too far or if the player's velocity is too high... (Crouched)
+                            if (playerDir.sqrMagnitude > Mathf.Pow(1.5f, 2) ||
+                                playerVelocity.sqrMagnitude > Mathf.Pow(1f, 2f))
+                            {
+                                currentCrouchedState = PetCrouchedState.Walk;
+                            }
                             break;
                         }
+                    }
+                    break;
+                }
+
+                case PetState.MoveStraightToPlayer:
+                {
+                    //If the pet enters the default radius, transition back to default.
+                    if (distanceToPlayer < Mathf.Pow(3f, 2f))
+                    {
+                        TransitionToState(PetState.Default);
                     }
                     break;
                 }
             }
-            //MoveInput = Slerp(moveinput, targetInput, moveInputSlerpValue)
+        }
+        
+        //Temporary way of getting info about the player.
+        public void GetPlayerValues()
+        {
+            //Player info
+            playerPosition = player.Motor.transform.position;
+            playerDir = playerPosition - Motor.transform.position;
+            playerVelocity = player.Motor.Velocity;
+            distanceToPlayer = playerDir.sqrMagnitude;
+
+            //Get the left and right sides of the player based on velocity.
+            Vector3 playerCharRight = Vector3.ProjectOnPlane(playerVelocity, playerVelocity);
+            Vector3 playerCharLeft = -playerCharRight;
+
+            //Set a left and right position next to the player's velocity.
+            Vector3 rightPos = playerPosition + playerCharRight;
+            Vector3 leftPos = playerPosition + playerCharLeft;;
+            rightDir = Vector3.ProjectOnPlane(rightPos - transformPosition, Motor.CharacterUp);
+            leftDir = Vector3.ProjectOnPlane(leftPos - transformPosition, Motor.CharacterUp);
+            
+            //Set a direction that checks how close the pet is behind or in front of the player.
+            playerDirTowardsVelocity = Vector3.ProjectOnPlane(Vector3.ProjectOnPlane(playerDir, playerCharRight), Motor.CharacterUp);
+
+            //Set a direction that checks how close the pet is to the left and right of the player.
+            Vector3 perpendicularToVelocity = Vector3.ProjectOnPlane(playerDir, playerVelocity);
+            playerDirPerpendicularOfVelocity = Vector3.ProjectOnPlane(perpendicularToVelocity, Motor.CharacterUp);
+            
+            //Get the dot product between the direction to the player and the player's velocity.
+            projectedPlayerVelocity =
+                Vector3.ProjectOnPlane(playerVelocity, Motor.CharacterUp).normalized;
+            angleComparison = Vector3.Dot(projectedPlayerVelocity, Vector3.ProjectOnPlane(playerDir.normalized, Motor.CharacterUp)); //Replace with Vector3.Angle.
         }
 
-        //Eh, don't use this yet vvv
-        private void SetDeviationState()
+        private float AdjustSpeedBasedOnTargetDistance(float speed, float minDistance, float maxDistance, float maxRadiusSize)
         {
-            //if (canDeviate)
-                //if (checkRequiredToMoveCloser)
-                    //currentDeviationState = moveCloser.
-                //else if (checkRequiredToMoveAway)
-                    //currentDeviationState = moveAway.
-                //else
-                    //currentDeviationState = default.
-                    
-            //(Make sure default, moveCloser, and moveAway can transition to each other freely.
+            //Change speed depending how close the pet is to the player.
+            if (playerDirTowardsVelocity.sqrMagnitude >= Mathf.Pow(maxDistance, 2))
+            {
+                if (speed < MaxStableMoveSpeed + 1.5f)
+                {
+                    speed += (MaxStableMoveSpeed + 1f) * Time.deltaTime;
+                }
+            }
+            else if (playerDirTowardsVelocity.sqrMagnitude < Mathf.Pow(minDistance, 2))
+            {
+                if (speed > MaxStableMoveSpeed)
+                {
+                    speed -= (MaxStableMoveSpeed + 1f) * Time.deltaTime;
+                }
+            }
+                            
+            //Angle check for increasing moveSpeed. (Make sure to have it last shortly after coming in.)
+            //Check the moveSpeed angle.
+            if (distanceToPlayer > Mathf.Pow(maxRadiusSize, 2))
+            {
+                if (angleComparison <= 1f && angleComparison > .5f)
+                {
+                    if (speed < MaxStableMoveSpeed + 1.5f)
+                    {
+                        Debug.Log("Increasing Movespeed");
+                        speed += (MaxStableMoveSpeed + 1f) * Time.deltaTime;
+                    }
+                }
+            }
+            return speed;
+            //In the case that the pet is inbetween both of the above checks, keep the moveSpeed
+            //at whatever targetMoveSpeed it was set to.
+            //MaxStableMoveSpeed = targetMoveSpeed;
         }
 
         /// <summary>
@@ -383,29 +636,21 @@ namespace KinematicCharacterController.PetControllerv2
         /// </summary>
         public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
         {
-            switch (CurrentPetState)
+            if (_lookInputVector.sqrMagnitude > 0f && OrientationSharpness > 0f)
             {
-                case PetState.Default:
-                {
-                    if (_lookInputVector.sqrMagnitude > 0f && OrientationSharpness > 0f)
-                    {
-                        // Smoothly interpolate from current to target look direction
-                        Vector3 smoothedLookInputDirection = Vector3.Slerp(Motor.CharacterForward, _lookInputVector,
-                            1 - Mathf.Exp(-OrientationSharpness * deltaTime)).normalized;
+                // Smoothly interpolate from current to target look direction
+                Vector3 smoothedLookInputDirection = Vector3.Slerp(Motor.CharacterForward, _lookInputVector,
+                    1 - Mathf.Exp(-OrientationSharpness * deltaTime)).normalized;
 
-                        // Set the current rotation (which will be used by the KinematicCharacterMotor)
-                        currentRotation = Quaternion.LookRotation(smoothedLookInputDirection, Motor.CharacterUp);
-                    }
+                // Set the current rotation (which will be used by the KinematicCharacterMotor)
+                currentRotation = Quaternion.LookRotation(smoothedLookInputDirection, Motor.CharacterUp);
+            }
 
-                    if (OrientTowardsGravity)
-                    {
-                        // Rotate from current up to invert gravity
-                        currentRotation = Quaternion.FromToRotation((currentRotation * Vector3.up), -Gravity) *
-                                          currentRotation;
-                    }
-
-                    break;
-                }
+            if (OrientTowardsGravity)
+            {
+                // Rotate from current up to invert gravity
+                currentRotation = Quaternion.FromToRotation((currentRotation * Vector3.up), -Gravity) *
+                                  currentRotation;
             }
         }
 
@@ -446,7 +691,7 @@ namespace KinematicCharacterController.PetControllerv2
                     Vector3.Cross(_moveInputVector, Motor.CharacterUp); //Perpendicular from input and up direction.
                 Vector3 reorientedInput = Vector3.Cross(effectiveGroundNormal, inputRight).normalized *
                                           _moveInputVector.magnitude; //Perpendicular from ground normal and previous.
-                Vector3 targetMovementVelocity = reorientedInput * MaxStableMoveSpeed; //Multiply it by MoveSpeed.
+                Vector3 targetMovementVelocity = reorientedInput * targetMoveSpeed; //Multiply it by MoveSpeed.
                 //The target velocity has nothing to do with accel.
 
                 // Smooth movement Velocity
@@ -561,7 +806,7 @@ namespace KinematicCharacterController.PetControllerv2
             }
             return false;
         }
-
+        
         public void PostGroundingUpdate(float deltaTime)
         {
             // Handle landing and leaving ground
@@ -611,7 +856,7 @@ namespace KinematicCharacterController.PetControllerv2
                 }
             }
         }
-
+        
         public void ProcessHitStabilityReport(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint,
             Vector3 atCharacterPosition, Quaternion atCharacterRotation, ref HitStabilityReport hitStabilityReport)
         {
@@ -638,6 +883,19 @@ namespace KinematicCharacterController.PetControllerv2
         }
 
         // COROUTINES
+
+        private IEnumerator RandomDeviationStateTime()
+        {
+            yield return CustomTimer.Timer(UnityEngine.Random.Range(.85f, 1.5f));
+            _canChangeDeviation = true;
+        }
+
+        private IEnumerator ForceDeviationStateTime()
+        {
+            yield return CustomTimer.Timer(.5f);
+            _forcingMovementTowardsPlayer = false;
+            _canChangeDeviation = true;
+        }
         private IEnumerator TimeBeforeFallingStateCoroutine()
         {
             yield return CustomTimer.Timer(.1f);
@@ -647,7 +905,8 @@ namespace KinematicCharacterController.PetControllerv2
 }
 
 //TO DO:
-//Implement deviation that isn't active/activates during obstacle checks like ledge checking and wall detection.
+//Add a coroutine that allows each state to run for a minimum amount of time to run before switching. Can have a bool
+    //like canSetState set to false, then have a parameter in the coroutine like (float minTime).
 
 //METHOD 1:
 //Use the moveCloser and moveAway states for random deviation, and transition to the default deviation state if a ledge,

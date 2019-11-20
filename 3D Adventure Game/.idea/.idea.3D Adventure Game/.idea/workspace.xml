@@ -29,6 +29,8 @@
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Core/ICharacterController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Core/KinematicCharacterMotor.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Camera/CameraFollowPlayer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetControllerv4.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/WallDetection.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Backups (Unused)/LedgeDetectionUnused.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/PathfindingNew.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NatePlayer.cs" root0="FORCE_HIGHLIGHTING" />
@@ -38,6 +40,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/TargetingMode.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/UnitFollowNew.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NateCharacterController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/ExampleCharacter/Scripts/ExamplePlayer.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KinematicCharacterController/Examples/Scripts/PlayableMover.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/NodeNew.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/GridNew.cs" root0="FORCE_HIGHLIGHTING" />
@@ -88,10 +91,11 @@
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Pathfinding/UnitFollowNew.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetController.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Player Scripts/Player Movement/NateCharacterController.cs" />
-        <option value="$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetControllerv2.cs" />
-        <option value="$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetControllerv3.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Backups (Unused)/LedgeDetectionUnused.cs" />
         <option value="$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/LedgeDetectionNode.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetControllerv3.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetControllerv2.cs" />
+        <option value="$PROJECT_DIR$/Assets/3D Scripts/Pet Scripts/PetControllerv4.cs" />
       </list>
     </option>
   </component>

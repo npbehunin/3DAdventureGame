@@ -1717,6 +1717,7 @@ GameObject:
   - component: {fileID: 329190739}
   - component: {fileID: 329190740}
   - component: {fileID: 329190738}
+  - component: {fileID: 329190741}
   - component: {fileID: 329190733}
   - component: {fileID: 329190732}
   - component: {fileID: 329190737}
@@ -1882,12 +1883,14 @@ MonoBehaviour:
   OrientTowardsGravity: 0
   Gravity: {x: 0, y: -30, z: 0}
   MeshRoot: {fileID: 1705080753}
+  CurrentPetState: 0
   player: {fileID: 2079106473}
   NewCharacterState: 0
+  moveInputLerpTest: 0.15
   pathfinding: {fileID: 329190737}
   WallLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 768
   currentDefaultState: 0
   currentDeviationState: 0
   currentCrouchedState: 0
@@ -1898,7 +1901,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 329190731}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bcaeb31142f4b094e9ec02476640986b, type: 3}
   m_Name: 
@@ -1934,14 +1937,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c407710576b5ace48be8b1fd926a5603, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalDistance: 0.65
-  stepHeight: 0.55
-  maxAngle: 50
+  maxStepHeight: 0.55
+  maxGroundAngle: 50
   colliderMask:
     serializedVersion: 2
     m_Bits: 768
-  pet: {fileID: 329190739}
-  petPosition: {x: 0, y: 0, z: 0}
+  Motor: {fileID: 329190734}
+  CheckLedges: 0
+  distanceToLedge: 0.65
+  CheckWalls: 0
+  CheckSlopes: 0
+--- !u!114 &329190741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329190731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9647c69a4b5c9a94596052c43e08e3f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Motor: {fileID: 329190734}
+  MaxStableMoveSpeed: 7
+  StableMovementSharpness: 14
+  OrientationSharpness: 20
+  MaxAirMoveSpeed: 7
+  AirAccelerationSpeed: 50
+  Drag: 0.1
+  IgnoredColliders: []
+  OrientTowardsGravity: 0
+  Gravity: {x: 0, y: -30, z: 0}
+  MeshRoot: {fileID: 329190736}
+  player: {fileID: 2079106473}
+  NewCharacterState: 0
+  currentCrouchedState: 0
+  pathfinding: {fileID: 329190737}
+  WallLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  currentDefaultState: 0
+  currentDeviationState: 0
 --- !u!1 &359448786
 GameObject:
   m_ObjectHideFlags: 0

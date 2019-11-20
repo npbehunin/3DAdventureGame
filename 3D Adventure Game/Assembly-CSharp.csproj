@@ -179,7 +179,9 @@
     <Compile Include="Assets\3D Scripts\Pet Scripts\PetController.cs" />
     <Compile Include="Assets\3D Scripts\Pet Scripts\PetControllerv2.cs" />
     <Compile Include="Assets\3D Scripts\Pet Scripts\PetControllerv3.cs" />
+    <Compile Include="Assets\3D Scripts\Pet Scripts\PetControllerv4.cs" />
     <Compile Include="Assets\3D Scripts\Pet Scripts\PetMovement3D.cs" />
+    <Compile Include="Assets\3D Scripts\Pet Scripts\WallDetection.cs" />
     <Compile Include="Assets\3D Scripts\Player Scripts\Player Movement\NateCharacterController.cs" />
     <Compile Include="Assets\3D Scripts\Player Scripts\Player Movement\NatePlayer.cs" />
     <Compile Include="Assets\3D Scripts\Player Scripts\Player Movement\NewTempSwordCoroutine.cs" />

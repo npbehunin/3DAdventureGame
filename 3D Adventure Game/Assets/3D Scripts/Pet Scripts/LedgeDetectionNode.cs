@@ -1,27 +1,58 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using KinematicCharacterController;
 using KinematicCharacterController.PetControllerv3;
 using UnityEngine;
 
 public class LedgeDetectionNode : MonoBehaviour
 {
-    //Ledge detection testing
+    //Character settings
+    [Header("Character settings")]
+    public float maxStepHeight = .55f; //Step height
+    public float maxGroundAngle = 50f;
+    public LayerMask colliderMask;
+    public KinematicCharacterMotor Motor;
+    private Vector3 transformPosition;
+    
+    //Ledge detection
+    [Header("Ledge detection")]
+    public bool CheckLedges;
+    public float distanceToLedge = .65f;
     private Vector3[] ledgeNodeVectorArray;
     private bool[] ledgeNodeBoolArray;
-    public float horizontalDistance = .65f;
-    public float stepHeight = .55f; //Step height
-    public float maxAngle = 50f;
-    public LayerMask colliderMask;
-    public PetControllerv3 pet;
-    public Vector3 petPosition;
+    private bool _ledgeDetected;
+    private Vector3 directionToLedge;
 
+    //Wall detection
+    [Header("Wall detection")]
+    public bool CheckWalls;
+    private bool _wallDetected;
+    private Vector3 wallNormal;
+    
+    //Slope detection
+    [Header("Slope detection")]
+    public bool CheckSlopes;
+    private bool _slopeDetected;
     void Update()
     {
-        TestLedgeDetection();
-        petPosition = pet.Motor.transform.position;
+        transformPosition = Motor.transform.position;
+        if (CheckLedges)
+        {
+            LedgeDetection();
+        }
+
+        if (CheckWalls)
+        {
+            WallDetection();
+        }
+
+        if (CheckSlopes)
+        {
+            SlopeDetection();
+        }
     }
     
-    private void TestLedgeDetection()
+    private void LedgeDetection()
     {
         //Send raycasts out.
         int raycastCount = 8;
@@ -37,20 +68,20 @@ public class LedgeDetectionNode : MonoBehaviour
             //Send out a direction
             if (i == 0)
             {
-                horizontalVectorArray[0] = Vector3.ClampMagnitude(petPosition + Vector3.forward, horizontalDistance);
-                verticalVectorArray[0] = petPosition + horizontalVectorArray[0];
+                horizontalVectorArray[0] = Vector3.ClampMagnitude(transformPosition + Vector3.forward, distanceToLedge);
+                verticalVectorArray[0] = transformPosition + horizontalVectorArray[0];
                 backwardsVectorArray[0] =
-                    verticalVectorArray[0] + Vector3.ClampMagnitude(Vector3.down, stepHeight);
-                secondBackwardsVectorArray[0] = verticalVectorArray[0] + Vector3.ClampMagnitude(Vector3.down, stepHeight / 2);
+                    verticalVectorArray[0] + Vector3.ClampMagnitude(Vector3.down, maxStepHeight);
+                secondBackwardsVectorArray[0] = verticalVectorArray[0] + Vector3.ClampMagnitude(Vector3.down, maxStepHeight / 2);
             }
             else
             {
                 horizontalVectorArray[i] = (Vector3.ClampMagnitude(Vector3.Slerp(horizontalVectorArray[i - 1],
-                    Vector3.Cross(horizontalVectorArray[i - 1], Vector3.up), .5f), horizontalDistance));
-                verticalVectorArray[i] = petPosition + horizontalVectorArray[i];
+                    Vector3.Cross(horizontalVectorArray[i - 1], Vector3.up), .5f), distanceToLedge));
+                verticalVectorArray[i] = transformPosition + horizontalVectorArray[i];
                 backwardsVectorArray[i] =
-                    verticalVectorArray[i] + Vector3.ClampMagnitude(Vector3.down, stepHeight);
-                secondBackwardsVectorArray[i] = verticalVectorArray[i] + Vector3.ClampMagnitude(Vector3.down, stepHeight / 2);
+                    verticalVectorArray[i] + Vector3.ClampMagnitude(Vector3.down, maxStepHeight);
+                secondBackwardsVectorArray[i] = verticalVectorArray[i] + Vector3.ClampMagnitude(Vector3.down, maxStepHeight / 2);
             }
             
             
@@ -61,14 +92,14 @@ public class LedgeDetectionNode : MonoBehaviour
             Color detectionColor = new Color();
 
             //Send out a raycast away from the pet, then straight down, then back to the pet.
-            bool horizontalDetection = Physics.Raycast(petPosition, horizontalVectorArray[i],
-                    horizontalDistance, colliderMask);
+            bool horizontalDetection = Physics.Raycast(transformPosition, horizontalVectorArray[i],
+                    distanceToLedge, colliderMask);
             bool verticalDetection = Physics.Raycast(verticalVectorArray[i], Vector3.down,
-                    stepHeight, colliderMask);
+                    maxStepHeight, colliderMask);
             bool backwardsDetection = Physics.Raycast(backwardsVectorArray[i], -horizontalVectorArray[i],
-                out hit, horizontalDistance, colliderMask);
+                out hit, distanceToLedge, colliderMask);
             bool secondBackwardsDetection = Physics.Raycast(secondBackwardsVectorArray[i], -horizontalVectorArray[i],
-                out hit2, horizontalDistance, colliderMask);
+                out hit2, distanceToLedge, colliderMask);
 
             //If the horizontal or vertical ray detect something, return true. Otherwise, check the backwards raycast's
                 //collision normal. If it's within the max angle, return true.
@@ -80,8 +111,8 @@ public class LedgeDetectionNode : MonoBehaviour
                     bool angle2Allowed = false;
                     if (backwardsDetection)
                     {
-                        float angle = Vector3.Angle(pet.Motor.CharacterUp, hit.normal);
-                        if (angle < maxAngle)
+                        float angle = Vector3.Angle(Motor.CharacterUp, hit.normal);
+                        if (angle < maxGroundAngle)
                         {
                             angle1Allowed = true;
                         }
@@ -89,8 +120,8 @@ public class LedgeDetectionNode : MonoBehaviour
                     
                     if (secondBackwardsDetection)
                     {
-                        float angle = Vector3.Angle(pet.Motor.CharacterUp, hit2.normal);
-                        if (angle < maxAngle)
+                        float angle = Vector3.Angle(Motor.CharacterUp, hit2.normal);
+                        if (angle < maxGroundAngle)
                         {
                             angle1Allowed = true;
                         };
@@ -118,19 +149,32 @@ public class LedgeDetectionNode : MonoBehaviour
             //Draw the raycasts
             if (i == 0)
             {
-                Debug.DrawRay(petPosition, Vector3.ClampMagnitude(horizontalVectorArray[i], horizontalDistance), Color.green);
+                Debug.DrawRay(transformPosition, Vector3.ClampMagnitude(horizontalVectorArray[i], distanceToLedge), Color.green);
             }
             else
             {
-                Debug.DrawRay(petPosition, Vector3.ClampMagnitude(horizontalVectorArray[i], horizontalDistance), Color.yellow);
+                Debug.DrawRay(transformPosition, Vector3.ClampMagnitude(horizontalVectorArray[i], distanceToLedge), Color.yellow);
             }
             
-            Debug.DrawRay(verticalVectorArray[i], Vector3.down * stepHeight, detectionColor); //Vertical raycast
+            Debug.DrawRay(verticalVectorArray[i], Vector3.down * maxStepHeight, detectionColor); //Vertical raycast
             Debug.DrawRay(backwardsVectorArray[i], -horizontalVectorArray[i], detectionColor); //Backwards raycast
             Debug.DrawRay(secondBackwardsVectorArray[i], -horizontalVectorArray[i], detectionColor); //Second backwards raycast
         }
     }
+
+    private void WallDetection()
+    {
+        
+    }
+
+    private void SlopeDetection()
+    {
+        
+    }
 }
+
+//TO DO:
+//1. Have the ledge detection return a vector3 that points from the transformPosition to the average direction
 
 //SMALL ISSUES:
 //Both raycasts will still return false in the case that the pet is hanging off the edge on a downward 
