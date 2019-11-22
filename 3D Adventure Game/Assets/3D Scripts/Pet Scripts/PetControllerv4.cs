@@ -15,6 +15,7 @@ namespace KinematicCharacterController.PetControllerv4
         MoveStraightToPlayer,
         FollowPath,
         Crouched,
+        WarpToPlayer,
         SwordAttack,
         SpinAttack,
         RollAttack,
@@ -62,15 +63,16 @@ namespace KinematicCharacterController.PetControllerv4
         public Vector3 Gravity = new Vector3(0, -30f, 0);
         public Transform MeshRoot;
 
-        public PetState CurrentPetState { get; private set; }
+        public PetState CurrentPetState;
         public NateCharacterController player;
-        public CharacterState NewCharacterState;
-        public PetCrouchedState currentCrouchedState;
+        private CharacterState NewCharacterState;
+        private PetCrouchedState currentCrouchedState;
 
         private Collider[] _probedColliders = new Collider[8];
 
         //General vectors
         private Vector3 _moveInputVector;
+        private Vector3 _targetMoveInputVector;
         private Vector3 _lookInputVector;
         private Vector3 _internalVelocityAdd = Vector3.zero;
         private Vector3 transformPosition;
@@ -103,22 +105,27 @@ namespace KinematicCharacterController.PetControllerv4
         private float testLerpToZero = 0f;
         private float angleComparison;
         private float distanceToPlayer;
+        private float moveInputSmoothRate;
+        private float lineOfSightTimePassed;
 
         private Vector3 lastInnerNormal = Vector3.zero;
         private Vector3 lastOuterNormal = Vector3.zero;
 
         public UnitFollowNew pathfinding;
-        public LayerMask WallLayerMask;
+        public LayerMask LineOfSightMask;
 
         //Current states
-        public PetDefaultState currentDefaultState;
-        public PetDeviationState currentDeviationState;
+        private PetDefaultState currentDefaultState;
+        private PetDeviationState currentDeviationState;
 
         //Coroutines
         private Coroutine ChangeDeviationDirectionCoroutine;
         private bool _canChangeDeviation;
         private Coroutine ForceDeviationChangeCoroutine;
         private bool _forcingMovementTowardsPlayer;
+        private Coroutine TimeBeforeWarpingCoroutine;
+        private bool canWarpToPlayer;
+        private Coroutine TimeBetweenWarpsCoroutine;
 
         private void Start()
         {
@@ -130,6 +137,7 @@ namespace KinematicCharacterController.PetControllerv4
             Motor.CharacterController = this;
             
             playerPosDelayed = player.transform.position;
+            canWarpToPlayer = true;
         }
 
         private void Update()
@@ -184,6 +192,11 @@ namespace KinematicCharacterController.PetControllerv4
                     MaxStableMoveSpeed = 8f;
                     break;
                 }
+                case PetState.FollowPath:
+                {
+                    _canCheckPathfinding = true;
+                    break;
+                }
             }
 
             targetMoveSpeed = MaxStableMoveSpeed;
@@ -208,14 +221,14 @@ namespace KinematicCharacterController.PetControllerv4
                     MeshRoot.localScale = new Vector3(1f, .5f, 1.2f); //Scales the mesh root.
                     break;
                 }
-                case PetState.FollowPath:
-                {
-                    _canCheckPathfinding = true;
-                    break;
-                }
                 case PetState.MoveStraightToPlayer:
                 {
                     walkRadius = 3.75f; //3.2f
+                    break;
+                }
+                case PetState.FollowPath:
+                {
+                    _canCheckPathfinding = true;
                     break;
                 }
             }
@@ -242,7 +255,7 @@ namespace KinematicCharacterController.PetControllerv4
                         targetDirection = leftDir;
                     }
                     
-                    _moveInputVector = Vector3.ProjectOnPlane(targetDirection.normalized, Motor.CharacterUp)
+                    _targetMoveInputVector = Vector3.ProjectOnPlane(targetDirection.normalized, Motor.CharacterUp)
                         .normalized;
                     break;
                 }
@@ -295,7 +308,8 @@ namespace KinematicCharacterController.PetControllerv4
 
                             //Set the new move input with a deviation direction.
                             Vector3 randLerpDeviationDir = Vector3.Slerp(deviationDirToMove, playerVelocity, randDeviateAmount);
-                            _moveInputVector = Vector3.Slerp(_moveInputVector, randLerpDeviationDir, lastMoveInputDeviationValue).normalized;
+                            //_targetMoveInputVector = Vector3.Slerp(_targetMoveInputVector, randLerpDeviationDir, lastMoveInputDeviationValue).normalized;
+                            _targetMoveInputVector = randLerpDeviationDir.normalized;
 
                             break;
                         }
@@ -303,14 +317,14 @@ namespace KinematicCharacterController.PetControllerv4
                         {
                             MaxStableMoveSpeed = 3f;
                             _canAdjustSpeed = false; //Eventually change once moveSpeed is correctly adjusted
-                            _moveInputVector = playerVelocity.normalized;
+                            _targetMoveInputVector = playerVelocity.normalized;
                             break;
                         }
                         case PetDefaultState.Idle:
                         {
                             //_canAllowMovementDeviation = false;
                             _canAdjustSpeed = false;
-                            _moveInputVector = Vector3.zero;
+                            _targetMoveInputVector = Vector3.zero;
                             break;
                         }
                     }
@@ -322,13 +336,13 @@ namespace KinematicCharacterController.PetControllerv4
                     {
                         case PetCrouchedState.Walk:
                         {
-                            _moveInputVector = playerVelocity.normalized;
+                            _targetMoveInputVector = playerVelocity.normalized;
                             //Move straight, but with deviation checks.
                             break;
                         }
                         case PetCrouchedState.Idle:
                         {
-                            _moveInputVector = Vector3.zero;
+                            _targetMoveInputVector = Vector3.zero;
                             break;
                         }
                     }
@@ -337,9 +351,9 @@ namespace KinematicCharacterController.PetControllerv4
                 }
                 case PetState.FollowPath:
                 {
-                    //Vector3 pathPosition = pathfinding.targetPathPosition;
-                    //_moveInputVector = Vector3.ProjectOnPlane(pathPosition, Motor.CharacterUp);
-                    //_lookInputVector = _moveInputVector;
+                    Vector3 pathPosition = pathfinding.targetPathPosition;
+                    _targetMoveInputVector = Vector3.ProjectOnPlane(pathPosition, Motor.CharacterUp);
+                    _lookInputVector = _moveInputVector;
                     break;
                 }
             }
@@ -371,7 +385,7 @@ namespace KinematicCharacterController.PetControllerv4
                     {
                         if (targetMoveSpeed < 8.5f)
                         {
-                            Debug.Log("Increasing Movespeed");
+                            //Debug.Log("Increasing Movespeed");
                            targetMoveSpeed += 8f * Time.deltaTime;
                         }
                     }
@@ -385,7 +399,7 @@ namespace KinematicCharacterController.PetControllerv4
                 {
                     //We could also do a lerp between moveSpeeds. This is mostly a test.
                     testLerpToZero += Time.deltaTime;
-                    _moveInputVector = Vector3.Slerp(_moveInputVector, Vector3.zero, testLerpToZero);
+                    _targetMoveInputVector= Vector3.Slerp(_targetMoveInputVector, Vector3.zero, testLerpToZero);
                 }
                 else
                 {
@@ -395,7 +409,8 @@ namespace KinematicCharacterController.PetControllerv4
 
             //(Temporary) Set any move input to be horizontal to the pet's up direction.
             //(Temporary) Set any look input to follow move input.
-            _moveInputVector = Vector3.ProjectOnPlane(_moveInputVector, Motor.CharacterUp);
+            _targetMoveInputVector = Vector3.ProjectOnPlane(_targetMoveInputVector, Motor.CharacterUp);
+            _moveInputVector = Vector3.Slerp(_moveInputVector, _targetMoveInputVector.normalized, .05f);
             _lookInputVector = _moveInputVector;
         }
 
@@ -415,6 +430,26 @@ namespace KinematicCharacterController.PetControllerv4
                     currentDeviationState = PetDeviationState.MoveCloser;
                     StopActiveCoroutine(ChangeDeviationDirectionCoroutine);
                     ForceDeviationChangeCoroutine = StartCoroutine(ForceDeviationChange());
+                }
+            }
+
+            //Move straight to the player if outside the default radius.
+            if (CurrentPetState == PetState.Default || CurrentPetState == PetState.Crouched)
+            {
+                //Debug.Log(playerDir.magnitude);
+                if (playerDir.sqrMagnitude > Mathf.Pow(3.5f, 2f))
+                {
+                    TransitionToState(PetState.MoveStraightToPlayer);
+                }
+            }
+            
+            //Enable pathfinding if no line of sight is met after x amount of time.
+            if (CurrentPetState == PetState.Default || CurrentPetState == PetState.Crouched ||
+                CurrentPetState == PetState.MoveStraightToPlayer)
+            {
+                if (!LineOfSightToTarget(playerPosition, .5f))
+                {
+                    TransitionToState(PetState.FollowPath);
                 }
             }
             
@@ -578,11 +613,42 @@ namespace KinematicCharacterController.PetControllerv4
                 case PetState.MoveStraightToPlayer:
                 {
                     //If the pet enters the default radius, transition back to default.
-                    if (distanceToPlayer < Mathf.Pow(3f, 2f))
+                    if (distanceToPlayer < Mathf.Pow(2.8f, 2f))
                     {
                         TransitionToState(PetState.Default);
                     }
 
+                    break;
+                }
+                case PetState.FollowPath:
+                {
+                    if (_canCheckPathfinding)
+                    {
+                        _canCheckPathfinding = false;
+                        pathfinding.CheckIfCanFollowPath(playerPosition);
+                    }
+
+                    //Transition to default if line of sight is true OR if the pathfinding becomes inactive.
+                    if (LineOfSightToTarget(playerPosition, 0f))
+                    {
+                        TransitionToState(PetState.Default);
+                    }
+
+                    //Warp to the player 
+                    if (!pathfinding.PathIsActive && !pathfinding.CheckingPath)
+                    {
+                        _canCheckPathfinding = true;
+                        if (canWarpToPlayer)
+                        {
+                            canWarpToPlayer = false;
+                            TimeBeforeWarpingCoroutine = StartCoroutine(TimeBeforeWarping());
+                        }
+                    }
+                    else
+                    {
+                        canWarpToPlayer = true;
+                        StopActiveCoroutine(TimeBeforeWarpingCoroutine);
+                    }
                     break;
                 }
             }
@@ -784,23 +850,25 @@ namespace KinematicCharacterController.PetControllerv4
         }
 
         //Check line of sight to target.
-        public bool LineOfSightToTarget(Vector3 playerPos)
+        public bool LineOfSightToTarget(Vector3 targetPosition, float minTime)
         {
-            //Check line of sight to the target.
             float maxDistance = 12f;
-
-            //Vector3 adjustedPosition = targetPos + Motor.CharacterUp; //Check slightly above the transform position.
-            Vector3 targetDirection = playerPos - Motor.Transform.position;
-
-            //Debug.DrawLine(Motor.transform.position, playerPos);
-            if (!Physics.Linecast(Motor.Transform.position, playerPos, WallLayerMask))
+            
+            Debug.DrawLine(transformPosition, targetPosition, Color.yellow);
+            if (Physics.Linecast(transformPosition, targetPosition, LineOfSightMask))
             {
-                return true;
+                lineOfSightTimePassed += Time.deltaTime;
+                if (lineOfSightTimePassed >= minTime)
+                {
+                    return false;
+                }
             }
             else
             {
-                return false;
+                lineOfSightTimePassed = 0;
             }
+
+            return true;
         }
 
         public void PostGroundingUpdate(float deltaTime)
@@ -879,6 +947,21 @@ namespace KinematicCharacterController.PetControllerv4
         }
 
         // COROUTINES
+
+        //Set a delay before warping a second time..
+        private IEnumerator DelayBetweenWarping()
+        {
+            yield return CustomTimer.Timer(2f);
+            canWarpToPlayer = true;
+        }
+
+        //Set a delay before warping to check line of sight.
+        private IEnumerator TimeBeforeWarping()
+        {
+            yield return CustomTimer.Timer(.75f);
+            TransitionToState(PetState.WarpToPlayer);
+            TimeBetweenWarpsCoroutine = StartCoroutine(DelayBetweenWarping());
+        }
         
         private IEnumerator RandomDeviationStateTime()
         {
